@@ -37,7 +37,7 @@ def main():
     if submit_button:
         a_id = get_GPT_response(option, grade, style, txt)
 
-    question = st.chat_input("質問してください")
+    question = st.chat_input("テキスト送信後、結果について詳しく質問できます")
     if question:    
         get_GPT_response(option, grade, style, question)
             
@@ -61,11 +61,12 @@ def get_GPT_response(option, grade, style, txt):
         if style == "Speaking":
             assistant_id = ielts_speaking
         run_assistant(assistant_id, txt)
-    elif option == "":
-        st.markdown("まずテキストを貼り付けてください")
+    elif option in ["TOEFL", "TOEIC", "英検"]:
+        assistant_id = "null"
+        st.markdown("現在準備中です")
     else:
         assistant_id = "null"
-        st.markdown("Sorry, we are still preparing.")
+        st.markdown("まずテキストを貼り付けてください")
     return assistant_id
 
 def run_assistant(assistant_id, txt):
