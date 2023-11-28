@@ -1,4 +1,5 @@
 import streamlit as st
+from st_paywall import add_auth
 from openai import OpenAI
 import time
 
@@ -8,7 +9,7 @@ api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
-st.title("Mock Testor")
+st.title("Mock Tester")
 
 def main():
     a_id = "null"
@@ -31,6 +32,10 @@ def main():
         index = None,
         placeholder = "Writing or Speaking?",
     )
+
+    #authentication required
+    add_auth(required = True)
+
     with st.form("Your Work"):
         txt = show_text_input()
         submit_button = st.form_submit_button("採点")
