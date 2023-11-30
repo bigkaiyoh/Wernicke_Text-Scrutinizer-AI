@@ -14,7 +14,7 @@ st.title("Mock Tester")
 def main():
     a_id = "null"
     option = st.selectbox(
-        "受けたいテストを選んでください",
+        "Choose Test Framework",
         ("IELTS", "TOEFL", "TOEIC", "英検"),
         index = None,
         placeholder = "一つ選んでください",
@@ -27,7 +27,7 @@ def main():
     else:
          grade = "null"
     style = st.selectbox(
-        "WritingかSpeakingか選んでください",
+        "Select Section",
         ("Writing", "Speaking"),
         index = None,
         placeholder = "Writing or Speaking?",
@@ -38,11 +38,11 @@ def main():
 
     with st.form("Your Work"):
         txt = show_text_input()
-        submit_button = st.form_submit_button("採点")
+        submit_button = st.form_submit_button("Grade it!")
     if submit_button:
         a_id = get_GPT_response(option, grade, style, txt)
 
-    question = st.chat_input("テキスト送信後、結果について詳しく質問できます")
+    question = st.chat_input("You can ask further questions after submitting your answer.")
     if question:    
         get_GPT_response(option, grade, style, question)
             
@@ -53,11 +53,10 @@ def main():
 
 def show_text_input() -> None:
     txt = st.text_area(
-        "評価してほしい文章を貼り付けてください",
+        "Paste Your Answer for Evaluation",
     )
     st.write(f'{len(txt)} characters.')
     return txt
-
 
 def get_GPT_response(option, grade, style, txt):
     #call the right assistant
@@ -68,10 +67,10 @@ def get_GPT_response(option, grade, style, txt):
         run_assistant(assistant_id, txt)
     elif option in ["TOEFL", "TOEIC", "英検"]:
         assistant_id = "null"
-        st.markdown("現在準備中です")
+        st.markdown("Under Preparation")
     else:
         assistant_id = "null"
-        st.markdown("まずテキストを貼り付けてください")
+        st.markdown("Please Provide Your Answer First")
     return assistant_id
 
 def run_assistant(assistant_id, txt):
@@ -119,7 +118,7 @@ def run_assistant(assistant_id, txt):
                     st.write(f"{role.capitalize()}: {content}")
                 break
             else:
-                st.write("The result is on its way to you...")
+                st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
 
