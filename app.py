@@ -15,14 +15,14 @@ def main():
     a_id = "null"
     option = st.selectbox(
         "Choose Test Framework",
-        ("IELTS", "TOEFL", "TOEIC", "英検"),
+        ("IELTS", "TOEFL", "TOEIC", "Eiken"),
         index = None,
-        placeholder = "一つ選んでください",
+        placeholder = "Select the test",
     )
-    if option == "英検":
+    if option == "Eiken":
         grade = st.select_slider(
-            "級を選んでください",
-            options = ["1級", "準１級", "2級", "準２級", "3級", "4級", "5級"]
+            "Select the grade",
+            options = ["1", "Pre-2", "2", "Pre-2", "3", "4", "5"]
         )
     else:
          grade = "null"
