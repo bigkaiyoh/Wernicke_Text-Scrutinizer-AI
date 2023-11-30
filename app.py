@@ -9,8 +9,9 @@ api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
-st.title("Mock Tester")
-
+st.title("Wernicke - Text Scrutinizer AI")
+st.write("Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n" + "Shall we create something amazing together through the art of words?")
+st.write("Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n" + "and receive personalized feedback from me!")
 def main():
     a_id = "null"
     option = st.selectbox(
