@@ -37,6 +37,11 @@ def main():
     #authentication required
     add_auth(required = True)
 
+    #Stripe_mypage in the sidebar
+    st.sidebar.write('Subscribed email:' + str(st.session_state.email))
+    st.sidebar.link_button("Manage Plan", "https://billing.stripe.com/p/login/8wM5mzf5f4nndvGeUU")
+        
+
     with st.form("Your Work"):
         txt = show_text_input()
         submit_button = st.form_submit_button("Grade it!")
