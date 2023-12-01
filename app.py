@@ -38,8 +38,8 @@ def main():
     add_auth(required = True)
 
     #Stripe_mypage in the sidebar
-    st.sidebar.write("Successfully subscribed!")
-    st.sidebar.write(st.session_statae.email)
+    st.sidebar.write("Successfully Subscribed!")
+    st.sidebar.write(st.session_state.email)
     st.sidebar.link_button("Manage Plan", "https://billing.stripe.com/p/login/8wM5mzf5f4nndvGeUU")
         
 
