@@ -136,4 +136,3 @@ def run_assistant(assistant_id, txt):
 
 if __name__ == "__main__":
     main()
-    
