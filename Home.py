@@ -3,8 +3,13 @@ from st_paywall import add_auth
 from openai import OpenAI
 import time
 
-#secret keys
+#create a multi-page app
+st.set_page_config(
+    page_title = "Wernicke",
+    page_icon = "🧠",
+)
 
+#secret keys
 api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
