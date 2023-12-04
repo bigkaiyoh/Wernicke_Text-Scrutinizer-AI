@@ -36,6 +36,17 @@ def main():
     else:
         st.warning("Please enter the email address to proceed.")
 
+    st.write("""\n
+        ### What You Can Do:
+
+        **Manage Your Plan:**
+        - View and modify your subscription plan.
+        - Upgrade, downgrade, or cancel your subscription.
+
+        **Modify Your Account Information:**
+        - Update your name, email, and the method of payment.\n
+        """)
+    st.error("If your payment was made with a non-Google account, please update to a Google account through the portal to use the app.")
 # Run the customer portal function if this file is executed.
 if __name__ == "__main__":
     main()

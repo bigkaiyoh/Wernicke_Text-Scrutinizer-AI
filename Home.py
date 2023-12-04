@@ -16,7 +16,9 @@ ielts_speaking = st.secrets.ielts_speaking
 
 st.title("Wernicke - Text Scrutinizer AI")
 st.write("Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n" + "Shall we create something amazing together through the art of words?")
+st.divider()
 st.write("Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n" + "and receive personalized feedback from me!")
+
 def main():
     a_id = "null"
     option = st.selectbox(
@@ -45,8 +47,7 @@ def main():
     #Stripe_mypage in the sidebar
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
-    #st.sidebar.link_button("Manage Plan", "https://billing.stripe.com/p/login/8wM5mzf5f4nndvGeUU")
-        
+    
 
     with st.form("Your Work"):
         txt = show_text_input()
