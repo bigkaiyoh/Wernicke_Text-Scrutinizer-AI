@@ -45,7 +45,7 @@ def main():
     #Stripe_mypage in the sidebar
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
-    st.sidebar.link_button("Manage Plan", "https://billing.stripe.com/p/login/8wM5mzf5f4nndvGeUU")
+    #st.sidebar.link_button("Manage Plan", "https://billing.stripe.com/p/login/8wM5mzf5f4nndvGeUU")
         
 
     with st.form("Your Work"):
