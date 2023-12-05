@@ -48,20 +48,23 @@ def main():
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
     
+    if style == "Speaking":
+        audio_file = st.file_uploader("Upload Your Speaking", type=["mp3", "wav"])
+        submit_btn = st.button("Grade it!")
+        if submit_btn:
+            transcript = openai.Audio.transcribe("whisper-1", audio_file)
+            a_id = get_GPT_response(option, grade, style, transcript)
+    else:
+        with st.form("Your Work"):
+            txt = show_text_input()
+            submit_button = st.form_submit_button("Grade it!")
+        if submit_button:
+            a_id = get_GPT_response(option, grade, style, txt)
 
-    with st.form("Your Work"):
-        txt = show_text_input()
-        submit_button = st.form_submit_button("Grade it!")
-    if submit_button:
-        a_id = get_GPT_response(option, grade, style, txt)
-
+    #Question Chat Box
     question = st.chat_input("You can ask further questions after submitting your answer.")
     if question:    
         get_GPT_response(option, grade, style, question)
-            
-
-    
-
 
 
 def show_text_input() -> None:
