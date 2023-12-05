@@ -4,8 +4,6 @@ from openai import OpenAI
 #from openai.types.audio import Transcription
 import time
 
-client = OpenAI()
-
 #create a multi-page app
 st.set_page_config(
     page_title = "Wernicke",
@@ -23,6 +21,7 @@ st.divider()
 st.write("Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n" + "and receive personalized feedback from me!")
 
 def main():
+    client = OpenAI(api_key=api)
     a_id = "null"
     option = st.selectbox(
         "Choose Test Framework",
@@ -58,7 +57,8 @@ def main():
             # Transcribe audio
             transcript = client.audio.transcriptions.create(
                 model = "whisper-1", 
-                file = audio_file
+                file = audio_file,
+                response_format = "text"
             )
             a_id = get_GPT_response(option, grade, style, transcript)
     else:
