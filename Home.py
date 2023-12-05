@@ -53,7 +53,7 @@ def main():
         submit_btn = st.button("Grade it!")
         if submit_btn:
             # Transcribe audio
-            transcript = openai.Audio.transcribe("whisper-1", audio_file)
+            transcript = openai.Audio.transcribe("whisper-1", audio_file)["text"]
             a_id = get_GPT_response(option, grade, style, transcript)
     else:
         with st.form("Your Work"):
