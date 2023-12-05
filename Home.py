@@ -1,5 +1,6 @@
 import streamlit as st
 from st_paywall import add_auth
+import openai
 from openai import OpenAI
 import time
 
