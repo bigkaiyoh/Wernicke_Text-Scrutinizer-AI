@@ -1,6 +1,6 @@
 import streamlit as st
 from st_paywall import add_auth
-import openai
+import whisper
 from openai import OpenAI
 import time
 
@@ -52,8 +52,9 @@ def main():
     if style == "Speaking":
         audio_file = st.file_uploader("Upload Your Speaking", type=["mp3", "wav"])
         submit_btn = st.button("Grade it!")
-        if submit_btn:
-            transcript = openai.Audio.transcribe("whisper-1", audio_file)
+        if submit_btn and audio_file is not None:
+            # Transcribe audio
+            transcript = transcribe_audio(audio_file)
             a_id = get_GPT_response(option, grade, style, transcript)
     else:
         with st.form("Your Work"):
@@ -74,6 +75,14 @@ def show_text_input() -> None:
     )
     st.write(f'{len(txt)} characters.')
     return txt
+
+def transcribe_audio(audio_file):
+    # Initialize Whisper model 
+    model = whisper.load_model("base")  # You might have other model options like "small", "medium", "large"
+    # Transcribe audio 
+    result = model.transcribe(audio_file)
+    
+    return result["text"]
 
 def get_GPT_response(option, grade, style, txt):
     #call the right assistant
