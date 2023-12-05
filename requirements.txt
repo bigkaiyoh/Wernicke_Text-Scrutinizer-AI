@@ -1,2 +1,2 @@
 st-paywall
-openai
+openai==0.28
