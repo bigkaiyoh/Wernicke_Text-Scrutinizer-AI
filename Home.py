@@ -2,6 +2,7 @@ import streamlit as st
 from st_paywall import add_auth
 import openai
 from openai import OpenAI
+#from openai.types.audio import Transcription
 import time
 
 #create a multi-page app
@@ -54,7 +55,7 @@ def main():
         submit_btn = st.button("Grade it!")
         if submit_btn:
             # Transcribe audio
-            transcript = openai.Audio.transcribe("whisper-1", audio_file)["text"]
+            transcript = client.audio.transcriptions.create("whisper-1", audio_file)["text"]
             a_id = get_GPT_response(option, grade, style, transcript)
     else:
         with st.form("Your Work"):
