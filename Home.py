@@ -1,7 +1,6 @@
 import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
-from audio_recorder_streamlit import audio_recorder
 import time
 
 #create a multi-page app
@@ -51,11 +50,6 @@ def main():
     st.sidebar.write(st.session_state.email)
     
     if style == "Speaking":
-        # Record audio using Streamlit widget
-        st.write("Directly speak to me or Upload your audio file!")
-        #audio_bytes = audio_recorder()
-        #if audio_bytes:
-            #st.audio(audio_bytes, format="audio/wav")
         audio_file = st.file_uploader("Upload Your Speaking", type=["mp3", "wav"])
         submit_btn = st.button("Grade it!")
         if submit_btn:
