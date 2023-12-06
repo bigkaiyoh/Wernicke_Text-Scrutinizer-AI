@@ -1,2 +1,3 @@
 st-paywall
+audio_recorder_streamlit
 openai
