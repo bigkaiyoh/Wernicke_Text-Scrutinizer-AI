@@ -2,7 +2,6 @@ import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
 from audio_recorder_streamlit import audio_recorder
-#from openai.types.audio import Transcription
 import time
 
 #create a multi-page app
