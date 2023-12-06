@@ -54,7 +54,9 @@ def main():
     if style == "Speaking":
         # Record audio using Streamlit widget
         st.write("Directly speak to me or Upload your audio file!")
-        audio_file = audio_recorder(pause_threshold=30)
+        #audio_bytes = audio_recorder()
+        #if audio_bytes:
+            #st.audio(audio_bytes, format="audio/wav")
         audio_file = st.file_uploader("Upload Your Speaking", type=["mp3", "wav"])
         submit_btn = st.button("Grade it!")
         if submit_btn:
