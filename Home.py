@@ -1,6 +1,7 @@
 import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
+from audio_recorder_streamlit import audio_recorder
 #from openai.types.audio import Transcription
 import time
 
@@ -51,6 +52,9 @@ def main():
     st.sidebar.write(st.session_state.email)
     
     if style == "Speaking":
+        # Record audio using Streamlit widget
+        st.write("Directly speak to me or Upload your audio file!")
+        audio_file = audio_recorder(pause_threshold=30)
         audio_file = st.file_uploader("Upload Your Speaking", type=["mp3", "wav"])
         submit_btn = st.button("Grade it!")
         if submit_btn:
