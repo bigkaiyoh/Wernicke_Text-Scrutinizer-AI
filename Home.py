@@ -15,7 +15,7 @@ ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
 #language switch toggle
-JP = st.sidebar.toggle("Japanese (日本語)")
+JP = st.toggle("Japanese (日本語)")
 
 if JP:
     st.title("Wernicke - テスト採点者AI")

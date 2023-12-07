@@ -10,8 +10,7 @@ st.set_page_config(
 
 def main():
     #language switch toggle
-    JP = st.sidebar.toggle("Japanese (日本語)")
-
+    JP = st.toggle("Japanese (日本語)")
     if JP:
         st.title('カスタマーポータル')
         # ユーザーに支払い時に使用したメールアドレスを尋ねる
