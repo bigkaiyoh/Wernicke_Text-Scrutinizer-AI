@@ -21,7 +21,7 @@ if JP:
     st.title("Wernicke - テスト採点者AI")
     st.write("Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n" + "一緒に表現力豊かな言葉の使い方を学びましょう！")
     st.divider()
-    st.write("フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '評価する'をクリックしてください。  \n" + "すぐに私からの個別のフィードバックが返ってきます！")
+    st.write("フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け 'Grade it!'をクリックしてください。  \n" + "すぐに私からの個別のフィードバックが返ってきます！")
 else:
     st.title("Wernicke - Text Scrutinizer AI")
     st.write("Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n" + "Shall we create something amazing together through the art of words?")
@@ -78,7 +78,10 @@ def main():
             a_id = get_GPT_response(option, grade, style, txt)
 
     #Question Chat Box
-    question = st.chat_input("You can ask further questions after submitting your answer.")
+    if JP:
+        question = st.chat_input("回答送信後、フィードバックについて質問ができます。")
+    else:
+        question = st.chat_input("You can ask further questions after submitting your answer.")
     if question:    
         get_GPT_response(option, grade, style, question)
 
@@ -97,7 +100,7 @@ def get_GPT_response(option, grade, style, txt):
         if style == "Speaking":
             assistant_id = ielts_speaking
         run_assistant(assistant_id, txt)
-    elif option in ["TOEFL", "TOEIC", "英検"]:
+    elif option in ["TOEFL", "TOEIC", "Eiken"]:
         assistant_id = "null"
         st.markdown("Under Preparation")
     else:
