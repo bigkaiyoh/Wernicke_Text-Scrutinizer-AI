@@ -14,14 +14,24 @@ api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
-st.title("Wernicke - Text Scrutinizer AI")
-st.write("Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n" + "Shall we create something amazing together through the art of words?")
-st.divider()
-st.write("Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n" + "and receive personalized feedback from me!")
+#language switch toggle
+JP = st.sidebar.toggle("Japanese (日本語)")
+
+if JP:
+    st.title("Wernicke - テスト採点者AI")
+    st.write("Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n" + "一緒に表現力豊かな言葉の使い方を学びましょう！")
+    st.divider()
+    st.write("フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '評価する'をクリックしてください。  \n" + "すぐに私からの個別のフィードバックが返ってきます！")
+else:
+    st.title("Wernicke - Text Scrutinizer AI")
+    st.write("Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n" + "Shall we create something amazing together through the art of words?")
+    st.divider()
+    st.write("Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n" + "and receive personalized feedback from me!")
 
 def main():
     client = OpenAI(api_key=api)
     a_id = "null"
+
     option = st.selectbox(
         "Choose Test Framework",
         ("IELTS", "TOEFL", "TOEIC", "Eiken"),
