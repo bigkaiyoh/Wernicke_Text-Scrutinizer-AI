@@ -153,7 +153,7 @@ def main():
     #Get user input
     user_input = get_user_input(style, JP)
 
-    submit_button = st.button(translate("採点する", "Grade it!", JP))
+    submit_button = st.button(translate("採点", "Grade it!", JP))
     if submit_button:
         if style == "Speaking":
             # Transcribe audio
