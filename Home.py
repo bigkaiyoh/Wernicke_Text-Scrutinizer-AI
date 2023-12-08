@@ -3,88 +3,67 @@ from st_paywall import add_auth
 from openai import OpenAI
 import time
 
-#create a multi-page app
+#Secret keys
+api = st.secrets.api_key
+ielts_writing = st.secrets.ielts_writing
+ielts_speaking = st.secrets.ielts_speaking
+
+#Initialize OpenAI client and set default assistant_id
+client = OpenAI(api_key=api)
+a_id = "null"
+
+#Page Configuration
 st.set_page_config(
     page_title = "Wernicke",
     page_icon = "🧠",
 )
 
-#secret keys
-api = st.secrets.api_key
-ielts_writing = st.secrets.ielts_writing
-ielts_speaking = st.secrets.ielts_speaking
+def translate(text_japanese, text_english, is_japanese):
+    return text_japanese if is_japanese else text_english
 
-#language switch toggle
-JP = st.toggle("Japanese (日本語)")
-
-if JP:
-    st.title("Wernicke - テスト採点者AI")
-    st.write("Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n" + "一緒に表現力豊かな言葉の使い方を学びましょう！")
+def display_intro(JP):
+    st.title(translate("Wernicke - テスト採点者AI", "Wernicke - Text Scrutinizer AI", JP))
+    st.write(translate(
+        "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
+        "一緒に表現力豊かな言葉の使い方を学びましょう！",
+        "Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n"
+        "Shall we create something amazing together through the art of words?", JP))
     st.divider()
-    st.write("フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け 'Grade it!'をクリックしてください。  \n" + "すぐに私からの個別のフィードバックが返ってきます！")
-else:
-    st.title("Wernicke - Text Scrutinizer AI")
-    st.write("Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n" + "Shall we create something amazing together through the art of words?")
-    st.divider()
-    st.write("Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n" + "and receive personalized feedback from me!")
+    st.write(translate(
+        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け 'Grade it!'をクリックしてください。  \n"
+        "すぐに私からの個別のフィードバックが返ってきます！",
+        "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
+        "and receive personalized feedback from me!", JP))
 
-def main():
-    client = OpenAI(api_key=api)
-    a_id = "null"
-
+def set_test_configuration(JP):
     option = st.selectbox(
-        "Choose Test Framework",
-        ("IELTS", "TOEFL", "TOEIC", "Eiken"),
+        translate("テストを選択してください", "Choose Test Framework", JP),
+        translate(("IELTS", "TOEFL", "TOEIC", "英検"), ("IELTS", "TOEFL", "TOEIC", "Eiken"), JP),
         index = None,
         placeholder = "Select the test",
     )
-    if option == "Eiken":
+    if option in ["Eiken", "英検"]:
         grade = st.select_slider(
             "Select the grade",
-            options = ["1", "Pre-2", "2", "Pre-2", "3", "4", "5"]
+            options = translate(["1級", "準１級", "2級", "準２級", "3級", "4級", "5級"],
+                                ["1", "Pre-1", "2", "Pre-2", "3", "4", "5"], JP)
         )
     else:
          grade = "null"
     style = st.selectbox(
-        "Select Section",
+        translate("セクションを選択してください", "Choose Test Framework", JP),
         ("Writing", "Speaking"),
         index = None,
         placeholder = "Writing or Speaking?",
     )
+    return option, grade, style
 
-    #authentication required
-    add_auth(required = True)
-
-    #Stripe_mypage in the sidebar
-    st.sidebar.write("Successfully Subscribed!")
-    st.sidebar.write(st.session_state.email)
-    
+def get_user_input(style):
     if style == "Speaking":
-        audio_file = st.file_uploader("Upload Your Speaking", type=["mp3", "wav"])
-        submit_btn = st.button("Grade it!")
-        if submit_btn:
-            # Transcribe audio
-            transcript = client.audio.transcriptions.create(
-                model = "whisper-1", 
-                file = audio_file,
-                response_format = "text"
-            )
-            a_id = get_GPT_response(option, grade, style, transcript)
+        answer = st.file_uploader(translate("スピーキングをアップロード","Upload Your Speaking"), type=["mp3", "wav"])
     else:
-        with st.form("Your Work"):
-            txt = show_text_input()
-            submit_button = st.form_submit_button("Grade it!")
-        if submit_button:
-            a_id = get_GPT_response(option, grade, style, txt)
-
-    #Question Chat Box
-    if JP:
-        question = st.chat_input("回答送信後、フィードバックについて質問ができます。")
-    else:
-        question = st.chat_input("You can ask further questions after submitting your answer.")
-    if question:    
-        get_GPT_response(option, grade, style, question)
-
+        answer = st.text_area("Paste Your Answer for Evaluation")
+    return answer
 
 def show_text_input() -> None:
     txt = st.text_area(
@@ -100,7 +79,7 @@ def get_GPT_response(option, grade, style, txt):
         if style == "Speaking":
             assistant_id = ielts_speaking
         run_assistant(assistant_id, txt)
-    elif option in ["TOEFL", "TOEIC", "Eiken"]:
+    elif option in ["TOEFL", "TOEIC", "Eiken", "英検"]:
         assistant_id = "null"
         st.markdown("Under Preparation")
     else:
@@ -156,6 +135,43 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
+def main():
+    #language switch toggle
+    JP = st.toggle("Japanese (日本語)", value=False)
+
+    #Display title and introductory text based on the language toggle
+    display_intro(JP)
+
+    #Set Test Configuration
+    option, grade, style = set_test_configuration(JP)
+
+    #authentication required
+    add_auth(required = True)
+
+    #Stripe_mypage in the sidebar
+    st.sidebar.write("Successfully Subscribed!")
+    st.sidebar.write(st.session_state.email)
+    
+    #Get user input
+    user_input = get_user_input(style)
+    
+    submit_button = st.button("Grade it!")
+    if submit_button:
+        if style == "Speaking":
+            # Transcribe audio
+            user_input = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=user_input,
+                response_format="text"
+            )
+        a_id = get_GPT_response(option, grade, style, user_input)
+
+    #Question Chat Box
+    question = st.chat_input(translate(
+        "回答送信後、フィードバックについて質問ができます。",
+        "You can ask further questions after submitting your answer.", JP))
+    if question:    
+        get_GPT_response(option, grade, style, question)
 
 if __name__ == "__main__":
     main()
