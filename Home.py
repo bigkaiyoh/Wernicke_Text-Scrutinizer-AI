@@ -58,7 +58,7 @@ def set_test_configuration(JP):
     )
     return option, grade, style
 
-def get_user_input(style):
+def get_user_input(style, JP):
     if style == "Speaking":
         answer = st.file_uploader(translate("スピーキングをアップロード","Upload Your Speaking", JP), type=["mp3", "wav"])
     else:
@@ -153,7 +153,7 @@ def main():
     st.sidebar.write(st.session_state.email)
     
     #Get user input
-    user_input = get_user_input(style)
+    user_input = get_user_input(style, JP)
 
     submit_button = st.button(translate("採点する", "Grade it!", JP))
     if submit_button:
