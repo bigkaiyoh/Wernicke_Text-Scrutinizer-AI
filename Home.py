@@ -62,7 +62,7 @@ def get_user_input(style, JP):
     if style == "Speaking":
         answer = st.file_uploader(translate("スピーキングをアップロード","Upload Your Speaking", JP), type=["mp3", "wav"])
     else:
-        answer = st.text_area(translate("ライティングをペーストしてください", "Paste Your Answer for Evaluation", JP))
+        answer = st.text_area(translate("回答を提出", "Paste Your Answer for Evaluation", JP))
     return answer
 
 def show_text_input() -> None:
