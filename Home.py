@@ -147,8 +147,6 @@ def main():
 
     #authentication required
     add_auth(required = True)
-
-    #Stripe_mypage in the sidebar
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
     
