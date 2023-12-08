@@ -30,8 +30,8 @@ def display_intro(JP):
         "Shall we create something amazing together through the art of words?", JP))
     st.divider()
     st.write(translate(
-        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリックしてください。  \n"
-        "すぐに私からの個別のフィードバックが返ってきます！",
+        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！  \n"
+        "すぐに私からの個別のフィードバックが返ってきます。",
         "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
         "and receive personalized feedback from me!", JP))
 
