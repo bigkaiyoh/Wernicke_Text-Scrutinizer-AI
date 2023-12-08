@@ -1,6 +1,8 @@
 import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
+from streamlit_gsheets import GSheetsConnection
+import pandas as pd
 import time
 
 #Secret keys
@@ -18,6 +20,12 @@ st.set_page_config(
     page_icon = "🧠",
 )
 
+#Establishing a Google Sheets connection
+conn = st.connection("gsheets", type =GSheetsConnection)
+
+#Fetch existing Wernicke data
+existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
@@ -30,7 +38,7 @@ def display_intro(JP):
         "Shall we create something amazing together through the art of words?", JP))
     st.divider()
     st.write(translate(
-        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！  \n"
+        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
         "すぐに私からの個別のフィードバックが返ってきます。",
         "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
         "and receive personalized feedback from me!", JP))
@@ -163,6 +171,22 @@ def main():
                 response_format="text"
             )
         a_id = get_GPT_response(option, grade, style, user_input)
+
+        #add new data to the existing data
+        new_data = pd.DataFrame(
+            {
+                "user_email": st.session_state.email,
+                "test_framework": option,
+                "test_section": style,
+                "user_input": user_input,
+            }
+        )
+        updated_df = pd.concat([existing_data, new_data], ignore_index=True)
+
+        #update a Google Sheets
+        conn.update(worksheet="シート1", data=updated_df)
+
+
 
     #Question Chat Box
     question = st.chat_input(translate(
