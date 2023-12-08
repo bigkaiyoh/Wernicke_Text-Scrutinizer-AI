@@ -25,6 +25,7 @@ conn = st.connection("gsheets", type =GSheetsConnection)
 
 #Fetch existing Wernicke data
 existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+existing_data = existing_data.dropna(how="all")
 
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
