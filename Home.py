@@ -1,7 +1,6 @@
 import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
-from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import time
 
@@ -21,11 +20,14 @@ st.set_page_config(
 )
 
 #Establishing a Google Sheets connection
-conn = st.connection("gsheets", type =GSheetsConnection)
+# Establishing a Google Sheets connection
+#gsheets_connector = st.secrets["gcp_service_account"]
+#conn = st.connection("gsheets", **gsheets_connector)
+
 
 #Fetch existing Wernicke data
-existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
-existing_data = existing_data.dropna(how="all")
+#existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+#existing_data = existing_data.dropna(how="all")
 
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
@@ -182,10 +184,10 @@ def main():
                 "user_input": user_input,
             }
         )
-        updated_df = pd.concat([existing_data, new_data], ignore_index=True)
+        #updated_df = pd.concat([existing_data, new_data], ignore_index=True)
 
         #update a Google Sheets
-        conn.update(worksheet="シート1", data=updated_df)
+        #conn.update(worksheet="シート1", data=updated_df)
 
 
 
