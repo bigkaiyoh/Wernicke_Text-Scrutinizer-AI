@@ -20,7 +20,7 @@ st.set_page_config(
     page_icon = "🧠",
 )
 
-#Establishing a Google Sheets connection
+#Establishing a Google Sheets connections
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 
