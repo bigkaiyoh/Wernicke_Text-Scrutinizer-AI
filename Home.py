@@ -190,7 +190,7 @@ def main():
         new_data = NewData(st.session_state.email, option, style, user_input)
         
         #update a Google Sheets
-        update_google_sheet(existing_data, new_data)
+        update_google_sheet(new_data)
 
     #Question Chat Box
     question = st.chat_input(translate(
