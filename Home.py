@@ -25,8 +25,8 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 
 
 #Fetch existing Wernicke data
-#existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
-#existing_data = existing_data.dropna(how="all")
+existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+existing_data = existing_data.dropna(how="all")
 
 class NewData:
     def __init__(self, email, test_framework, test_section, user_input):
@@ -152,8 +152,7 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
-def update_google_sheet(new_data):
-    existing_data = pd.DataFrame()
+def update_google_sheet(existing_data, new_data):
     updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
     conn.update(worksheet="シート1", data=updated_df)
 
@@ -190,7 +189,7 @@ def main():
         new_data = NewData(st.session_state.email, option, style, user_input)
         
         #update a Google Sheets
-        update_google_sheet(new_data)
+        update_google_sheet(existing_data, new_data)
 
     #Question Chat Box
     question = st.chat_input(translate(
