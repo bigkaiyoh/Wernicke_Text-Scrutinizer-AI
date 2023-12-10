@@ -20,7 +20,7 @@ st.set_page_config(
     page_icon = "🧠",
 )
 
-#Establishing a Google Sheets connections
+#Establishing a Google Sheets connection
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 
@@ -153,10 +153,7 @@ def run_assistant(assistant_id, txt):
                 time.sleep(5)
 
 def update_google_sheet(existing_data, new_data):
-    # Append new data to the existing data
     updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
-
-    # Update Google Sheets
     conn.update(worksheet="シート1", data=updated_df)
 
 def main():
@@ -188,11 +185,14 @@ def main():
             )
         a_id = get_GPT_response(option, grade, style, user_input)
 
-        # Create an instance of NewData
+        #add new data to the existing data
         new_data = NewData(st.session_state.email, option, style, user_input)
-
-        # Append new data to Google Sheets
+        
+        #update a Google Sheets
         update_google_sheet(existing_data, new_data)
+        #conn.update(worksheet="シート1", data=updated_df)
+
+
 
     #Question Chat Box
     question = st.chat_input(translate(
