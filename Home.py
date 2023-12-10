@@ -164,9 +164,10 @@ def update_google_sheets(conn, existing_data, new_data):
     updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
     conn.update(worksheet="シート1", data=updated_df)
 
-def no_input_error(JP):
+def no_input_error(is_japanese):
     st.error(translate("先に回答をしてください", 
-                       "Please provide your answer before grading.", JP))
+                       "Please provide your answer before grading.", is_japanese))
+
 
 def main():
     #language switch toggle
