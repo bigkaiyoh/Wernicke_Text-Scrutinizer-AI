@@ -137,6 +137,33 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
+def establish_gsheets_connection():
+    # Establishing a Google Sheets connection
+    conn = st.connection("gsheets", type=GSheetsConnection)
+
+    # Fetch existing Wernicke data
+    existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+    existing_data = existing_data.dropna(how="all")
+
+    return conn, existing_data
+
+def add_new_data(email, option, style, user_input):
+    # Add new data to the existing data
+    new_data = pd.Series(
+        {
+            "user_email": email,
+            "test_framework": option,
+            "test_section": style,
+            "user_input": user_input,
+        }
+    )
+    return new_data
+
+def update_google_sheets(conn, existing_data, new_data):
+    # Update a Google Sheets
+    updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
+    conn.update(worksheet="シート1", data=updated_df)
+
 def main():
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
@@ -151,6 +178,8 @@ def main():
     add_auth(required = True)
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
+    # Establish Google Sheets connection
+    conn, existing_data = establish_gsheets_connection()
     
     #Get user input
     user_input = get_user_input(style, JP)
@@ -166,26 +195,12 @@ def main():
             )
         a_id = get_GPT_response(option, grade, style, user_input)
 
-        #Establishing a Google Sheets connection
-        conn = st.connection("gsheets", type=GSheetsConnection)
+        # Add new data
+        new_data = add_new_data(st.session_state.email, option, style, user_input)
 
-        #Fetch existing Wernicke data
-        existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
-        existing_data = existing_data.dropna(how="all")
-        
-        #add new data to the existing data
-        new_data = pd.Series(
-            {
-                "user_email": st.session_state.email,
-                "test_framework": option,
-                "test_section": style,
-                "user_input": user_input,
-            }
-        )
-        updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
-
-        #update a Google Sheets
-        conn.update(worksheet="シート1", data=updated_df)
+        # Update Google Sheets
+        update_google_sheets(conn, existing_data, new_data)
+       
 
 
 
