@@ -5,9 +5,6 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import time
 
-#import email list for org
-from utils.organization_mapping import organization_worksheets
-
 #Secret keys
 api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
