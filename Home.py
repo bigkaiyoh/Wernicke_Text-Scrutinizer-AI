@@ -215,7 +215,7 @@ def main():
         "You can ask further questions regarding the feedback", JP))
     if question:    
         get_GPT_response(option, grade, style, question)
-     elif question and not user_input:
+    elif question and not user_input:
         no_input_error()
 
 if __name__ == "__main__":
