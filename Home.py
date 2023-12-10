@@ -175,7 +175,7 @@ def main():
         a_id = get_GPT_response(option, grade, style, user_input)
 
         #add new data to the existing data
-        new_data = pd.DataFrame(
+        new_data = pd.Series(
             {
                 "user_email": st.session_state.email,
                 "test_framework": option,
@@ -183,7 +183,7 @@ def main():
                 "user_input": user_input,
             }
         )
-        updated_df = pd.concat([existing_data, new_data], ignore_index=True)
+        updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
 
         #update a Google Sheets
         conn.update(worksheet="シート1", data=updated_df)
