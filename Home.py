@@ -5,6 +5,9 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import time
 
+#import email list for org
+from utils.organization_mapping import organization_worksheets
+
 #Secret keys
 api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
@@ -137,15 +140,26 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
-def establish_gsheets_connection():
+def establish_gsheets_connection(organization_worksheets):
     # Establishing a Google Sheets connection
     conn = st.connection("gsheets", type=GSheetsConnection)
 
-    # Fetch existing Wernicke data
-    existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+    # Determine the organization based on the session_state.email
+    organization = get_organization_for_email(st.session_state.email, organization_worksheets)
+
+    # Fetch existing Wernicke data from the organization's worksheet
+    existing_data = conn.read(worksheet=organization, usecols=list(range(4)), ttl=5)
     existing_data = existing_data.dropna(how="all")
 
     return conn, existing_data
+
+def get_organization_for_email(email, organization_worksheets):
+    # Assuming organization_worksheets is a dictionary mapping emails to organization names
+    for member_email, organization in organization_worksheets.items():
+        if email == org_email:
+            return organization
+    # Default to a generic sheet if no matching organization is found
+    return "シート1"
 
 def add_new_data(email, option, style, user_input):
     # Add new data to the existing data
