@@ -164,6 +164,10 @@ def update_google_sheets(conn, existing_data, new_data):
     updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
     conn.update(worksheet="シート1", data=updated_df)
 
+def no_input_error():
+    st.error(translate("先に回答をしてください", 
+                        　　"Please provide your answer before grading.", JP))
+
 def main():
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
@@ -200,16 +204,19 @@ def main():
 
         # Update Google Sheets
         update_google_sheets(conn, existing_data, new_data)
-       
 
-
+    # If the submit button is clicked but no input is provided, show an error message
+    elif submit_button and not user_input:
+        no_input_error()
 
     #Question Chat Box
     question = st.chat_input(translate(
-        "回答送信後、フィードバックについて質問ができます。",
-        "You can ask further questions after submitting your answer.", JP))
+        "フィードバックについて質問ができます。",
+        "You can ask further questions regarding the feedback", JP))
     if question:    
         get_GPT_response(option, grade, style, question)
+     elif question and not user_input:
+        no_input_error()
 
 if __name__ == "__main__":
     main()
