@@ -191,24 +191,23 @@ def main():
 
     submit_button = st.button(translate("採点", "Grade it!", JP))
     if submit_button:
-        if style == "Speaking":
-            # Transcribe audio
-            user_input = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=user_input,
-                response_format="text"
-            )
-        a_id = get_GPT_response(option, grade, style, user_input)
+        if user_input:
+            if style == "Speaking":
+                # Transcribe audio
+                user_input = client.audio.transcriptions.create(
+                    model="whisper-1",
+                    file=user_input,
+                    response_format="text"
+                )
+            a_id = get_GPT_response(option, grade, style, user_input)
 
-        # Add new data
-        new_data = add_new_data(st.session_state.email, option, style, user_input)
+            # Add new data
+            new_data = add_new_data(st.session_state.email, option, style, user_input)
 
-        # Update Google Sheets
-        update_google_sheets(conn, existing_data, new_data)
-
-    # If the submit button is clicked but no input is provided, show an error message
-    elif submit_button and not user_input:
-        no_input_error(JP)
+            # Update Google Sheets
+            update_google_sheets(conn, existing_data, new_data)
+        else:
+            no_input_error(JP)
 
     #Question Chat Box
     question = st.chat_input(translate(
