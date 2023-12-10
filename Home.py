@@ -30,7 +30,7 @@ existing_data = existing_data.dropna(how="all")
 
 class NewData:
     def __init__(self, email, test_framework, test_section, user_input):
-        self.email = email
+        self.email = st.session_state.email
         self.test_framework = test_framework
         self.test_section = test_section
         self.user_input = user_input
@@ -152,10 +152,6 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
-def update_google_sheet(existing_data, new_data):
-    updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
-    conn.update(worksheet="シート1", data=updated_df)
-
 def main():
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
@@ -186,11 +182,19 @@ def main():
         a_id = get_GPT_response(option, grade, style, user_input)
 
         #add new data to the existing data
+        #new_data = pd.Series(
+        #    {
+        #        "user_email": st.session_state.email,
+        #        "test_framework": option,
+        #        "test_section": style,
+        #        "user_input": user_input,
+        #    }
+        #)
         new_data = NewData(st.session_state.email, option, style, user_input)
-        
+        updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
+
         #update a Google Sheets
-        update_google_sheet(existing_data, new_data)
-        #conn.update(worksheet="シート1", data=updated_df)
+        conn.update(worksheet="シート1", data=updated_df)
 
 
 
