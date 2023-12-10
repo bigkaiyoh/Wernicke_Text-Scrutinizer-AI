@@ -28,6 +28,13 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
 existing_data = existing_data.dropna(how="all")
 
+class NewData:
+    def __init__(self, email, test_framework, test_section, user_input):
+        self.email = email
+        self.test_framework = test_framework
+        self.test_section = test_section
+        self.user_input = user_input
+
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
@@ -145,6 +152,10 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
+def update_google_sheet(existing_data, new_data):
+    updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
+    conn.update(worksheet="シート1", data=updated_df)
+
 def main():
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
@@ -175,18 +186,20 @@ def main():
         a_id = get_GPT_response(option, grade, style, user_input)
 
         #add new data to the existing data
-        new_data = pd.Series(
-            {
-                "user_email": st.session_state.email,
-                "test_framework": option,
-                "test_section": style,
-                "user_input": user_input,
-            }
-        )
-        updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
+        #new_data = pd.Series(
+        #    {
+        #        "user_email": st.session_state.email,
+        #        "test_framework": option,
+        #        "test_section": style,
+        #        "user_input": user_input,
+        #    }
+        #)
+        new_data = NewData(st.session_state.email, option, style, user_input)
+        #updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
 
         #update a Google Sheets
-        conn.update(worksheet="シート1", data=updated_df)
+        update_google_sheet(existing_data, new_data)
+        #conn.update(worksheet="シート1", data=updated_df)
 
 
 
