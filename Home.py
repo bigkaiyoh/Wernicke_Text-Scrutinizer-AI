@@ -164,7 +164,7 @@ def update_google_sheets(conn, existing_data, new_data):
     updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
     conn.update(worksheet="シート1", data=updated_df)
 
-def no_input_error():
+def no_input_error(JP):
     st.error(translate("先に回答をしてください", 
                        "Please provide your answer before grading.", JP))
 
@@ -207,7 +207,7 @@ def main():
 
     # If the submit button is clicked but no input is provided, show an error message
     elif submit_button and not user_input:
-        no_input_error()
+        no_input_error(JP)
 
     #Question Chat Box
     question = st.chat_input(translate(
@@ -216,7 +216,7 @@ def main():
     if question:    
         get_GPT_response(option, grade, style, question)
     elif question and not user_input:
-        no_input_error()
+        no_input_error(JP)
 
 if __name__ == "__main__":
     main()
