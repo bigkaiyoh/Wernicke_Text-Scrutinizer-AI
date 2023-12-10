@@ -166,7 +166,7 @@ def update_google_sheets(conn, existing_data, new_data):
 
 def no_input_error():
     st.error(translate("先に回答をしてください", 
-                        　　"Please provide your answer before grading.", JP))
+                       "Please provide your answer before grading.", JP))
 
 def main():
     #language switch toggle
