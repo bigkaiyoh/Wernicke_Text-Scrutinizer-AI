@@ -152,7 +152,7 @@ def run_assistant(assistant_id, txt):
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
 
-def update_google_sheet(existing_data, new_data):
+def update_google_sheet(new_data):
     existing_data = pd.DataFrame()
     updated_df = pd.concat([existing_data, new_data.to_frame().T], ignore_index=True)
     conn.update(worksheet="シート1", data=updated_df)
