@@ -1,3 +1,4 @@
+streamlit
 st-paywall
 openai
 st-gsheets-connection
