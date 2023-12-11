@@ -147,17 +147,24 @@ def establish_gsheets_connection():
 
     return conn, existing_data
 
-def add_new_data(email, option, style, user_input):
+def add_new_data(email, option, grade, style, user_input):
+    # Concatenate option and grade if Eiken/英検 is selected
+    if option in ["Eiken", "英検"]:
+        test_framework = f"{option}{grade}"
+    else:
+        test_framework = option
+
     # Add new data to the existing data
     new_data = pd.Series(
         {
             "user_email": email,
-            "test_framework": option,
+            "test_framework": test_framework,
             "test_section": style,
             "user_input": user_input,
         }
     )
     return new_data
+
 
 def update_google_sheets(conn, existing_data, new_data):
     # Update a Google Sheets
@@ -202,7 +209,8 @@ def main():
             a_id = get_GPT_response(option, grade, style, user_input)
 
             # Add new data
-            new_data = add_new_data(st.session_state.email, option, style, user_input)
+            new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
+
 
             # Update Google Sheets
             update_google_sheets(conn, existing_data, new_data)
