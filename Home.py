@@ -43,7 +43,6 @@ def set_test_configuration(JP):
         translate(("IELTS", "TOEFL", "TOEIC", "英検"), ("IELTS", "TOEFL", "TOEIC", "Eiken"), JP),
         index = None,
         placeholder = "Select the test",
-        persistence=False,
     )
     if option in ["Eiken", "英検"]:
         grade = st.select_slider(
@@ -76,6 +75,8 @@ def show_text_input() -> None:
     return txt
 
 def get_GPT_response(option, grade, style, txt):
+    #reset the assistant_id
+    assistant_id = "null"
     #call the right assistant
     if option == "IELTS":
         assistant_id = ielts_writing
