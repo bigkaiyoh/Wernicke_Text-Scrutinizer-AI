@@ -2,6 +2,7 @@ import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
 from streamlit_gsheets import GSheetsConnection
+from streamlit_extras.app_logo import add_logo
 import pandas as pd
 import time
 
@@ -23,12 +24,16 @@ st.set_page_config(
 #Removing Hooter and Footer
 hide_st_style = """
             <style>
-            #MainMenu {visibility: hidden;}
+            #MainMenu {visibility: visible;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
+def add_logo(logo_url, width):
+    logo_html = f"<img src='{logo_url}' width='{width}' style='margin-bottom:20px'>"
+    st.markdown(logo_html, unsafe_allow_html=True)
 
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
@@ -187,6 +192,10 @@ def no_input_error(is_japanese):
 
 
 def main():
+    # Add logo to the sidebar
+    logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
+    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
 

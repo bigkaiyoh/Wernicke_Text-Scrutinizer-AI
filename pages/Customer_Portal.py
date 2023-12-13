@@ -42,6 +42,10 @@ def run_stripe(user):
                     unsafe_allow_html=True)
 
 def main():
+    # Add logo to the sidebar
+    logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
+    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+
     # Language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
     st.title(translate('カスタマーポータル', 'Customer Portal', JP))
