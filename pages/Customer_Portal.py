@@ -23,6 +23,25 @@ class User:
         self.email = email
         self.is_japanese = is_japanese
 
+def add_bottom(logo_url):
+    st.markdown(
+        f"""
+        <style>
+            [data-testid="stSidebarNav"] + div {{
+                position:relative;
+                bottom: 0;
+                height:50%;
+                background-image: url({logo_url});
+                background-size: 85% auto;
+                background-repeat: no-repeat;
+                background-position-x: center;
+                background-position-y: bottom;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
@@ -55,6 +74,7 @@ def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
 
     # Language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)

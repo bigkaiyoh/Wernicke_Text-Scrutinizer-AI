@@ -34,6 +34,25 @@ def add_logo(logo_url, width=190):
     logo_html = f"<img src='{logo_url}' width='{width}' style='margin-bottom:20px'>"
     st.markdown(logo_html, unsafe_allow_html=True)
 
+def add_bottom(logo_url):
+    st.markdown(
+        f"""
+        <style>
+            [data-testid="stSidebarNav"] + div {{
+                position:relative;
+                bottom: 0;
+                height:50%;
+                background-image: url({logo_url});
+                background-size: 85% auto;
+                background-repeat: no-repeat;
+                background-position-x: center;
+                background-position-y: bottom;
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 def set_background_image(url):
     st.markdown(
         f"""
@@ -209,6 +228,7 @@ def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
