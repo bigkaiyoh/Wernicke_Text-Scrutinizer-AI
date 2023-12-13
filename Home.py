@@ -2,7 +2,6 @@ import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
 from streamlit_gsheets import GSheetsConnection
-from streamlit_extras.app_logo import add_logo
 import pandas as pd
 import time
 
