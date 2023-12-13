@@ -20,6 +20,16 @@ st.set_page_config(
     page_icon = "🧠",
 )
 
+#Removing Hooter and Footer
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
@@ -75,8 +85,6 @@ def show_text_input() -> None:
     return txt
 
 def get_GPT_response(option, grade, style, txt):
-    #reset the assistant_id
-    assistant_id = "null"
     #call the right assistant
     if option == "IELTS":
         assistant_id = ielts_writing
