@@ -179,8 +179,12 @@ def run_assistant(assistant_id, txt):
                 for msg in reversed(messages.data):
                     role = msg.role
                     content = msg.content[0].text.value
-                    st.write(f"{role.capitalize()}: {content}")
-                break
+                    #st.write(f"{role.capitalize()}: {content}")
+                    
+                    # Use st.chat_message to display the message based on the role
+                    with st.chat_message(role):
+                        st.write(content)
+                #break
             else:
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
