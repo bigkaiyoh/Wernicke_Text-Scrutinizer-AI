@@ -8,6 +8,16 @@ st.set_page_config(
     page_icon = "🧠",
 )
 
+#Removing Hooter and Footer
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
+
 class User:
     def __init__(self, email, is_japanese):
         self.email = email

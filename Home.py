@@ -23,16 +23,31 @@ st.set_page_config(
 #Removing Hooter and Footer
 hide_st_style = """
             <style>
-            #MainMenu {visibility: visible;}
+            #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-def add_logo(logo_url, width):
+def add_logo(logo_url, width=190):
     logo_html = f"<img src='{logo_url}' width='{width}' style='margin-bottom:20px'>"
     st.markdown(logo_html, unsafe_allow_html=True)
+
+def set_background_image(url):
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url({url});
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
@@ -194,6 +209,9 @@ def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+
+    #Setting Background
+    #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
