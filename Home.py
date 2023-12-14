@@ -69,6 +69,10 @@ def set_background_image(url):
         unsafe_allow_html=True
     )
 
+# Initialize session state for conversation if not present
+if 'conversation' not in st.session_state:
+    st.session_state.conversation = []
+
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
@@ -287,6 +291,12 @@ def main():
 
     with col2:
         st.header(translate("フィードバック", "Feedback", JP))
+        # Container for displaying chat messages
+        with st.container():
+            for role, message in st.session_state.conversation:
+                with st.chat_message(role):
+                    st.write(message)
+
         if submit_button:
             if user_input:
                 if style == "Speaking":
@@ -308,8 +318,19 @@ def main():
     question = st.chat_input(translate(
         "フィードバックについて質問ができます。",
         "You can ask further questions regarding the feedback", JP))
-    if question:    
-        get_GPT_response(option, grade, style, question)
+    if question:
+        # Add user's question to the conversation
+        st.session_state.conversation.append(('user', question))
+
+        # Process the question to get a response
+        response = get_GPT_response(option, grade, style, question)
+        if response:
+            # Add assistant's response to the conversation
+            st.session_state.conversation.append(('assistant', response))
+
+        # Refresh the display with updated conversation
+        main()
+
     elif question and not user_input:
         no_input_error(JP)
 
