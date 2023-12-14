@@ -286,7 +286,7 @@ def main():
         submit_button = st.button(translate("採点", "Grade it!", JP))
 
     with col2:
-        st.header(transalte("フィードバック", "Feedback", JP))
+        st.header(translate("フィードバック", "Feedback", JP))
         if submit_button:
             if user_input:
                 if style == "Speaking":
