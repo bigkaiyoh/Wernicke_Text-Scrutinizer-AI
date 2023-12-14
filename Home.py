@@ -240,7 +240,7 @@ def show_mock(JP):
         "すぐに私からの個別のフィードバックが返ってきます。",
         "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
         "and receive personalized feedback from me!", JP))
-    mock_option, mock_grade, mock_style = set_test_configuration(JP)
+    option, grade, style = set_test_configuration(JP)
     st.header(translate("参考フィードバック", "Sample Feedback", JP))
     #st.image("sample feedback")
     return mock
