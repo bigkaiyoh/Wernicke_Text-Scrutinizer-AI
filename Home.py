@@ -264,8 +264,8 @@ def show_mock(JP):
     return mock
 
 def show_prelog(logo, JP):
-    mock = st.empty()
-    c = mock.container()
+    prelog = st.empty()
+    c = prelog.container()
     with c:
         set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
         st.image(logo, width=500)
@@ -275,7 +275,7 @@ def show_prelog(logo, JP):
                                     "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
                                     help = "Gmail Ready?")
 
-    return mock
+    return prelog
 
 def main():
     # Add logo to the sidebar
