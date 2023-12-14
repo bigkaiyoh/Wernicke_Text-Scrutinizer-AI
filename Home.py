@@ -184,7 +184,7 @@ def run_assistant(assistant_id, txt):
                     # Use st.chat_message to display the message based on the role
                     with st.chat_message(role):
                         st.write(content)
-                #break
+                break
             else:
                 st.write("Neurons weaving through the layers ...")
                 time.sleep(5)
