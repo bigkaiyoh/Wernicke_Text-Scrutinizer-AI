@@ -291,8 +291,7 @@ def main():
         #Get user input
         user_input = get_user_input(style, JP)
 
-        submit_button = st.button(translate("採点", "Grade it!", JP),
-                                  key = submit_input)
+        submit_button = st.button(translate("採点", "Grade it!", JP))
 
     with col2:
         st.header(translate("フィードバック", "Feedback", JP))
@@ -317,8 +316,8 @@ def main():
     #Question Chat Box
     question = st.chat_input(translate(
         "フィードバックについて質問ができます。",
-        "You can ask further questions regarding the feedback", JP),
-        key = question_input)
+        "You can ask further questions regarding the feedback", JP)
+        )
     if question:    
         get_GPT_response(option, grade, style, question)
     elif question and not user_input:
