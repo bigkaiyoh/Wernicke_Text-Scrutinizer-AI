@@ -90,31 +90,32 @@ def display_intro(JP):
         "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
         "and receive personalized feedback from me!", JP))
 
-def set_test_configuration(JP):
+def set_test_configuration(JP, key_suffix=""):
     option = st.selectbox(
         translate("テストを選択してください", "Choose Test Framework", JP),
         translate(("IELTS", "TOEFL", "TOEIC", "英検"), ("IELTS", "TOEFL", "TOEIC", "Eiken"), JP),
-        index = None,
-        placeholder = "Select the test",
-        key = "test_framework_selectbox"
+        index=None,
+        placeholder="Select the test",
+        key=f"test_framework_selectbox_{key_suffix}"  # Dynamic key
     )
+
     if option in ["Eiken", "英検"]:
         grade = st.select_slider(
             "Select the grade",
-            options = translate(["1級", "準１級", "2級", "準２級", "3級", "4級", "5級"],
-                                ["1", "Pre-1", "2", "Pre-2", "3", "4", "5"], JP),
-            key = "grade_select_slider"  # Unique key for this select slider
+            options=translate(["1級", "準１級", "2級", "準２級", "3級", "4級", "5級"],
+                              ["1", "Pre-1", "2", "Pre-2", "3", "4", "5"], JP),
+            key=f"grade_select_slider_{key_suffix}"  # Dynamic key
         )
     else:
-         grade = "null"
+        grade = "null"
+
     style = st.selectbox(
         translate("セクションを選択してください", "Choose Test Framework", JP),
         ("Writing", "Speaking"),
-        index = None,
-        placeholder = "Writing or Speaking?",
-        key = "style_selectbox"
+        index=None,
+        placeholder="Writing or Speaking?",
+        key=f"style_selectbox_{key_suffix}"  # Dynamic key
     )
-    return option, grade, style
 
 def get_user_input(style, JP):
     if style == "Speaking":
@@ -247,7 +248,7 @@ def show_mock(JP):
             "すぐに私からの個別のフィードバックが返ってきます。",
             "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
             "and receive personalized feedback from me!", JP))
-        mock_option, mock_grade, mock_style = set_test_configuration(JP)
+        mock_option, mock_grade, mock_style = set_test_configuration(JP, "mock")
         st.header(translate("参考フィードバック", "Sample Feedback", JP))
         st.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
