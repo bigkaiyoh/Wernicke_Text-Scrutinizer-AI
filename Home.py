@@ -231,23 +231,22 @@ def no_input_error(is_japanese):
 
 def show_mock(JP):
     mock = st.empty()
-    c = mock.container()
-    c.title(translate("Wernicke - テスト採点者AI", "Wernicke - Text Scrutinizer AI", JP))
-    c.write(translate(
-        "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
-        "ログインすると実際のファイルをアップロードできます",
-        "Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n"
-        "Log in to get your answer scored!", JP))
-    c.divider()
-    c.write(translate(
-        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
-        "すぐに私からの個別のフィードバックが返ってきます。",
-        "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
-        "and receive personalized feedback from me!", JP))
-    #with c:
-    #    mock_option, mock_grade, mock_style = set_test_configuration(JP)
-    c.header(translate("参考フィードバック", "Sample Feedback", JP))
-    c.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
+    with mock.container():
+        st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
+        st.write(translate(
+            "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
+            "ログインすると実際のファイルをアップロードできます",
+            "Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n"
+            "Log in to get your answer scored!", JP))
+        st.divider()
+        st.write(translate(
+            "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
+            "すぐに私からの個別のフィードバックが返ってきます。",
+            "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
+            "and receive personalized feedback from me!", JP))
+        mock_option, mock_grade, mock_style = set_test_configuration(JP)
+        st.header(translate("参考フィードバック", "Sample Feedback", JP))
+        st.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
 
 def main():
