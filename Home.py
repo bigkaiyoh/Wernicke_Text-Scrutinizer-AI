@@ -227,6 +227,16 @@ def no_input_error(is_japanese):
 
 
 def main():
+    # Add custom CSS for scrollable column
+    st.markdown("""
+        <style>
+        .scrollable-col {
+            height: 700px;  /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
@@ -254,7 +264,7 @@ def main():
         add_auth(required = True)
         st.sidebar.write("Successfully Subscribed!")
         st.sidebar.write(st.session_state.email)
-        
+
         # Establish Google Sheets connection
         conn, existing_data = establish_gsheets_connection()
         
@@ -264,6 +274,7 @@ def main():
         submit_button = st.button(translate("採点", "Grade it!", JP))
 
     with col2:
+        st.markdown('<div class="scrollable-col">', unsafe_allow_html=True)
         if submit_button:
             if user_input:
                 if style == "Speaking":
@@ -280,6 +291,7 @@ def main():
                 update_google_sheets(conn, existing_data, new_data)
             else:
                 no_input_error(JP)
+        st.markdown('</div>', unsafe_allow_html=True)
 
     if submit_button and user_input:
         #Question Chat Box
