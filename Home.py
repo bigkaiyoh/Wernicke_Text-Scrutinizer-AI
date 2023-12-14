@@ -11,8 +11,8 @@ ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
 #Initialize OpenAI client and set default assistant_id
-client = OpenAI(api_key=api)
-a_id = "null"
+#client = OpenAI(api_key=api)
+#a_id = "null"
 
 #Page Configuration
 st.set_page_config(
@@ -124,6 +124,9 @@ def show_text_input() -> None:
     return txt
 
 def get_GPT_response(option, grade, style, txt):
+    #Initialize OpenAI client and set default assistant_id
+    client = OpenAI(api_key=api)
+    a_id = "null"
     #call the right assistant
     if option == "IELTS":
         assistant_id = ielts_writing
