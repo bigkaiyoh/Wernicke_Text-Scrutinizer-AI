@@ -306,7 +306,8 @@ def main():
                         response_format="text"
                     )
                 #reset the thread
-                client.beta.threads.delete(st.session_state.thread.id)
+                if 'client' in st.session_state:
+                    del st.session_state.client
                 a_id = get_GPT_response(option, grade, style, user_input)
 
                 # Add new data and update Google Sheets
