@@ -13,6 +13,11 @@ ielts_speaking = st.secrets.ielts_speaking
 #Initialize OpenAI client and set default assistant_id
 client = OpenAI(api_key=api)
 a_id = "null"
+#Initialize session_state for buttons
+if "submit_clicked" not in st.session_state:
+    st.session_state.submit_clicked = False
+if "question_clicked" not in st.session_state:
+    st.session_state.question_clicked = False
 
 #Page Configuration
 st.set_page_config(
@@ -297,6 +302,7 @@ def main():
         st.header(translate("フィードバック", "Feedback", JP))
         
         if submit_button:
+            st.session_state.submit_clicked = True
             if user_input:
                 if style == "Speaking":
                     # Transcribe audio
@@ -321,7 +327,8 @@ def main():
         "フィードバックについて質問ができます。",
         "You can ask further questions regarding the feedback", JP)
         )
-    if question:    
+    if question: 
+        st.session_state.question_clicked = True   
         get_GPT_response(option, grade, style, question)
     elif question and not user_input:
         no_input_error(JP)
