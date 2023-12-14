@@ -262,6 +262,7 @@ def show_mock(JP):
     c.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
 
+
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
@@ -269,6 +270,8 @@ def main():
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
+    # Initialize placeholder variable
+    placeholder = None
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
@@ -278,7 +281,8 @@ def main():
         
     #authentication required
     add_auth(required = True)
-    placeholder.empty()
+    if 'placeholder' in locals() and placeholder is not None:
+        placeholder.empty()
     st.session_state.is_authenticated = True
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
