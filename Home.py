@@ -242,8 +242,8 @@ def show_mock(JP):
         "and receive personalized feedback from me!", JP))
     #with c:
     #    mock_option, mock_grade, mock_style = set_test_configuration(JP)
-    #c.header(translate("参考フィードバック", "Sample Feedback", JP))
-    #st.image("sample feedback")
+    c.header(translate("参考フィードバック", "Sample Feedback", JP))
+    c.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
 
 def main():
@@ -304,13 +304,14 @@ def main():
             else:
                 no_input_error(JP)
 
-    if submit_button and user_input:
-        #Question Chat Box
-        question = st.chat_input(translate(
-            "フィードバックについて質問ができます。",
-            "You can ask further questions regarding the feedback", JP))
-        if question:    
-            get_GPT_response(option, grade, style, question)
+    #Question Chat Box
+    question = st.chat_input(translate(
+        "フィードバックについて質問ができます。",
+        "You can ask further questions regarding the feedback", JP))
+    if question:    
+        get_GPT_response(option, grade, style, question)
+    elif question and not user_input:
+        no_input_error(JP)
 
 if __name__ == "__main__":
     main()
