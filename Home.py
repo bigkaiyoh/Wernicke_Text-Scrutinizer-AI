@@ -313,7 +313,7 @@ def main():
             "フィードバックについて質問ができます。",
             "You can ask further questions regarding the feedback", JP))
         if question:    
-            get_GPT_response(option, grade, style, question)
+            run_assistant(a_id, question)
 
 if __name__ == "__main__":
     main()
