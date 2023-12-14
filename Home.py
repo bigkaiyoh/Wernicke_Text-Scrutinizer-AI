@@ -240,6 +240,9 @@ def show_mock(JP):
         "すぐに私からの個別のフィードバックが返ってきます。",
         "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
         "and receive personalized feedback from me!", JP))
+    mock_option, mock_grade, mock_style = set_test_configuration(JP)
+    st.header(translate("参考フィードバック", "Sample Feedback", JP))
+    #st.image("sample feedback")
     return mock
 
 def main():
@@ -282,6 +285,7 @@ def main():
         submit_button = st.button(translate("採点", "Grade it!", JP))
 
     with col2:
+        st.header(transalte("フィードバック", "Feedback", JP))
         if submit_button:
             if user_input:
                 if style == "Speaking":
