@@ -14,6 +14,11 @@ ielts_speaking = st.secrets.ielts_speaking
 client = OpenAI(api_key=api)
 a_id = "null"
 
+#Session state setup
+conversation_state = "conversation"
+if conversation_state not in st.session_state:
+    st.session_state[conversation_state] = []
+
 #Page Configuration
 st.set_page_config(
     page_title = "Wernicke",
@@ -180,16 +185,20 @@ def run_assistant(assistant_id, txt):
                     )
 
                     # Loop through messages and print content based on role
-                    for msg in reversed(messages.data):
-                        role = msg.role
-                        content = msg.content[0].text.value
+                    # for msg in reversed(messages.data):
+                    #     role = msg.role
+                    #     content = msg.content[0].text.value
                         
-                        # Use st.chat_message to display the message based on the role
-                        with st.chat_message(role):
-                            st.write(content)
-                    break
+                    #     # Use st.chat_message to display the message based on the role
+                    #     with st.chat_message(role):
+                    #         st.write(content)
+                    # break
                 # Wait for a short time before checking the status again
                 time.sleep(1)
+        st.session_state[conversation_state] = [
+        (m.role, m.content[0].text.value)
+        for m in client.beta.threads.messages.list(get_thread_id()).data
+    ]
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
@@ -250,25 +259,6 @@ def show_mock(JP):
     c.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
 
-def update_chat_display(chat_container):
-    with chat_container:
-        for role, message in st.session_state.conversation:
-            with st.chat_message(role):
-                st.write(message)
-
-def handle_chat_input(question, chat_container, option, grade, style):
-    # Add user's question to the conversation
-    st.session_state.conversation.append(('user', question))
-
-    # Process the question to get a response
-    response = get_GPT_response(option, grade, style, question)
-    if response:
-        # Add assistant's response to the conversation
-        st.session_state.conversation.append(('assistant', response))
-
-    # Update the chat display
-    update_chat_display(chat_container)
-
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
@@ -311,8 +301,10 @@ def main():
     with col2:
         st.header(translate("フィードバック", "Feedback", JP))
         # Display chat messages in a container
-        chat_container = st.container()
-        update_chat_display(chat_container)
+        with st.container():
+            for role, message in st.session_state[conversation_state]:
+                with st.chat_message(role):
+                    st.write(message)
 
         if submit_button:
             if user_input:
@@ -335,9 +327,8 @@ def main():
     question = st.chat_input(translate(
         "フィードバックについて質問ができます。",
         "You can ask further questions regarding the feedback", JP))
-    if question:
-        # Process and update chat conversation
-        handle_chat_input(question, chat_container, option, grade, style)
+    if question:    
+        get_GPT_response(option, grade, style, question)
     elif question and not user_input:
         no_input_error(JP)
 
