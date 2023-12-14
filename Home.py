@@ -18,6 +18,7 @@ if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
 if "question_clicked" not in st.session_state:
     st.session_state.question_clicked = False
+st.session_state.email = ""
 
 #Page Configuration
 st.set_page_config(
@@ -82,7 +83,7 @@ def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
 def display_intro(JP):
-    st.title(translate("Wernicke - テスト採点者AI", "Wernicke - Text Scrutinizer AI", JP))
+    st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
     st.write(translate(
         "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
         "一緒に表現力豊かな言葉の使い方を学びましょう！",
@@ -270,9 +271,11 @@ def main():
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
-
-    #Showing Mock
-    placeholder = show_mock(JP)
+    if st.session_state.email == "":
+        #Showing Mock
+        placeholder = show_mock(JP)
+    else:
+        placeholder.empty()
     #authentication required
     add_auth(required = True)
     st.sidebar.write("Successfully Subscribed!")
