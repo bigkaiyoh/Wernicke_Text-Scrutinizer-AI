@@ -11,7 +11,7 @@ ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
 #Initialize OpenAI client and set default assistant_id
-#client = OpenAI(api_key=api)
+client = OpenAI(api_key=api)
 a_id = "null"
 #Initialize session_state
 if "submit_clicked" not in st.session_state:
