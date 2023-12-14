@@ -272,14 +272,13 @@ def main():
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
-    if st.session_state.is_authenticated == True:
-        placeholder.empty()
-    else:
+    if st.session_state.is_authenticated == False:
         #Showing Mock
         placeholder = show_mock(JP)
         
     #authentication required
     add_auth(required = True)
+    placeholder.empty()
     st.session_state.is_authenticated = True
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
