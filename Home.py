@@ -296,7 +296,8 @@ def main():
         #Get user input
         user_input = get_user_input(style, JP)
 
-        submit_button = st.button(translate("採点", "Grade it!", JP))
+        submit_button = st.button(translate("採点", "Grade it!", JP),
+                                  key = "gradeit")
 
     with col2:
         st.header(translate("フィードバック", "Feedback", JP))
@@ -325,7 +326,8 @@ def main():
     #Question Chat Box
     question = st.chat_input(translate(
         "フィードバックについて質問ができます。",
-        "You can ask further questions regarding the feedback", JP)
+        "You can ask further questions regarding the feedback", JP),
+        key = "question"
         )
     if question: 
         st.session_state.question_clicked = True   
