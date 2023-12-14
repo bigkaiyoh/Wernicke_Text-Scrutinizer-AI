@@ -18,8 +18,8 @@ if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
 if "question_clicked" not in st.session_state:
     st.session_state.question_clicked = False
-if 'email' not in st.session_state:
-    st.session_state.email = ""
+if 'is_authenticated' not in st.session_state:
+    st.session_state.is_authenticated = False
 
 #Page Configuration
 st.set_page_config(
@@ -272,7 +272,7 @@ def main():
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
-    if st.session_state.email:
+    if st.session_state.is_authenticated == True:
         placeholder.empty()
     else:
         #Showing Mock
@@ -280,6 +280,7 @@ def main():
         
     #authentication required
     add_auth(required = True)
+    st.session_state.is_authenticated = True
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
 
