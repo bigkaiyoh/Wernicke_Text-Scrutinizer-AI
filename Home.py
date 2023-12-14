@@ -103,7 +103,8 @@ def set_test_configuration(JP):
             "Select the grade",
             options = translate(["1級", "準１級", "2級", "準２級", "3級", "4級", "5級"],
                                 ["1", "Pre-1", "2", "Pre-2", "3", "4", "5"], JP),
-            key = "grade_select_slider"
+            key = "grade_select_slider"  # Unique key for this select slider
+        )
     else:
          grade = "null"
     style = st.selectbox(
