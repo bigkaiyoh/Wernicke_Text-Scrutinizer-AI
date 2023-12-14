@@ -14,11 +14,6 @@ ielts_speaking = st.secrets.ielts_speaking
 client = OpenAI(api_key=api)
 a_id = "null"
 
-#Session state setup
-conversation_state = "conversation"
-if conversation_state not in st.session_state:
-    st.session_state[conversation_state] = []
-
 #Page Configuration
 st.set_page_config(
     page_title = "Wernicke",
@@ -185,20 +180,16 @@ def run_assistant(assistant_id, txt):
                     )
 
                     # Loop through messages and print content based on role
-                    # for msg in reversed(messages.data):
-                    #     role = msg.role
-                    #     content = msg.content[0].text.value
+                    for msg in reversed(messages.data):
+                        role = msg.role
+                        content = msg.content[0].text.value
                         
-                    #     # Use st.chat_message to display the message based on the role
-                    #     with st.chat_message(role):
-                    #         st.write(content)
-                    # break
+                        # Use st.chat_message to display the message based on the role
+                        with st.chat_message(role):
+                            st.write(content)
+                    break
                 # Wait for a short time before checking the status again
                 time.sleep(1)
-        st.session_state[conversation_state] = [
-        (m.role, m.content[0].text.value)
-        for m in client.beta.threads.messages.list(get_thread_id()).data
-    ]
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
@@ -300,12 +291,7 @@ def main():
 
     with col2:
         st.header(translate("フィードバック", "Feedback", JP))
-        # Display chat messages in a container
-        with st.container():
-            for role, message in st.session_state[conversation_state]:
-                with st.chat_message(role):
-                    st.write(message)
-
+        
         if submit_button:
             if user_input:
                 if style == "Speaking":
