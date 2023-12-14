@@ -18,7 +18,8 @@ if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
 if "question_clicked" not in st.session_state:
     st.session_state.question_clicked = False
-st.session_state.email = ""
+if 'email' not in st.session_state:
+    st.session_state.email = ""
 
 #Page Configuration
 st.set_page_config(
@@ -271,16 +272,16 @@ def main():
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
-    if st.session_state.email == "":
+    if st.session_state.email:
+        placeholder.empty()
+    else:
         #Showing Mock
         placeholder = show_mock(JP)
-    else:
-        placeholder.empty()
+        
     #authentication required
     add_auth(required = True)
     st.sidebar.write("Successfully Subscribed!")
     st.sidebar.write(st.session_state.email)
-    placeholder.empty()
 
     # Establish Google Sheets connection
     conn, existing_data = establish_gsheets_connection()
