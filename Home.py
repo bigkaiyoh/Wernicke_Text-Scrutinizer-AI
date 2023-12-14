@@ -310,7 +310,7 @@ def main():
                                   key = "gradeit")
 
     with col2:
-        st.header(translate("フィードバック", "Feedback", JP))
+        st.header(translate("　　フィードバック", "  Feedback", JP))
         
         if submit_button:
             st.session_state.submit_clicked = True
