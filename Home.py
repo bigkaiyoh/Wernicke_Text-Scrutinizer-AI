@@ -11,9 +11,9 @@ ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 
 #Initialize OpenAI client and set default assistant_id
-client = OpenAI(api_key=api)
+#client = OpenAI(api_key=api)
 a_id = "null"
-#Initialize session_state for buttons
+#Initialize session_state
 if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
 if "question_clicked" not in st.session_state:
@@ -155,6 +155,7 @@ def get_GPT_response(option, grade, style, txt):
     return assistant_id
 
 def run_assistant(assistant_id, txt):
+
     if 'client' not in st.session_state:
         st.session_state.client = OpenAI(api_key=api)
 
