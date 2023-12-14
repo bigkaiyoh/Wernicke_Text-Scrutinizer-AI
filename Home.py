@@ -230,9 +230,10 @@ def main():
     # Custom CSS to make the second column scrollable
     css = '''
     <style>
-        section.main>div>div>div>div:nth-child(2)>div {
-            overflow: auto;
-            height: 70vh;
+        /* Assuming col1 is the first column and col2 is the second */
+        div[data-testid="stColumn"][data-baseweb="block"]:nth-of-type(2) {
+            height: 70vh; /* Fixed height */
+            overflow-y: auto; /* Scroll on overflow */
         }
     </style>
     '''
