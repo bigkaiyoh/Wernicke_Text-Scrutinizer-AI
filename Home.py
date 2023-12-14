@@ -230,12 +230,8 @@ def main():
     # Add custom CSS for scrollable column
     st.markdown("""
         <style>
-        .stColumn {
-            display: flex;
-            flex-direction: column;
-        }
         .scrollable-col {
-            height: 700px;  /* Adjust the height as needed */
+            height: 80vh; /* or 100vh depending on your needs */
             overflow-y: auto;
         }
         </style>
