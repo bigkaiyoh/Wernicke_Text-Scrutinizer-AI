@@ -254,6 +254,7 @@ def main():
         add_auth(required = True)
         st.sidebar.write("Successfully Subscribed!")
         st.sidebar.write(st.session_state.email)
+        
         # Establish Google Sheets connection
         conn, existing_data = establish_gsheets_connection()
         
@@ -274,23 +275,19 @@ def main():
                     )
                 a_id = get_GPT_response(option, grade, style, user_input)
 
-                # Add new data
+                # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
-
-
-                # Update Google Sheets
                 update_google_sheets(conn, existing_data, new_data)
             else:
                 no_input_error(JP)
 
-            #Question Chat Box
-            question = st.chat_input(translate(
-                "フィードバックについて質問ができます。",
-                "You can ask further questions regarding the feedback", JP))
-            if question:    
-                get_GPT_response(option, grade, style, question)
-            elif question and not user_input:
-                no_input_error(JP)
+    if submit_button and user_input:
+        #Question Chat Box
+        question = st.chat_input(translate(
+            "フィードバックについて質問ができます。",
+            "You can ask further questions regarding the feedback", JP))
+        if question:    
+            get_GPT_response(option, grade, style, question)
 
 if __name__ == "__main__":
     main()
