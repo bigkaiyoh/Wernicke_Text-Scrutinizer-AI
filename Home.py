@@ -159,38 +159,32 @@ def run_assistant(assistant_id, txt):
                 assistant_id=st.session_state.assistant.id
         )
 
-        while True:
-            # Wait for 5 seconds
-            time.sleep(5)
-
-            # Retrieve the run status
-            run_status = st.session_state.client.beta.threads.runs.retrieve(
-                thread_id=st.session_state.thread.id,
-                run_id=run.id
-            )
-
-            # If run is completed, get messages
-            if run_status.status == 'completed':
-                messages = st.session_state.client.beta.threads.messages.list(
-                    thread_id=st.session_state.thread.id
+        # Spinner for ongoing process
+        with st.spinner('Neurons weaving through the layers ...'):
+            while True:
+                # Retrieve the run status
+                run_status = st.session_state.client.beta.threads.runs.retrieve(
+                    thread_id=st.session_state.thread.id,
+                    run_id=run.id
                 )
 
-                #Loop through messages and print content based on role
-                for msg in reversed(messages.data):
-                    role = msg.role
-                    content = msg.content[0].text.value
-                    #st.write(f"{role.capitalize()}: {content}")
-                    
-                    # Use st.chat_message to display the message based on the role
-                    with st.chat_message(role):
-                        st.write(content)
-                break
-            else:
-                #st.write("Neurons weaving through the layers ...")
-                #time.sleep(5)
-                with st.spinner('Neurons weaving through the layers ...'):
-                    #time.sleep()
-                    pass
+                # If run is completed, process messages
+                if run_status.status == 'completed':
+                    messages = st.session_state.client.beta.threads.messages.list(
+                        thread_id=st.session_state.thread.id
+                    )
+
+                    # Loop through messages and print content based on role
+                    for msg in reversed(messages.data):
+                        role = msg.role
+                        content = msg.content[0].text.value
+                        
+                        # Use st.chat_message to display the message based on the role
+                        with st.chat_message(role):
+                            st.write(content)
+                    break
+                # Wait for a short time before checking the status again
+                time.sleep(1)
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
