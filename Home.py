@@ -225,15 +225,44 @@ def no_input_error(is_japanese):
     st.error(translate("先に回答をしてください", 
                        "Please provide your answer before grading.", is_japanese))
 
+def show_mock(JP):
+    mock = st.empty()
+    c =mock.container()
+    c.title(translate("Wernicke - テスト採点者AI", "Wernicke - Text Scrutinizer AI", JP))
+    c.write(translate(
+        "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
+        "ログインすると実際のファイルをアップロードできます",
+        "Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n"
+        "Log in to get your answer scored!", JP))
+    c.divider()
+    c.write(translate(
+        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
+        "すぐに私からの個別のフィードバックが返ってきます。",
+        "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
+        "and receive personalized feedback from me!", JP))
+    return mock
 
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
+    #language switch toggle
+    JP = st.toggle("Japanese (日本語)", value=False)
 
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
+
+    #Showing Mock
+    placeholder = show_mock(JP)
+    #authentication required
+    add_auth(required = True)
+    st.sidebar.write("Successfully Subscribed!")
+    st.sidebar.write(st.session_state.email)
+    placeholder.empty()
+
+    # Establish Google Sheets connection
+    conn, existing_data = establish_gsheets_connection()
 
     # Main Area
     col1, col2 = st.columns([1, 2])
@@ -241,22 +270,11 @@ def main():
    # Check if the user is authenticated
     
     with col1:
-        #language switch toggle
-        JP = st.toggle("Japanese (日本語)", value=False)
-
         #Display title and introductory text based on the language toggle
         display_intro(JP)
 
         #Set Test Configuration
         option, grade, style = set_test_configuration(JP)
-
-        #authentication required
-        add_auth(required = True)
-        st.sidebar.write("Successfully Subscribed!")
-        st.sidebar.write(st.session_state.email)
-
-        # Establish Google Sheets connection
-        conn, existing_data = establish_gsheets_connection()
         
         #Get user input
         user_input = get_user_input(style, JP)
