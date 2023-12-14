@@ -268,7 +268,7 @@ def show_prelog(logo, JP):
     c = prelog.container()
     with c:
         set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg",)
-        st.image(logo, width=500)
+        st.image(logo, width=400)
         st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
                                  "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
                                  help = "Gmail Ready?")
