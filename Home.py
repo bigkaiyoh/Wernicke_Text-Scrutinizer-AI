@@ -250,6 +250,25 @@ def show_mock(JP):
     c.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
 
+def update_chat_display(chat_container):
+    with chat_container:
+        for role, message in st.session_state.conversation:
+            with st.chat_message(role):
+                st.write(message)
+
+def handle_chat_input(question, chat_container, option, grade, style):
+    # Add user's question to the conversation
+    st.session_state.conversation.append(('user', question))
+
+    # Process the question to get a response
+    response = get_GPT_response(option, grade, style, question)
+    if response:
+        # Add assistant's response to the conversation
+        st.session_state.conversation.append(('assistant', response))
+
+    # Update the chat display
+    update_chat_display(chat_container)
+
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
@@ -291,11 +310,9 @@ def main():
 
     with col2:
         st.header(translate("フィードバック", "Feedback", JP))
-        # Container for displaying chat messages
-        with st.container():
-            for role, message in st.session_state.conversation:
-                with st.chat_message(role):
-                    st.write(message)
+        # Display chat messages in a container
+        chat_container = st.container()
+        update_chat_display(chat_container)
 
         if submit_button:
             if user_input:
@@ -319,18 +336,8 @@ def main():
         "フィードバックについて質問ができます。",
         "You can ask further questions regarding the feedback", JP))
     if question:
-        # Add user's question to the conversation
-        st.session_state.conversation.append(('user', question))
-
-        # Process the question to get a response
-        response = get_GPT_response(option, grade, style, question)
-        if response:
-            # Add assistant's response to the conversation
-            st.session_state.conversation.append(('assistant', response))
-
-        # Refresh the display with updated conversation
-        main()
-
+        # Process and update chat conversation
+        handle_chat_input(question, chat_container, option, grade, style)
     elif question and not user_input:
         no_input_error(JP)
 
