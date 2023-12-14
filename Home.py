@@ -116,6 +116,7 @@ def set_test_configuration(JP, key_suffix=""):
         placeholder="Writing or Speaking?",
         key=f"style_selectbox_{key_suffix}"  # Dynamic key
     )
+    return option, grade, style
 
 def get_user_input(style, JP):
     if style == "Speaking":
