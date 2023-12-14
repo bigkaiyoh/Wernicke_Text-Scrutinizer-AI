@@ -263,6 +263,21 @@ def show_mock(JP):
     c.image("https://nuginy.com/wp-content/uploads/2023/12/Screenshot-2023-12-14-at-12.58.20.jpg")
     return mock
 
+def show_prelog(logo, JP):
+    mock = st.empty()
+    c = mock.container()
+    with c:
+        st.image(logo)
+        st.write(translate(
+        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
+        "すぐに私からの個別のフィードバックが返ってきます。",
+        "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
+        "and receive personalized feedback from me!", JP))
+        st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
+                                 "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
+                                 help = "Gmail Ready?")
+
+    return mock
 
 def main():
     # Add logo to the sidebar
@@ -277,8 +292,8 @@ def main():
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
     if st.session_state.is_authenticated == False:
-        #Showing Mock
-        placeholder = show_mock(JP)
+        #Page before Login
+        placeholder = show_prelog(logo_url, JP)
         
     #authentication required
     add_auth(required = True)
