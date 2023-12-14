@@ -227,18 +227,6 @@ def no_input_error(is_japanese):
 
 
 def main():
-    # Custom CSS to make the second column scrollable
-    css = '''
-    <style>
-        /* Assuming col1 is the first column and col2 is the second */
-        div[data-testid="stColumn"][data-baseweb="block"]:nth-of-type(2) {
-            height: 70vh; /* Fixed height */
-            overflow-y: auto; /* Scroll on overflow */
-        }
-    </style>
-    '''
-    st.markdown(css, unsafe_allow_html=True)
-
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
