@@ -267,15 +267,13 @@ def show_prelog(logo, JP):
     mock = st.empty()
     c = mock.container()
     with c:
-        st.image(logo)
-        st.write(translate(
-        "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
-        "すぐに私からの個別のフィードバックが返ってきます。",
-        "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
-        "and receive personalized feedback from me!", JP))
-        st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
-                                 "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
-                                 help = "Gmail Ready?")
+        set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
+        st.image(logo, width=500)
+        c1, c2, c3 = st.columns(3)
+        with c2:
+            st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
+                                    "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
+                                    help = "Gmail Ready?")
 
     return mock
 
