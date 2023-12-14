@@ -189,7 +189,7 @@ def run_assistant(assistant_id, txt):
                 #st.write("Neurons weaving through the layers ...")
                 #time.sleep(5)
                 with st.spinner('Neurons weaving through the layers ...'):
-                    time.sleep(5)
+                    time.sleep()
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
