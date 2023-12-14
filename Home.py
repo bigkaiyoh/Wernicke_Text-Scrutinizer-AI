@@ -96,13 +96,14 @@ def set_test_configuration(JP):
         translate(("IELTS", "TOEFL", "TOEIC", "英検"), ("IELTS", "TOEFL", "TOEIC", "Eiken"), JP),
         index = None,
         placeholder = "Select the test",
+        key = "test_framework_selectbox"
     )
     if option in ["Eiken", "英検"]:
         grade = st.select_slider(
             "Select the grade",
             options = translate(["1級", "準１級", "2級", "準２級", "3級", "4級", "5級"],
-                                ["1", "Pre-1", "2", "Pre-2", "3", "4", "5"], JP)
-        )
+                                ["1", "Pre-1", "2", "Pre-2", "3", "4", "5"], JP),
+            key = "grade_select_slider"
     else:
          grade = "null"
     style = st.selectbox(
@@ -110,6 +111,7 @@ def set_test_configuration(JP):
         ("Writing", "Speaking"),
         index = None,
         placeholder = "Writing or Speaking?",
+        key = "style_selectbox"
     )
     return option, grade, style
 
