@@ -244,7 +244,6 @@ def show_mock(JP):
         mock_option, mock_grade, mock_style = set_test_configuration(JP)
     c.header(translate("参考フィードバック", "Sample Feedback", JP))
     #st.image("sample feedback")
-    return mock
 
 def main():
     # Add logo to the sidebar
