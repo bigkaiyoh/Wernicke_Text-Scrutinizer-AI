@@ -18,6 +18,7 @@ a_id = "null"
 st.set_page_config(
     page_title = "Wernicke",
     page_icon = "🧠",
+    layout = "wide"
 )
 
 #Removing Hooter and Footer
@@ -234,54 +235,62 @@ def main():
     #Setting Background
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
-    #language switch toggle
-    JP = st.toggle("Japanese (日本語)", value=False)
+    # Main Area
+    col1, col2 = st.columns([1, 2])
 
-    #Display title and introductory text based on the language toggle
-    display_intro(JP)
-
-    #Set Test Configuration
-    option, grade, style = set_test_configuration(JP)
-
-    #authentication required
-    add_auth(required = True)
-    st.sidebar.write("Successfully Subscribed!")
-    st.sidebar.write(st.session_state.email)
-    # Establish Google Sheets connection
-    conn, existing_data = establish_gsheets_connection()
+   # Check if the user is authenticated
     
-    #Get user input
-    user_input = get_user_input(style, JP)
+    with col1:
+        #language switch toggle
+        JP = st.toggle("Japanese (日本語)", value=False)
 
-    submit_button = st.button(translate("採点", "Grade it!", JP))
-    if submit_button:
-        if user_input:
-            if style == "Speaking":
-                # Transcribe audio
-                user_input = client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=user_input,
-                    response_format="text"
-                )
-            a_id = get_GPT_response(option, grade, style, user_input)
+        #Display title and introductory text based on the language toggle
+        display_intro(JP)
 
-            # Add new data
-            new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
+        #Set Test Configuration
+        option, grade, style = set_test_configuration(JP)
+
+        #authentication required
+        add_auth(required = True)
+        st.sidebar.write("Successfully Subscribed!")
+        st.sidebar.write(st.session_state.email)
+        # Establish Google Sheets connection
+        conn, existing_data = establish_gsheets_connection()
+        
+        #Get user input
+        user_input = get_user_input(style, JP)
+
+        submit_button = st.button(translate("採点", "Grade it!", JP))
+
+    with col2:
+        if submit_button:
+            if user_input:
+                if style == "Speaking":
+                    # Transcribe audio
+                    user_input = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=user_input,
+                        response_format="text"
+                    )
+                a_id = get_GPT_response(option, grade, style, user_input)
+
+                # Add new data
+                new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
 
 
-            # Update Google Sheets
-            update_google_sheets(conn, existing_data, new_data)
-        else:
-            no_input_error(JP)
+                # Update Google Sheets
+                update_google_sheets(conn, existing_data, new_data)
+            else:
+                no_input_error(JP)
 
-    #Question Chat Box
-    question = st.chat_input(translate(
-        "フィードバックについて質問ができます。",
-        "You can ask further questions regarding the feedback", JP))
-    if question:    
-        get_GPT_response(option, grade, style, question)
-    elif question and not user_input:
-        no_input_error(JP)
+            #Question Chat Box
+            question = st.chat_input(translate(
+                "フィードバックについて質問ができます。",
+                "You can ask further questions regarding the feedback", JP))
+            if question:    
+                get_GPT_response(option, grade, style, question)
+            elif question and not user_input:
+                no_input_error(JP)
 
 if __name__ == "__main__":
     main()
