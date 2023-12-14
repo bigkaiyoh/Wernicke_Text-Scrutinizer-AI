@@ -31,7 +31,7 @@ st.set_page_config(
 #Removing Hooter and Footer
 hide_st_style = """
             <style>
-            #MainMenu {visibility: hidden;}
+            #MainMenu {visibility: visible;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
             </style>
