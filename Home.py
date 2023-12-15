@@ -131,7 +131,7 @@ def get_GPT_response(option, grade, style, txt):
         assistant_id = ielts_writing
         if style == "Speaking":
             assistant_id = ielts_speaking
-        run_assistant(assistant_id, txt)
+        evaluation = run_assistant(assistant_id, txt, return_content=True)
     elif option in ["TOEFL", "TOEIC", "Eiken", "英検"]:
         assistant_id = "null"
         st.markdown("Under Preparation")
@@ -140,7 +140,7 @@ def get_GPT_response(option, grade, style, txt):
         st.markdown("Please Provide Your Answer First")
     return assistant_id
 
-def run_assistant(assistant_id, txt):
+def run_assistant(assistant_id, txt, return_content=False):
     if 'client' not in st.session_state:
         st.session_state.client = OpenAI(api_key=api)
 
@@ -188,6 +188,8 @@ def run_assistant(assistant_id, txt):
                     break
                 # Wait for a short time before checking the status again
                 time.sleep(1)
+    if return_content:
+        return content
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
@@ -199,7 +201,7 @@ def establish_gsheets_connection():
 
     return conn, existing_data
 
-def add_new_data(email, option, grade, style, user_input):
+def add_new_data(email, option, grade, style, user_input, evaluation):
     # Concatenate option and grade if Eiken/英検 is selected
     if option in ["Eiken", "英検"]:
         test_framework = f"{option}{grade}"
@@ -213,6 +215,7 @@ def add_new_data(email, option, grade, style, user_input):
             "test_framework": test_framework,
             "test_section": style,
             "user_input": user_input,
+            "Wernick_output": evaluation,
         }
     )
     return new_data
@@ -334,9 +337,9 @@ def main():
                 if 'client' in st.session_state:
                     del st.session_state.client
                 a_id = get_GPT_response(option, grade, style, user_input)
-
+                evaluation = run_assistant(a_id, user_input, return_content=True)
                 # Add new data and update Google Sheets
-                new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
+                new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                 update_google_sheets(conn, existing_data, new_data)
             else:
                 no_input_error(JP)
