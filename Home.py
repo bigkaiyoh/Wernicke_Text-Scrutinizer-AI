@@ -85,7 +85,7 @@ def translate(text_japanese, text_english, is_japanese):
 
 def display_intro(JP):
     st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-1-e1702608002591.png",
-             use_column_width=auto)
+             use_column_width="auto")
     #st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
     st.write(translate(
         "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
