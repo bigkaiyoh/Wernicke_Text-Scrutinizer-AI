@@ -273,12 +273,12 @@ def show_prelog(logo, JP):
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
-    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
-    add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
+    #st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    #add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
     #language switch toggle
-    JP = st.toggle("Japanese (日本語)", value=False)
+    JP = st.sidebar.toggle("Japanese (日本語)", value=False)
     # Initialize placeholder variable
     placeholder = None
 
@@ -320,7 +320,10 @@ def main():
     t = temporary.container()
     with t:
         message = st.chat_message("assistant")
-        message.write("Hello human")
+        message.write(translate(
+                        "今日は君の言葉が芸術になる日£:。)",
+                        "Today is a blank canvas waiting for your linguistic masterpiece.", 
+                        JP))
         
     if submit_button:
         temporary.empty()
