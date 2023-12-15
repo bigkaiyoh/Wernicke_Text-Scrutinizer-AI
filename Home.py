@@ -82,17 +82,6 @@ def translate(text_japanese, text_english, is_japanese):
 def display_intro(JP):
     st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
              use_column_width="auto")
-    #st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
-    # st.write(translate(
-    #     "今日は君の言葉が芸術になる日£:。)",
-    #     '"Today is a blank canvas waiting for your linguistic masterpiece."', 
-    #     JP))
-    # st.divider()
-    # st.write(translate(
-    #     "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
-    #     "すぐに私からの個別のフィードバックが返ってきます。",
-    #     "Choose your framework, pick a section (writing or speaking), paste your response, click 'Grade it!',  \n"
-    #     "and receive personalized feedback from me!", JP))
 
 def set_test_configuration(JP, key_suffix=""):
     option = st.selectbox(
@@ -176,8 +165,6 @@ def run_assistant(assistant_id, txt):
         # Spinner for ongoing process
         with st.spinner('Neurons weaving through the layers ...'):
             while True:
-                # Wait for 5 seconds
-                time.sleep(5)
                 # Retrieve the run status
                 run_status = st.session_state.client.beta.threads.runs.retrieve(
                     thread_id=st.session_state.thread.id,
@@ -200,7 +187,7 @@ def run_assistant(assistant_id, txt):
                             st.write(content)
                     break
                 # Wait for a short time before checking the status again
-                # time.sleep(1)
+                time.sleep(1)
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
