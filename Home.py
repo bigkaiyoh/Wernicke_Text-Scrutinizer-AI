@@ -138,7 +138,6 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
     else:
         assistant_id = "null"
         st.markdown("Please Provide Your Answer First")
-    return assistant_id
     if return_content:
         return assistant_id, evaluation
     else:
