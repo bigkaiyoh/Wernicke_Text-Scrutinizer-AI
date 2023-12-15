@@ -87,7 +87,7 @@ def display_intro(JP):
         "今日は君の言葉が芸術になる日£:。)",
         '"Today is a blank canvas waiting for your linguistic masterpiece."', 
         JP)
-    st.markdown(''':#0097b2[{greeting}]''')
+    st.markdown(''':blue[{greeting}]''')
     # st.write(translate(
     #     "今日は君の言葉が芸術になる日£:。):red[red]")",
     #     '"Today is a blank canvas waiting for your linguistic masterpiece."', 
