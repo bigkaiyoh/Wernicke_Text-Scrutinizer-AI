@@ -84,10 +84,9 @@ def display_intro(JP):
              use_column_width="auto")
     #st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
     st.write(translate(
-        "Hey, Wernicke here！今日は君の言葉が芸術になる日。  \n"
-        "一緒に表現力豊かな言葉の使い方を学びましょう！",
-        "Hey, Wernicke here! Today is a blank canvas waiting for your linguistic masterpiece.  \n"
-        "Shall we create something amazing together through the art of words?", JP))
+        "今日は君の言葉が芸術になる日£:。)”,
+        '"Today is a blank canvas waiting for your linguistic masterpiece."', 
+        JP))
     st.divider()
     # st.write(translate(
     #     "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
