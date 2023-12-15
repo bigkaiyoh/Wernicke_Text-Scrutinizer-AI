@@ -291,18 +291,13 @@ def main():
     if 'placeholder' in locals() and placeholder is not None:
         placeholder.empty()
     st.session_state.is_authenticated = True
-    st.sidebar.write("Successfully Subscribed!")
-    st.sidebar.write(st.session_state.email)
+    #st.sidebar.write("Successfully Subscribed!")
+    #st.sidebar.write(st.session_state.email)
 
     # Establish Google Sheets connection
     conn, existing_data = establish_gsheets_connection()
 
-    # Main Area
-    col1, col2 = st.columns([1, 2])
-
-   # Check if the user is authenticated
-    
-    with col1:
+    with st.slider:
         #Display title and introductory text based on the language toggle
         display_intro(JP)
 
@@ -311,37 +306,43 @@ def main():
         
         #Get user input
         q = st.text_input(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
-                            help = "suggested for Task2")
+                            help = translate("IELTS-Task2 の精度アップ", "suggested for IELTS-Task2", JP)
+                            )
         user_input = get_user_input(style, JP)
         if q:
             user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
-                                  key = "gradeit")
+                                    key = "gradeit")
 
-    with col2:
-        st.header(translate("　　フィードバック", "  Feedback", JP))
+    st.header(translate("　　フィードバック", "  Feedback", JP))
+    temporary = st.empty()
+    t = temporary.container()
+    with t:
+        message = st.chat_message("assistant")
+        message.write("Hello human")
         
-        if submit_button:
-            st.session_state.submit_clicked = True
-            if user_input:
-                if style == "Speaking":
-                    # Transcribe audio
-                    user_input = client.audio.transcriptions.create(
-                        model="whisper-1",
-                        file=user_input,
-                        response_format="text"
-                    )
-                #reset the thread
-                if 'client' in st.session_state:
-                    del st.session_state.client
-                a_id = get_GPT_response(option, grade, style, user_input)
+    if submit_button:
+        temporary.empty()
+        st.session_state.submit_clicked = True
+        if user_input:
+            if style == "Speaking":
+                # Transcribe audio
+                user_input = client.audio.transcriptions.create(
+                    model="whisper-1",
+                    file=user_input,
+                    response_format="text"
+                )
+            #reset the thread
+            if 'client' in st.session_state:
+                del st.session_state.client
+            a_id = get_GPT_response(option, grade, style, user_input)
 
-                # Add new data and update Google Sheets
-                new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
-                update_google_sheets(conn, existing_data, new_data)
-            else:
-                no_input_error(JP)
+            # Add new data and update Google Sheets
+            new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
+            update_google_sheets(conn, existing_data, new_data)
+        else:
+            no_input_error(JP)
 
     #Question Chat Box
     question = st.chat_input(translate(
