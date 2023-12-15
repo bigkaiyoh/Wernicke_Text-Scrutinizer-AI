@@ -300,6 +300,7 @@ def main():
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
                                     key = "gradeit")
+        st.divider()
     #authentication required
     add_auth(required = True)
     if 'placeholder' in locals() and placeholder is not None:
@@ -309,7 +310,7 @@ def main():
         st.write("Successfully Subscribed!")
         st.write(st.session_state.email)
         #Display title and introductory text based on the language toggle
-        display_intro(JP)
+        st.divider()
         st.image("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png",
                  use_column_width="auto")
 
@@ -318,7 +319,8 @@ def main():
     conn, existing_data = establish_gsheets_connection()
 
 
-    st.header(translate("　　フィードバック", "  Feedback", JP))
+    st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
+             width=350)
     temporary = st.empty()
     t = temporary.container()
     with t:
