@@ -338,6 +338,7 @@ def main():
                     del st.session_state.client
                 a_id = get_GPT_response(option, grade, style, user_input)
                 evaluation = run_assistant(a_id, user_input, return_content=True)
+                st.write(evaluation)
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                 update_google_sheets(conn, existing_data, new_data)
