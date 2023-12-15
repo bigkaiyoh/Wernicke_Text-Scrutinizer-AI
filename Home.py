@@ -273,22 +273,39 @@ def show_prelog(logo, JP):
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
-    #st.sidebar.image(logo_url, width=190)  # Adjust width as needed
-    #add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
+    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
     #language switch toggle
-    JP = st.sidebar.toggle("Japanese (日本語)", value=False)
+    JP = st.toggle("Japanese (日本語)", value=False)
     # Initialize placeholder variable
     placeholder = None
 
     if st.session_state.is_authenticated == False:
         #Page before Login
         placeholder = show_prelog(logo_url, JP)
+        
+    #authentication required
+    add_auth(required = True)
+    if 'placeholder' in locals() and placeholder is not None:
+        placeholder.empty()
+    st.session_state.is_authenticated = True
+    st.sidebar.write("Successfully Subscribed!")
+    st.sidebar.write(st.session_state.email)
+
+    # Establish Google Sheets connection
+    conn, existing_data = establish_gsheets_connection()
+
+    # Main Area
+    col1, col2 = st.columns([1, 2])
+
+   # Check if the user is authenticated
     
-    with st.sidebar:
-        st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
-                 use_column_width="auto")
+    with col1:
+        #Display title and introductory text based on the language toggle
+        display_intro(JP)
+
         #Set Test Configuration
         option, grade, style = set_test_configuration(JP)
         
@@ -301,58 +318,31 @@ def main():
             user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
-                                    key = "gradeit")
-        st.divider()
-    #authentication required
-    add_auth(required = True)
-    if 'placeholder' in locals() and placeholder is not None:
-        placeholder.empty()
-    st.session_state.is_authenticated = True
-    with st.sidebar:
-        st.write("Successfully Subscribed!")
-        st.write(st.session_state.email)
-        #Display title and introductory text based on the language toggle
-        st.divider()
-        st.image("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png",
-                 use_column_width="auto")
+                                  key = "gradeit")
 
-
-    # Establish Google Sheets connection
-    conn, existing_data = establish_gsheets_connection()
-
-
-    st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
-             width=350)
-    temporary = st.empty()
-    t = temporary.container()
-    with t:
-        message = st.chat_message("assistant")
-        message.write(translate(
-                        "今日は君の言葉が芸術になる日£:。)",
-                        "Today is a blank canvas waiting for your linguistic masterpiece.", 
-                        JP))
+    with col2:
+        st.header(translate("　　フィードバック", "  Feedback", JP))
         
-    if submit_button:
-        temporary.empty()
-        st.session_state.submit_clicked = True
-        if user_input:
-            if style == "Speaking":
-                # Transcribe audio
-                user_input = client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=user_input,
-                    response_format="text"
-                )
-            #reset the thread
-            if 'client' in st.session_state:
-                del st.session_state.client
-            a_id = get_GPT_response(option, grade, style, user_input)
+        if submit_button:
+            st.session_state.submit_clicked = True
+            if user_input:
+                if style == "Speaking":
+                    # Transcribe audio
+                    user_input = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=user_input,
+                        response_format="text"
+                    )
+                #reset the thread
+                if 'client' in st.session_state:
+                    del st.session_state.client
+                a_id = get_GPT_response(option, grade, style, user_input)
 
-            # Add new data and update Google Sheets
-            new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
-            update_google_sheets(conn, existing_data, new_data)
-        else:
-            no_input_error(JP)
+                # Add new data and update Google Sheets
+                new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
+                update_google_sheets(conn, existing_data, new_data)
+            else:
+                no_input_error(JP)
 
     #Question Chat Box
     question = st.chat_input(translate(
