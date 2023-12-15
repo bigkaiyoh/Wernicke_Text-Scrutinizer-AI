@@ -287,7 +287,7 @@ def main():
         placeholder = show_prelog(logo_url, JP)
     
     with st.sidebar:
-        st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-1-e1702608002591.png",
+        st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
                  use_column_width="auto")
         #Set Test Configuration
         option, grade, style = set_test_configuration(JP)
