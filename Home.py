@@ -275,13 +275,13 @@ def main():
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
+    #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
+
     #language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
     # Initialize placeholder variable
     placeholder = None
 
-    #Setting Background
-    #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
     if st.session_state.is_authenticated == False:
         #Page before Login
         placeholder = show_prelog(logo_url, JP)
@@ -310,7 +310,10 @@ def main():
         option, grade, style = set_test_configuration(JP)
         
         #Get user input
-        user_input = get_user_input(style, JP)
+        if option == "IELTS":
+            q = st.text_area(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
+                             help = "suggested for Task2")
+        user_input = "Question: " + q + "\n\n" + "Answer: " + get_user_input(style, JP)
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
                                   key = "gradeit")
