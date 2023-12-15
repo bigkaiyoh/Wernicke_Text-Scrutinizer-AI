@@ -140,7 +140,9 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
         st.markdown("Please Provide Your Answer First")
     return assistant_id
     if return_content:
-        return evaluation
+        return assistant_id, evaluation
+    else:
+        return assistant_id, None
 
 def run_assistant(assistant_id, txt, return_content=False):
     if 'client' not in st.session_state:
@@ -339,7 +341,6 @@ def main():
                 if q:
                     user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
                 a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
-                st.write(evaluation)
                 
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
