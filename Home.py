@@ -322,8 +322,16 @@ def main():
 
     with col2:
         st.header(translate("　　フィードバック", "  Feedback", JP))
-        
+        temporary = st.empty()
+        t = temporary.container()
+        with t:
+            message = st.chat_message("assistant")
+            message.write(translate(
+                            "今日は君の言葉が芸術になる日£:。)",
+                            "Today is a blank canvas waiting for your linguistic masterpiece.", 
+                            JP))
         if submit_button:
+            temporary.empty()
             st.session_state.submit_clicked = True
             if user_input:
                 if style == "Speaking":
