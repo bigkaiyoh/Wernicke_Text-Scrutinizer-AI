@@ -83,16 +83,11 @@ def display_intro(JP):
     st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
              use_column_width="auto")
     #st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
-    greeting = translate(
+    st.write(translate(
         "今日は君の言葉が芸術になる日£:。)",
         '"Today is a blank canvas waiting for your linguistic masterpiece."', 
-        JP)
-    st.markdown(''':blue{greeting}''')
-    # st.write(translate(
-    #     "今日は君の言葉が芸術になる日£:。):red[red]")",
-    #     '"Today is a blank canvas waiting for your linguistic masterpiece."', 
-    #     JP))
-    st.divider()
+        JP))
+    #st.divider()
     # st.write(translate(
     #     "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
     #     "すぐに私からの個別のフィードバックが返ってきます。",
