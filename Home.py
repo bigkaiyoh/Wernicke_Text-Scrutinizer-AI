@@ -2,6 +2,7 @@ import streamlit as st
 from st_paywall import add_auth
 from openai import OpenAI
 from streamlit_gsheets import GSheetsConnection
+from fpdf import FPDF
 import pandas as pd
 import time
 
@@ -154,8 +155,7 @@ def get_GPT_response(option, grade, style, txt):
         st.markdown("Please Provide Your Answer First")
     return assistant_id
 
-def run_assistant(assistant_id, txt):
-
+def run_assistant(assistant_id, txt, return_content=False):
     if 'client' not in st.session_state:
         st.session_state.client = OpenAI(api_key=api)
 
@@ -203,6 +203,8 @@ def run_assistant(assistant_id, txt):
                     break
                 # Wait for a short time before checking the status again
                 time.sleep(1)
+    if return_content:
+        return content
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
@@ -275,6 +277,13 @@ def show_prelog(logo, JP):
 
     return prelog
 
+def create_pdf(text):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, text)
+    return pdf.output(dest='S').encode('latin-1')
+
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
@@ -337,6 +346,22 @@ def main():
                 if 'client' in st.session_state:
                     del st.session_state.client
                 a_id = get_GPT_response(option, grade, style, user_input)
+
+                # Store the result for download
+                ev_result = run_assistant(a_id, user_input, True)
+                st.session_state.ev_result = ev_result
+                # Provide a download button if there is a result
+                if 'ev_result' in st.session_state:
+                    # Generate PDF file from the evaluation result
+                    pdf_file = create_pdf(st.session_state.evaluation_result)
+
+                    # Download button
+                    st.download_button(
+                        label="Download Evaluation Result as PDF",
+                        data=pdf_file,
+                        file_name="IELTS_evaluation.pdf",
+                        mime="application/octet-stream"
+                    )
 
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input)
