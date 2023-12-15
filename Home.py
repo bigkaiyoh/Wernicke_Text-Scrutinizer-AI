@@ -297,7 +297,7 @@ def main():
     # Establish Google Sheets connection
     conn, existing_data = establish_gsheets_connection()
 
-    with st.slider:
+    with st.sidebar:
         #Display title and introductory text based on the language toggle
         display_intro(JP)
 
