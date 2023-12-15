@@ -125,7 +125,7 @@ def show_text_input() -> None:
     st.write(f'{len(txt)} characters.')
     return txt
 
-def get_GPT_response(option, grade, style, txt):
+def get_GPT_response(option, grade, style, txt, return_content=False):
     #call the right assistant
     if option == "IELTS":
         assistant_id = ielts_writing
@@ -139,6 +139,8 @@ def get_GPT_response(option, grade, style, txt):
         assistant_id = "null"
         st.markdown("Please Provide Your Answer First")
     return assistant_id
+    if return_content:
+        return evaluation
 
 def run_assistant(assistant_id, txt, return_content=False):
     if 'client' not in st.session_state:
@@ -336,8 +338,7 @@ def main():
                 #reset the thread
                 if 'client' in st.session_state:
                     del st.session_state.client
-                a_id = get_GPT_response(option, grade, style, user_input)
-                evaluation = run_assistant(a_id, user_input, return_content=True)
+                a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 st.write(evaluation)
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
