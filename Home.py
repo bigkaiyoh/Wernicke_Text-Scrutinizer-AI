@@ -310,9 +310,8 @@ def main():
         option, grade, style = set_test_configuration(JP)
         
         #Get user input
-        if option == "IELTS":
-            q = st.text_input(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
-                             help = "suggested for Task2")
+        q = st.text_input(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
+                            help = "suggested for Task2")
         user_input = get_user_input(style, JP)
         if q:
             user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
