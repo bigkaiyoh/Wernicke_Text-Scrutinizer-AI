@@ -353,16 +353,16 @@ def main():
                 no_input_error(JP)
 
     #Question Chat Box
-    question = st.chat_input(translate(
-        "フィードバックについて質問ができます。",
-        "You can ask further questions regarding the feedback", JP),
-        key = "question"
-        )
-    if question: 
-        st.session_state.question_clicked = True   
-        get_GPT_response(option, grade, style, question)
-    elif question and not user_input:
-        no_input_error(JP)
+    # question = st.chat_input(translate(
+    #     "フィードバックについて質問ができます。",
+    #     "You can ask further questions regarding the feedback", JP),
+    #     key = "question"
+    #     )
+    # if question: 
+    #     st.session_state.question_clicked = True   
+    #     get_GPT_response(option, grade, style, question)
+    # elif question and not user_input:
+    #     no_input_error(JP)
 
 if __name__ == "__main__":
     main()
