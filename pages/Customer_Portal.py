@@ -91,11 +91,15 @@ def main():
         st.warning(translate("続行するにはメールアドレスを入力してください.", 
                              "Please enter the email address to proceed.", 
                              JP))
+    
+    st.error(translate("非Googleアカウントでの支払いの場合、アプリを使用するためにはメールアドレスをポータル経由でGoogleアカウントに更新してください.",
+                        "If your payment was made with a non-Google account, please update to a Google account through the portal to use the app.", 
+                        JP))
 
     #explain Customer Portal
     st.write(translate("""\n
-        ### できること:
-
+        
+        #### できること
         **プランの管理:**
         - サブスクリプションプランを表示および変更します。
         - サブスクリプションをアップグレード、ダウングレード、またはキャンセルします。
@@ -104,8 +108,8 @@ def main():
         - 名前、メールアドレス、および支払い方法の更新。\n
         """,
         """\n
-        ### What You Can Do:
-
+        
+        #### Instruction
         **Manage Your Plan:**
         - View and modify your subscription plan.
         - Upgrade, downgrade, or cancel your subscription.
@@ -113,10 +117,10 @@ def main():
         **Modify Your Account Information:**
         - Update your name, email, and the method of payment.\n
         """, JP))
-
-    st.error(translate("非Googleアカウントでの支払いの場合、アプリを使用するためにはメールアドレスをポータル経由でGoogleアカウントに更新してください.",
-                        "If your payment was made with a non-Google account, please update to a Google account through the portal to use the app.", 
-                        JP))
+    
+    st.divider()
+    
+    
 
 if __name__ == "__main__":
     main()

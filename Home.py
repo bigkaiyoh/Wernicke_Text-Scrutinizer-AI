@@ -76,10 +76,6 @@ def set_background_image(url):
         unsafe_allow_html=True
     )
 
-# Initialize session state for conversation if not present
-if 'conversation' not in st.session_state:
-    st.session_state.conversation = []
-
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
