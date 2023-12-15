@@ -308,8 +308,6 @@ def main():
                             help = translate("IELTS-Task2 の精度アップ", "suggested for IELTS-Task2", JP)
                             )
         user_input = get_user_input(style, JP)
-        if q:
-            user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
                                   key = "gradeit")
@@ -338,8 +336,11 @@ def main():
                 #reset the thread
                 if 'client' in st.session_state:
                     del st.session_state.client
+                if q:
+                    user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
                 a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 st.write(evaluation)
+                
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                 update_google_sheets(conn, existing_data, new_data)
