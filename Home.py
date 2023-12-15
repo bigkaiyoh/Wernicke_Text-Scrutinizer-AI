@@ -311,9 +311,11 @@ def main():
         
         #Get user input
         if option == "IELTS":
-            q = st.text_area(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
+            q = st.text_input(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
                              help = "suggested for Task2")
-        user_input = "Question: " + q + "\n\n" + "Answer: " + get_user_input(style, JP)
+        user_input = get_user_input(style, JP)
+        if q:
+            user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
                                   key = "gradeit")
