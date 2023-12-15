@@ -176,6 +176,8 @@ def run_assistant(assistant_id, txt):
         # Spinner for ongoing process
         with st.spinner('Neurons weaving through the layers ...'):
             while True:
+                # Wait for 5 seconds
+                time.sleep(5)
                 # Retrieve the run status
                 run_status = st.session_state.client.beta.threads.runs.retrieve(
                     thread_id=st.session_state.thread.id,
@@ -198,7 +200,7 @@ def run_assistant(assistant_id, txt):
                             st.write(content)
                     break
                 # Wait for a short time before checking the status again
-                time.sleep(1)
+                # time.sleep(1)
 
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
