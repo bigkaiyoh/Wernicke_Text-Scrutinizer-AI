@@ -84,7 +84,7 @@ def display_intro(JP):
              use_column_width="auto")
     #st.title(translate("Wernicke - 採点者AI", "Wernicke - Text Scrutinizer AI", JP))
     st.write(translate(
-        "今日は君の言葉が芸術になる日£:。)”,
+        "今日は君の言葉が芸術になる日£:。)",
         '"Today is a blank canvas waiting for your linguistic masterpiece."', 
         JP))
     st.divider()
