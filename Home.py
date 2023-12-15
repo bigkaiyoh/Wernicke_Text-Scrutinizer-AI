@@ -285,22 +285,8 @@ def main():
     if st.session_state.is_authenticated == False:
         #Page before Login
         placeholder = show_prelog(logo_url, JP)
-        
-    #authentication required
-    add_auth(required = True)
-    if 'placeholder' in locals() and placeholder is not None:
-        placeholder.empty()
-    st.session_state.is_authenticated = True
-    #st.sidebar.write("Successfully Subscribed!")
-    #st.sidebar.write(st.session_state.email)
-
-    # Establish Google Sheets connection
-    conn, existing_data = establish_gsheets_connection()
-
+    
     with st.sidebar:
-        #Display title and introductory text based on the language toggle
-        display_intro(JP)
-
         #Set Test Configuration
         option, grade, style = set_test_configuration(JP)
         
@@ -314,6 +300,23 @@ def main():
 
         submit_button = st.button(translate("採点", "Grade it!", JP),
                                     key = "gradeit")
+    #authentication required
+    add_auth(required = True)
+    if 'placeholder' in locals() and placeholder is not None:
+        placeholder.empty()
+    st.session_state.is_authenticated = True
+    with st.sidebar:
+        st.write("Successfully Subscribed!")
+        st.write(st.session_state.email)
+        #Display title and introductory text based on the language toggle
+        display_intro(JP)
+        st.image("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png",
+                 use_column_width="auto")
+
+
+    # Establish Google Sheets connection
+    conn, existing_data = establish_gsheets_connection()
+
 
     st.header(translate("　　フィードバック", "  Feedback", JP))
     temporary = st.empty()
