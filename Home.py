@@ -87,7 +87,7 @@ def display_intro(JP):
         "今日は君の言葉が芸術になる日£:。)",
         '"Today is a blank canvas waiting for your linguistic masterpiece."', 
         JP))
-    #st.divider()
+    st.divider()
     # st.write(translate(
     #     "フレームワーク、セクション（Writing/Speaking）を選択後、回答を貼り付け '採点'をクリック！\n"
     #     "すぐに私からの個別のフィードバックが返ってきます。",
