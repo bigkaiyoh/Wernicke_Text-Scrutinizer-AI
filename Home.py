@@ -370,31 +370,29 @@ def main():
                         user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
                     a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                         
+                    st.session_state.evaluation = evaluation
+                    # When the translation button is pressed
+                    if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
+                        if 'evaluation' in st.session_state and st.session_state.evaluation:
+                            try:
+                                # Translate the evaluation
+                                st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
+                                st.write(st.session_state.translated_evaluation)
+                            except Exception as e:
+                                st.error(f"Error during translation: {str(e)}")
+                        else:
+                            st.error("No evaluation to translate.")
+
+                    # Display the original evaluation if it's available and not translated
+                    if 'evaluation' in st.session_state and not 'translated_evaluation' in st.session_state:
+                        st.write(st.session_state.evaluation)
+                    
                     # Add new data and update Google Sheets
                     new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                     update_google_sheets(conn, existing_data, new_data)
                 else:
                     no_input_error(JP)
         
-        # Store the evaluation in session state after generating it
-        if evaluation:
-            st.session_state.evaluation = evaluation
-
-        # When the translation button is pressed
-        if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
-            if 'evaluation' in st.session_state and st.session_state.evaluation:
-                try:
-                    # Translate the evaluation
-                    st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
-                    st.write(st.session_state.translated_evaluation)
-                except Exception as e:
-                    st.error(f"Error during translation: {str(e)}")
-            else:
-                st.error("No evaluation to translate.")
-
-        # Display the original evaluation if it's available and not translated
-        if 'evaluation' in st.session_state and not 'translated_evaluation' in st.session_state:
-            st.write(st.session_state.evaluation)
 
 
     #Question Chat Box
