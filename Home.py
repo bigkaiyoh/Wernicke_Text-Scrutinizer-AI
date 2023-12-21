@@ -280,8 +280,7 @@ def show_prelog(logo, JP):
     return prelog
 
 def display_translated_message(user_input, evaluation):
-    #call deepL
-    translated_evaluation = deepl_translation(evaluation, "JA")
+    
     st.write(translated_evaluation)
     # Display user message
     # user_message = st.chat_message("user")
@@ -378,10 +377,13 @@ def main():
                     no_input_error(JP)
         
         if evaluation != None:
-            main_screen.empty()
             # Add translation button
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
-                display_translated_message(user_input, evaluation)
+                #call deepL
+                translated_evaluation = deepl_translation(evaluation, "JA")
+                main_screen.empty()
+                #display_translated_message(user_input, evaluation)
+                st.write(translated_evaluation)
 
 
 
