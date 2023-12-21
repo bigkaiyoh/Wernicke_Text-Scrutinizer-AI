@@ -10,6 +10,7 @@ api = st.secrets.api_key
 ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 toefl_writing = st.secrets.toefl_writing
+toefl_speaking = st.secrets.toefl_speaking
 
 #Initialize OpenAI client and set default assistant_id
 client = OpenAI(api_key=api)
@@ -132,11 +133,10 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
     #call the right assistant
     if option == "IELTS":
         assistant_id = ielts_writing if style == "Writing" else ielts_speaking
+
     elif option == "TOEFL":
-        if style == "Writing":
-            assistant_id = toefl_writing
-        else:
-            st.markdown("Under Preparation")
+        assistant_id = toefl_writing if style == "Writing" else toefl_speaking
+        
     elif option in ["TOEIC", "Eiken", "英検"]:
         st.markdown("Under Preparation")
     else:
