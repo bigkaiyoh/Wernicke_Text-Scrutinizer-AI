@@ -339,25 +339,22 @@ def main():
                             JP))
         if submit_button:
             temporary.empty()
-            main_screen = st.empty()
-            m = main_screen.container()
             st.session_state.submit_clicked = True
 
-            with m:
-                if user_input:
-                    if style == "Speaking":
-                        # Transcribe audio
-                        user_input = client.audio.transcriptions.create(
-                            model="whisper-1",
-                            file=user_input,
-                            response_format="text"
-                        )
-                    #reset the thread
-                    if 'client' in st.session_state:
-                        del st.session_state.client
-                    if q:
-                        user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
-                    a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
+            if user_input:
+                if style == "Speaking":
+                    # Transcribe audio
+                    user_input = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=user_input,
+                        response_format="text"
+                    )
+                #reset the thread
+                if 'client' in st.session_state:
+                    del st.session_state.client
+                if q:
+                    user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
+                a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 
                 # Add translation button
                 if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
