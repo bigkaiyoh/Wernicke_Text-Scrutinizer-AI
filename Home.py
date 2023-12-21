@@ -381,7 +381,10 @@ def main():
                         user_message.write(user_input)
                         translated_message = st.chat_message("assistant")
                         translated_message.write(translated_text)
+                        
+                        # Mark the translation as done and clear the original evaluation
                         st.session_state.translation_done = True
+                        del st.session_state.evaluation
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
 
