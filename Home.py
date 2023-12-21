@@ -376,20 +376,26 @@ def main():
                 else:
                     no_input_error(JP)
         
-        if evaluation != None:
-            # Add translation button
-            if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
-                if evaluation:
-                    try:
-                        # Call the DeepL translation function
-                        translated_evaluation = deepl_translation(evaluation, "JA")
-                        main_screen.empty()
-                        # Display the translated evaluation
-                        st.write(translated_evaluation)
-                    except Exception as e:
-                        st.error(f"Error during translation: {str(e)}")
-                else:
-                    st.error("No evaluation to translate.")
+        # Store the evaluation in session state after generating it
+        if evaluation:
+            st.session_state.evaluation = evaluation
+
+        # When the translation button is pressed
+        if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
+            if 'evaluation' in st.session_state and st.session_state.evaluation:
+                try:
+                    # Translate the evaluation
+                    st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
+                    st.write(st.session_state.translated_evaluation)
+                except Exception as e:
+                    st.error(f"Error during translation: {str(e)}")
+            else:
+                st.error("No evaluation to translate.")
+
+        # Display the original evaluation if it's available and not translated
+        if 'evaluation' in st.session_state and not 'translated_evaluation' in st.session_state:
+            st.write(st.session_state.evaluation)
+
 
     #Question Chat Box
     # question = st.chat_input(translate(
