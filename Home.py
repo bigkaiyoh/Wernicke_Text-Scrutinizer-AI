@@ -281,13 +281,12 @@ def show_prelog(logo, JP):
 
 def display_translated_message(user_input, evaluation):
     
-    st.write(translated_evaluation)
-    # Display user message
-    # user_message = st.chat_message("user")
-    # user_message.write(user_input)
+    #Display user message
+    user_message = st.chat_message("user")
+    user_message.write(user_input)
 
-    # translated_message = st.chat_message("assistant")
-    # translated_message.write("translated_text will appear here")
+    translated_message = st.chat_message("assistant")
+    translated_message.write("translated_text will appear here")
 
 def main():
     # Add logo to the sidebar
@@ -377,15 +376,16 @@ def main():
                             try:
                                 # Translate the evaluation
                                 st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
-                                st.write(st.session_state.translated_evaluation)
+                                #Display user message
+                                user_message = st.chat_message("user")
+                                user_message.write(user_input)
+
+                                translated_message = st.chat_message("assistant")
+                                translated_message.write(st.session_state.translated_evaluation)
                             except Exception as e:
                                 st.error(f"Error during translation: {str(e)}")
                         else:
                             st.error("No evaluation to translate.")
-
-                    # Display the original evaluation if it's available and not translated
-                    if 'evaluation' in st.session_state and not 'translated_evaluation' in st.session_state:
-                        st.write(st.session_state.evaluation)
                     
                     # Add new data and update Google Sheets
                     new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
