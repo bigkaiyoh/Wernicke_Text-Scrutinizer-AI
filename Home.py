@@ -279,15 +279,6 @@ def show_prelog(logo, JP):
 
     return prelog
 
-def display_translated_message(user_input, evaluation):
-    
-    #Display user message
-    user_message = st.chat_message("user")
-    user_message.write(user_input)
-
-    translated_message = st.chat_message("assistant")
-    translated_message.write("translated_text will appear here")
-
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
@@ -323,7 +314,6 @@ def main():
     with col1:
         #Display title and introductory text based on the language toggle
         display_intro(JP)
-
         #Set Test Configuration
         option, grade, style = set_test_configuration(JP)
         
@@ -349,49 +339,47 @@ def main():
                             JP))
         if submit_button:
             temporary.empty()
-            main_screen = st.empty()
-            m = main_screen.container()
             st.session_state.submit_clicked = True
 
-            with m:
-                if user_input:
-                    if style == "Speaking":
-                        # Transcribe audio
-                        user_input = client.audio.transcriptions.create(
-                            model="whisper-1",
-                            file=user_input,
-                            response_format="text"
-                        )
-                    #reset the thread
-                    if 'client' in st.session_state:
-                        del st.session_state.client
-                    if q:
-                        user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
-                    a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
-                        
-                    st.session_state.evaluation = evaluation
-                    # When the translation button is pressed
-                    if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
-                        if 'evaluation' in st.session_state and st.session_state.evaluation:
-                            try:
-                                # Translate the evaluation
-                                st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
-                                #Display user message
-                                user_message = st.chat_message("user")
-                                user_message.write(user_input)
+            if user_input:
+                if style == "Speaking":
+                    # Transcribe audio
+                    user_input = client.audio.transcriptions.create(
+                        model="whisper-1",
+                        file=user_input,
+                        response_format="text"
+                    )
+                #reset the thread
+                if 'client' in st.session_state:
+                    del st.session_state.client
+                if q:
+                    user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
+                a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
+                
+                # Add new data and update Google Sheets
+                new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
+                update_google_sheets(conn, existing_data, new_data)
 
-                                translated_message = st.chat_message("assistant")
-                                translated_message.write(st.session_state.translated_evaluation)
-                            except Exception as e:
-                                st.error(f"Error during translation: {str(e)}")
-                        else:
-                            st.error("No evaluation to translate.")
-                    
-                    # Add new data and update Google Sheets
-                    new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
-                    update_google_sheets(conn, existing_data, new_data)
-                else:
-                    no_input_error(JP)
+                st.session_state.evaluation = evaluation  # Store the evaluation in session state
+                st.session_state.translated_evaluation = None  # Reset the translated evaluation
+
+                # Translation button
+                if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
+                    try:
+                        # Translate the evaluation
+                        st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
+                    except Exception as e:
+                        st.error(f"Error during translation: {str(e)}")
+
+                # Display the translated evaluation if available
+                if 'translated_evaluation' in st.session_state and st.session_state.translated_evaluation:
+                    user_message = st.chat_message("user")
+                    user_message.write(user_input)
+
+                    translated_message = st.chat_message("assistant")
+                    translated_message.write(st.session_state.translated_evaluation)
+            else:
+                no_input_error(JP)
         
 
 
