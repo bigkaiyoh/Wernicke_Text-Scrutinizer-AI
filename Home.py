@@ -380,7 +380,7 @@ def main():
             # Add translation button
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
                 #call deepL
-                translated_evaluation = deepl_translation(evaluation, "JA")
+                #translated_evaluation = deepl_translation(evaluation, "JA")
                 main_screen.empty()
                 #display_translated_message(user_input, evaluation)
                 st.write(translated_evaluation)
