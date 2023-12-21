@@ -1,3 +1,4 @@
 st-paywall
 openai
 st-gsheets-connection
+deepl
