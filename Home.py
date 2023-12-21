@@ -367,7 +367,7 @@ def main():
         
 
         # Handling the translation
-        if 'evaluation' in st.session_state and st.session_state.evaluation:
+        if 'evaluation' in st.session_state and not st.session_state.get('translation_done', False):
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
                 temporary.empty()
                 try:
@@ -381,9 +381,9 @@ def main():
                         user_message.write(user_input)
                         translated_message = st.chat_message("assistant")
                         translated_message.write(translated_text)
+                        st.session_state.translation_done = True
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
-                del st.session_state.evaluation
 
 
     #Question Chat Box
