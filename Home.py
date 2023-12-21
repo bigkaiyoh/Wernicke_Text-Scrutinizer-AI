@@ -377,7 +377,8 @@ def main():
                 no_input_error(JP)
 
             if translate_ev:
-                display_translated_message(user_input, evaluation)
+                #display_translated_message(user_input, evaluation)
+                st.write("hi")
 
     #Question Chat Box
     # question = st.chat_input(translate(
