@@ -368,6 +368,7 @@ def main():
 
         # Handling the translation
         if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
+            temporary.empty()
             if 'evaluation' in st.session_state and st.session_state.evaluation:
                 try:
                     # Translate the evaluation
@@ -376,6 +377,8 @@ def main():
                         st.session_state.translated_evaluation = translated_text
 
                         # Display the translated evaluation using chat UI
+                        user_message = st.chat_message("user")
+                        user_message.write(user_input)
                         translated_message = st.chat_message("assistant")
                         translated_message.write(translated_text)
                 except Exception as e:
