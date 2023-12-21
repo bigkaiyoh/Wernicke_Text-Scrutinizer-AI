@@ -383,9 +383,9 @@ def main():
                         translated_message.write(translated_text)
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
+                st.session_state.evaluation = None
             else:
                 st.error("No evaluation to translate.")
-        st.session_state.evaluation = None
 
 
     #Question Chat Box
