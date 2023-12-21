@@ -368,14 +368,16 @@ def main():
                 a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 
                 # Add translation button
-                if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
-                    display_translated_message(user_input, evaluation)
-
+                translate_ev = st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl")
+                    
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                 update_google_sheets(conn, existing_data, new_data)
             else:
                 no_input_error(JP)
+
+            if translate_ev:
+                display_translated_message(user_input, evaluation)
 
     #Question Chat Box
     # question = st.chat_input(translate(
