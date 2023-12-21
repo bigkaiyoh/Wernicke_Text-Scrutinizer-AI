@@ -357,12 +357,14 @@ def main():
                 
                 # Add translation button
                 if st.button('Translate Feedback to Japanese'):
+                    #translated_evaluation = deepl_translation(evaluation, "JA")
+        
+                    # Display translated evaluation as a chat message
                     user_message = st.chat_message("user")
                     user_message.write(user_input)
-                    translated_evaluation = deepl_translation(evaluation, "JA")
-                    # Display translated evaluation as a chat message
                     translated_message = st.chat_message("assistant")
-                    translated_message.write(translated_evaluation)
+                    #translated_message.write(translated_evaluation)
+                    translated_message.write("translated_text will appear here")
 
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
