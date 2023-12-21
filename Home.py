@@ -279,16 +279,16 @@ def show_prelog(logo, JP):
 
     return prelog
 
-def display_translated_message(JP, user_input, evaluation):
+def display_translated_message(user_input, evaluation):
     #call deepL
-    #translated_evaluation = deepl_translation(evaluation, "JA")
-
+    translated_evaluation = deepl_translation(evaluation, "JA")
+    st.write(translated_evaluation)
     # Display user message
-    user_message = st.chat_message("user")
-    user_message.write(user_input)
+    # user_message = st.chat_message("user")
+    # user_message.write(user_input)
 
-    translated_message = st.chat_message("assistant")
-    translated_message.write("translated_text will appear here")
+    # translated_message = st.chat_message("assistant")
+    # translated_message.write("translated_text will appear here")
 
 def main():
     # Add logo to the sidebar
@@ -369,7 +369,7 @@ def main():
                 
                 # Add translation button
                 if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
-                    display_translated_message(JP, user_input, evaluation)
+                    display_translated_message(user_input, evaluation)
 
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
