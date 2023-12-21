@@ -374,10 +374,11 @@ def main():
             else:
                 no_input_error(JP)
         
-        if evaluation != None:
-            # Add translation button
-            if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
-                display_translated_message(user_input, evaluation)
+    if evaluation != None:
+        # Add translation button
+        if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
+            display_translated_message(user_input, evaluation)
+
 
 
     #Question Chat Box
