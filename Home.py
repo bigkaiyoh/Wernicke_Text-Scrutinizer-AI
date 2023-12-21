@@ -356,7 +356,7 @@ def main():
                 a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 
                 # Add translation button
-                if st.button('Translate Feedback to Japanese'):
+                if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key = "deepl"):
                     #translated_evaluation = deepl_translation(evaluation, "JA")
         
                     # Display translated evaluation as a chat message
