@@ -370,7 +370,7 @@ def main():
         
 
         # Handling the translation
-        if 'evaluation' in st.session_state and not st.session_state.translation_done:
+        if 'evaluation' in st.session_state and not st.session_state.get('translation_done', False):
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
                 temporary.empty()
                 try:
