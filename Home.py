@@ -4,6 +4,7 @@ from openai import OpenAI
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 import time
+import deepl
 
 #Secret keys
 api = st.secrets.api_key
@@ -11,6 +12,7 @@ ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 toefl_writing = st.secrets.toefl_writing
 toefl_speaking = st.secrets.toefl_speaking
+deepl_api = st.secrets.deepl
 
 #Initialize OpenAI client and set default assistant_id
 client = OpenAI(api_key=api)
@@ -81,6 +83,11 @@ def set_background_image(url):
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
+def deepl_translation(text, target_language):
+    translator = deepl.Translator(deepl_api)
+    result = translator.translate_text(text, target_lang=target_language)
+    return result.text
+
 def display_intro(JP):
     st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
              use_column_width="auto")
@@ -136,7 +143,7 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
 
     elif option == "TOEFL":
         assistant_id = toefl_writing if style == "Writing" else toefl_speaking
-        
+
     elif option in ["TOEIC", "Eiken", "英検"]:
         st.markdown("Under Preparation")
     else:
@@ -348,6 +355,15 @@ def main():
                     user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
                 a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 
+                # Add translation button
+                if st.button('Translate Feedback to Japanese'):
+                    user_message = st.chat_message("user")
+                    user_message.write(user_input)
+                    translated_evaluation = deepl_translation(evaluation, "JA")
+                    # Display translated evaluation as a chat message
+                    translated_message = st.chat_message("assistant")
+                    translated_message.write(translated_evaluation)
+
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                 update_google_sheets(conn, existing_data, new_data)
