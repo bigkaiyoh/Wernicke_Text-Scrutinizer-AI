@@ -384,8 +384,6 @@ def main():
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
                 st.session_state.evaluation = None
-            else:
-                st.error("No evaluation to translate.")
 
 
     #Question Chat Box
