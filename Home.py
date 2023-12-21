@@ -336,6 +336,7 @@ def main():
                             "今日は君の言葉が芸術になる日£:。)",
                             "Today is a blank canvas waiting for your linguistic masterpiece.", 
                             JP))
+
         if submit_button:
             temporary.empty()
             st.session_state.submit_clicked = True
@@ -355,32 +356,32 @@ def main():
                     user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
                 a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
                 
+                # Store the evaluation in session state after generating it
+                st.session_state.evaluation = evaluation
+
                 # Add new data and update Google Sheets
                 new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
                 update_google_sheets(conn, existing_data, new_data)
             else:
                 no_input_error(JP)
         
-        # Store the evaluation in session state after generating it
-        if evaluation:
-            st.session_state.evaluation = evaluation
 
-        # When the translation button is pressed
+        # Handling the translation
         if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
             if 'evaluation' in st.session_state and st.session_state.evaluation:
                 try:
                     # Translate the evaluation
-                    st.session_state.translated_evaluation = deepl_translation(st.session_state.evaluation, "JA")
-                    st.write(st.session_state.translated_evaluation)
+                    translated_text = deepl_translation(st.session_state.evaluation, "JA")
+                    if translated_text:
+                        st.session_state.translated_evaluation = translated_text
+
+                        # Display the translated evaluation using chat UI
+                        translated_message = st.chat_message("assistant")
+                        translated_message.write(translated_text)
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
             else:
                 st.error("No evaluation to translate.")
-
-        # Display the original evaluation if it's available and not translated
-        if 'evaluation' in st.session_state and not 'translated_evaluation' in st.session_state:
-            translated_message = st.chat_message("assistant")
-            translated_message.write(st.session_state.evaluation)
 
     #Question Chat Box
     # question = st.chat_input(translate(
