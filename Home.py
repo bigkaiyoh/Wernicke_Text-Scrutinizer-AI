@@ -24,6 +24,10 @@ if "question_clicked" not in st.session_state:
     st.session_state.question_clicked = False
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
+if "evaluation" not in st.session_state:
+    st.session_state.evaluation = False
+if 'translation_done' not in st.session_state:
+    st.session_state.translation_done = False
 
 #Page Configuration
 st.set_page_config(
@@ -309,8 +313,6 @@ def main():
     # Main Area
     col1, col2 = st.columns([1, 2])
 
-   # Check if the user is authenticated
-    
     with col1:
         #Display title and introductory text based on the language toggle
         display_intro(JP)
@@ -339,8 +341,8 @@ def main():
 
         if submit_button:
             temporary.empty()
-            st.session_state.translation_done = False
             st.session_state.submit_clicked = True
+            st.session_state.translation_done = False
 
             if user_input:
                 if style == "Speaking":
@@ -368,7 +370,7 @@ def main():
         
 
         # Handling the translation
-        if 'evaluation' in st.session_state and not st.session_state.get('translation_done', False):
+        if 'evaluation' in st.session_state and not st.session_state.translation_done:
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
                 temporary.empty()
                 try:
@@ -384,6 +386,7 @@ def main():
                         translated_message.write(translated_text)
                         #mark translation is done
                         st.session_state.translation_done = True
+
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
 
