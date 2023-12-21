@@ -339,6 +339,7 @@ def main():
 
         if submit_button:
             temporary.empty()
+            st.session_state.translation_done = False
             st.session_state.submit_clicked = True
 
             if user_input:
@@ -381,11 +382,10 @@ def main():
                         user_message.write(user_input)
                         translated_message = st.chat_message("assistant")
                         translated_message.write(translated_text)
+                        #mark translation is done
+                        st.session_state.translation_done = True
                 except Exception as e:
                     st.error(f"Error during translation: {str(e)}")
-                # Mark the translation as done and clear the original evaluation
-                st.session_state.translation_done = True
-                del st.session_state.evaluation
 
 
     #Question Chat Box
