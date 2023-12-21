@@ -369,7 +369,7 @@ def main():
         # Handling the translation
         if 'evaluation' in st.session_state and st.session_state.evaluation:
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
-            temporary.empty()
+                temporary.empty()
                 try:
                     # Translate the evaluation
                     translated_text = deepl_translation(st.session_state.evaluation, "JA")
