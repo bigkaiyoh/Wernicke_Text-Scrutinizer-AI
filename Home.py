@@ -385,7 +385,8 @@ def main():
                     st.error(f"Error during translation: {str(e)}")
             else:
                 st.error("No evaluation to translate.")
-        st.session_state.translated_evaluation = None
+        st.session_state.evaluation = None
+
 
     #Question Chat Box
     # question = st.chat_input(translate(
