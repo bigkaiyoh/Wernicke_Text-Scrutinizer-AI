@@ -20,8 +20,8 @@ a_id = "null"
 #Initialize session_state
 if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
-if "question_clicked" not in st.session_state:
-    st.session_state.question_clicked = False
+# if "question_clicked" not in st.session_state:
+#     st.session_state.question_clicked = False
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
 
@@ -82,11 +82,6 @@ def set_background_image(url):
 
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
-
-def deepl_translation(text, target_language):
-    translator = deepl.Translator(deepl_api)
-    result = translator.translate_text(text, target_lang=target_language)
-    return result.text
 
 def display_intro(JP):
     st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
@@ -279,6 +274,11 @@ def show_prelog(logo, JP):
 
     return prelog
 
+def deepl_translation(text, target_language):
+    translator = deepl.Translator(deepl_api)
+    result = translator.translate_text(text, target_lang=target_language)
+    return result.text
+
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
@@ -340,6 +340,7 @@ def main():
         if submit_button:
             temporary.empty()
             st.session_state.submit_clicked = True
+            st.session_state.translation_completed = False
 
             if user_input:
                 if style == "Speaking":
@@ -367,23 +368,19 @@ def main():
         
 
         # Handling the translation
-        if 'evaluation' in st.session_state and st.session_state.evaluation:
+        if st.session_state.submit_clicked and not st.session_state.translation_completed:
             if st.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
                 temporary.empty()
-                try:
-                    # Translate the evaluation
-                    translated_text = deepl_translation(st.session_state.evaluation, "JA")
-                    if translated_text:
-                        st.session_state.translated_evaluation = translated_text
+                # Translate the evaluation
+                translated_text = deepl_translation(st.session_state.evaluation, "JA")
+                st.session_state.translated_evaluation = translated_text
 
-                        # Display the translated evaluation using chat UI
-                        user_message = st.chat_message("user")
-                        user_message.write(user_input)
-                        translated_message = st.chat_message("assistant")
-                        translated_message.write(translated_text)
-                except Exception as e:
-                    st.error(f"Error during translation: {str(e)}")
-            else:
+                # Display the translated evaluation using chat UI
+                user_message = st.chat_message("user")
+                user_message.write(user_input)
+                translated_message = st.chat_message("assistant")
+                translated_message.write(translated_text)
+            elif 'evaluation' in st.session_state and not st.session_state.evaluation:
                 st.error("No evaluation to translate.")
 
 
