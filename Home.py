@@ -377,9 +377,9 @@ def main():
                     translated_text = deepl_translation(st.session_state.evaluation, "JA")
                     st.session_state.translated_evaluation = translated_text
                     st.session_state.translation_completed = True
+                    translation_button_placeholder.empty()
             if st.session_state.translation_completed:
                 temporary.empty()
-                translation_button_placeholder.empty()
                 user_message = st.chat_message("user")
                 user_message.write(user_input)
                 translated_message = st.chat_message("assistant")
