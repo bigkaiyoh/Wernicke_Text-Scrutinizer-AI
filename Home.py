@@ -374,7 +374,7 @@ def main():
                 # Translate the evaluation
                 translated_text = deepl_translation(st.session_state.evaluation, "JA")
                 st.session_state.translated_evaluation = translated_text
-
+                st.session_state.translation_completed = True
                 # Display the translated evaluation using chat UI
                 user_message = st.chat_message("user")
                 user_message.write(user_input)
