@@ -22,6 +22,8 @@ if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
 # if "question_clicked" not in st.session_state:
 #     st.session_state.question_clicked = False
+if "translation_completed" not in st.session_state:
+    st.session_state['translation_completed'] = False
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
 
