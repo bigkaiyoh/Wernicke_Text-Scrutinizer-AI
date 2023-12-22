@@ -384,7 +384,7 @@ def main():
                     user_message.write(user_input)
                     translated_message = st.chat_message("assistant")
                     translated_message.write(translated_text)
-            translation_button_placeholder.empty()
+                    translation_button_placeholder.empty()
 
 
     #Question Chat Box
