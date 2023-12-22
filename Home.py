@@ -380,11 +380,11 @@ def main():
                     st.session_state.translated_evaluation = translated_text
                     st.session_state.translation_completed = True
                     # Display the translated evaluation using chat UI
-                    translation_button_placeholder.empty()
                     user_message = st.chat_message("user")
                     user_message.write(user_input)
                     translated_message = st.chat_message("assistant")
                     translated_message.write(translated_text)
+            translation_button_placeholder.empty()
 
 
     #Question Chat Box
