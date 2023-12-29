@@ -30,6 +30,9 @@ def main():
 
     user_email = st.session_state.email if 'email' in st.session_state else None
 
+    # Language switch toggle
+    JP = st.toggle("Japanese (日本語)", value=False)
+
     if user_email:
         #sidebar message
         st.sidebar.write("Successfully Subscribed!")
@@ -37,10 +40,11 @@ def main():
         #content
         conn, _ = establish_gsheets_connection()
         user_data = fetch_user_data(conn, user_email)
-        st.write("Your Past Submissions:")
+        st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
         st.write(user_data)
     else:
-        st.error("You need to be logged in to view this page.")
+        st.error(translate("ログインが必要です", 
+        "You need to be logged in to view this page.", JP))
 
 if __name__ == "__main__":
     main()
