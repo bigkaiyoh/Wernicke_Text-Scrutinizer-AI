@@ -410,9 +410,9 @@ def main():
         #     no_input_error(JP)
 
     if selected == translate("マイページ", "My Page", JP):
-        user_data = existing_data[existing_data['user_email'] == user_email]  # Filter by email
+        user_data = existing_data[existing_data['st.session_state.email'] == user_email]  # Filter by email
         # Do not display user_name
-        user_data = existing_data.drop(columns=['user_email'])
+        user_data = existing_data.drop(columns=['st.session_state.email'])
 
         st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
         #filter
