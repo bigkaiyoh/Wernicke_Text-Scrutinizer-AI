@@ -317,6 +317,9 @@ def main():
     orientation="horizontal",
     )
 
+    #Display title and introductory text based on the language toggle
+    display_intro(JP)
+
     if selected == translate("採点添削", "Evaluation", JP):
         # Main Area
         col1, col2 = st.columns([1, 2])
@@ -324,8 +327,7 @@ def main():
     # Check if the user is authenticated
         
         with col1:
-            #Display title and introductory text based on the language toggle
-            #display_intro(JP)
+            
             #Set Test Configuration
             option, grade, style = set_test_configuration(JP)
             
