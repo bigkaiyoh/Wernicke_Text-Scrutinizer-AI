@@ -312,7 +312,7 @@ def main():
     # --- NAVIGATION MENU ---
     selected = option_menu(
     menu_title=None,
-    options=[translate("採点添削", "Evaluation", JP), translate("マイページ", "My Page", JP)],
+    options=[translate("採点添削", "Evaluation", JP), translate("マイページ", "My History", JP)],
     icons=["vector-pen", "person-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
     )
@@ -409,7 +409,7 @@ def main():
         # elif question and not user_input:
         #     no_input_error(JP)
 
-    if selected == translate("マイページ", "My Page", JP):
+    if selected == translate("マイページ", "My History", JP):
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email
         display_data = user_data.drop(columns=['user_email'])
