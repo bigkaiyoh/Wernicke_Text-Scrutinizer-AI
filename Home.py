@@ -211,7 +211,7 @@ def establish_gsheets_connection():
     conn = st.connection("gsheets", type=GSheetsConnection)
 
     # Fetch existing Wernicke data
-    existing_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)
+    existing_data = conn.read(worksheet="シート1", usecols=list(range(5)), ttl=5)
     existing_data = existing_data.dropna(how="all")
 
     return conn, existing_data
