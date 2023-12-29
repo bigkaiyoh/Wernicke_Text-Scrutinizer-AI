@@ -325,7 +325,7 @@ def main():
         
         with col1:
             #Display title and introductory text based on the language toggle
-            display_intro(JP)
+            #display_intro(JP)
             #Set Test Configuration
             option, grade, style = set_test_configuration(JP)
             
