@@ -419,9 +419,9 @@ def main():
         col1, col2 = st.columns(2)
 
         with col1:
-        # Multiselect for test_framework (Column B)
-        unique_frameworks = display_data['test_framework'].unique()
-        selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks)
+            # Multiselect for test_framework (Column B)
+            unique_frameworks = display_data['test_framework'].unique()
+            selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks)
 
         with col2:
             # Multiselect for test_section (Column C) based on selected frameworks
@@ -430,7 +430,7 @@ def main():
                 unique_sections = filtered_by_framework['test_section'].unique()
             else:
                 unique_sections = display_data['test_section'].unique()
-            selected_sections = st.multiselect('Select Test Section(s):', unique_sections)
+                selected_sections = st.multiselect('Select Test Section(s):', unique_sections)
 
         # Filtering data based on selections
         filtered_data = display_data[display_data['test_framework'].isin(selected_frameworks) & display_data['test_section'].isin(selected_sections)]
