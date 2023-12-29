@@ -289,12 +289,13 @@ def main():
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
+    #language switch toggle
+    JP = st.toggle("Japanese (日本語)", value=False)
     # Initialize placeholder variable
     placeholder = None
 
     if st.session_state.is_authenticated == False:
         #Page before Login
-        JP = st.toggle("Japanese (日本語)", value=False)
         placeholder = show_prelog(logo_url, JP)
         
     #authentication required
@@ -315,8 +316,6 @@ def main():
     icons=["vector-pen", "person-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
     )
-    #language switch toggle
-    JP = st.toggle("Japanese (日本語)", value=False)
 
     if selected == translate("採点添削", "Evaluation", JP):
         # Main Area
@@ -411,7 +410,15 @@ def main():
         #     no_input_error(JP)
 
     if selected == translate("マイページ", "My Page", JP):
-        st.write("hello")
+        user_data = existing_data[sheet_data['user_email'] == user_email]  # Filter by email
+        # Do not display user_name
+        user_data = existing_data.drop(columns=['user_email'])
+
+        st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
+        #filter
+        col1, col2, col3 = st.columns(3)
+
+        st.dataframe(user_data)
 
 if __name__ == "__main__":
     main()
