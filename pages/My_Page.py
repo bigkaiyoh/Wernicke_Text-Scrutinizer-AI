@@ -18,7 +18,7 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 def fetch_user_data(conn, user_email):
-    sheet_data = conn.read(worksheet="シート1", usecols=list(range(4)), ttl=5)  # Adjusted to correct worksheet name
+    sheet_data = conn.read(worksheet="シート1", usecols=list(range(2-5)), ttl=5)  # Adjusted to correct worksheet name
     user_data = sheet_data[sheet_data['user_email'] == user_email]  # Filter by email
     return user_data
 
