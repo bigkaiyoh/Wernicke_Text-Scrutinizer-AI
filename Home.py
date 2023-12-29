@@ -412,13 +412,31 @@ def main():
     if selected == translate("マイページ", "My Page", JP):
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_name
-        user_data = existing_data.drop(columns=['user_email'])
+        display_data = user_data.drop(columns=['user_email'])
 
         st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
         #filter
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
 
-        st.dataframe(user_data)
+        with col1:
+        # Multiselect for test_framework (Column B)
+        unique_frameworks = display_data['test_framework'].unique()
+        selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks)
+
+        with col2:
+            # Multiselect for test_section (Column C) based on selected frameworks
+            if selected_frameworks:
+                filtered_by_framework = display_data[display_data['test_framework'].isin(selected_frameworks)]
+                unique_sections = filtered_by_framework['test_section'].unique()
+            else:
+                unique_sections = display_data['test_section'].unique()
+            selected_sections = st.multiselect('Select Test Section(s):', unique_sections)
+
+        # Filtering data based on selections
+        filtered_data = display_data[display_data['test_framework'].isin(selected_frameworks) & display_data['test_section'].isin(selected_sections)]
+
+        # Display filtered data (Columns D and E)
+        st.dataframe(filtered_data[['user_input', 'Wernick_output']])
 
 if __name__ == "__main__":
     main()
