@@ -39,11 +39,14 @@ def main():
         #sidebar message
         st.sidebar.write("Successfully Subscribed!")
         st.sidebar.write(st.session_state.email)
-        #content
+        #content   
         conn, _ = establish_gsheets_connection()
         user_data = fetch_user_data(conn, user_email)
         st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
-        st.write(user_data)
+        #filter
+        col1, col2, col3 = st.columns(3)
+
+        st.dataframe(user_data)
     else:
         st.error(translate("ログインが必要です", 
         "You need to be logged in to view this page.", JP))
