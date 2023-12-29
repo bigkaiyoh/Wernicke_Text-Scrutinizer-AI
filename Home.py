@@ -289,13 +289,12 @@ def main():
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
-    #language switch toggle
-    JP = st.toggle("Japanese (日本語)", value=False)
     # Initialize placeholder variable
     placeholder = None
 
     if st.session_state.is_authenticated == False:
         #Page before Login
+        JP = st.toggle("Japanese (日本語)", value=False)
         placeholder = show_prelog(logo_url, JP)
         
     #authentication required
@@ -316,6 +315,8 @@ def main():
     icons=["vector-pen", "person-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
     )
+    #language switch toggle
+    JP = st.toggle("Japanese (日本語)", value=False)
 
     if selected == translate("採点添削", "Evaluation", JP):
         # Main Area
