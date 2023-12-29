@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from Home import establish_gsheets_connection
+from Home import establish_gsheets_connection, add_bottom, translate
 
 st.set_page_config(
     page_title="My Page",
@@ -23,9 +23,18 @@ def fetch_user_data(conn, user_email):
     return user_data
 
 def main():
+    # Add logo to the sidebar
+    logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
+    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
+
     user_email = st.session_state.email if 'email' in st.session_state else None
 
     if user_email:
+        #sidebar message
+        st.sidebar.write("Successfully Subscribed!")
+        st.sidebar.write(st.session_state.email)
+        #content
         conn, _ = establish_gsheets_connection()
         user_data = fetch_user_data(conn, user_email)
         st.write("Your Past Submissions:")

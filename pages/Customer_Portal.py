@@ -1,7 +1,6 @@
 import streamlit as st
 import stripe
-
-stripe.api_key = st.secrets.stripe_api_key
+from Home import add_bottom, translate
 
 st.set_page_config(
     page_title = "Customer Portal",
@@ -18,32 +17,12 @@ hide_st_style = """
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
+stripe.api_key = st.secrets.stripe_api_key
+
 class User:
     def __init__(self, email, is_japanese):
         self.email = email
         self.is_japanese = is_japanese
-
-def add_bottom(logo_url):
-    st.markdown(
-        f"""
-        <style>
-            [data-testid="stSidebarNav"] + div {{
-                position:relative;
-                bottom: 0;
-                height:50%;
-                background-image: url({logo_url});
-                background-size: 85% auto;
-                background-repeat: no-repeat;
-                background-position-x: center;
-                background-position-y: bottom;
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-def translate(text_japanese, text_english, is_japanese):
-    return text_japanese if is_japanese else text_english
 
 def run_stripe(user):
     # Retrieve Stripe Customer ID using Stripe API by searching for customers with email
@@ -75,6 +54,10 @@ def main():
     logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
     st.sidebar.image(logo_url, width=190)  # Adjust width as needed
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
+
+    if st.session_state.is_authenticated:
+        st.sidebar.write("Successfully Subscribed!")
+        st.sidebar.write(st.session_state.email)
 
     # Language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
