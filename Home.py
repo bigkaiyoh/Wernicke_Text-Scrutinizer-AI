@@ -414,7 +414,8 @@ def main():
         # Do not display user_email
         display_data = user_data.drop(columns=['user_email'])
 
-        st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
+        # st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
+        st.metric(label="You have practiced", value="2", delta="tests")
 
         # Initialize selected frameworks and sections
         unique_frameworks = display_data['test_framework'].unique()
