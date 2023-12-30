@@ -415,7 +415,8 @@ def main():
         display_data = user_data.drop(columns=['user_email'])
 
         # st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
-        st.metric(label="You have practiced", value="2", delta="tests")
+        num_submissions = len(user_data)
+        st.metric(label="You have practiced", value=f"{num_submissions}", delta="tests")
 
         # Initialize selected frameworks and sections
         unique_frameworks = display_data['test_framework'].unique()
