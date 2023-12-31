@@ -443,9 +443,13 @@ def main():
         st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
 
         # Progression graph
+        st.header(translate("スコア推移", "Progression Graph", JP))
         if 'F' in filtered_data.columns:
+            # Assuming score is in the 6th column
+            score_column = filtered_data.columns[5]  # Column indices start from 0
+
             # Create a pivot table for the line chart
-            pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns=['test_framework', 'test_section'], values='F')
+            pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns=['test_framework', 'test_section'], values=score_column)
             st.line_chart(pivot_data)
         else:
             st.error("Score data not available for plotting.")
