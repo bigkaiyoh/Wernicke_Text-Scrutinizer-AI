@@ -452,7 +452,7 @@ def main():
             plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
 
             # Assuming the scores are in the 6th column of the original 'filtered_data'
-            score_column = plot_data.columns[5]  # Adjust this index if necessary
+            score_column = plot_data.columns[4]  # Adjust this index if necessary
 
             # Reset the index to ensure a simple range index starting from 0
             plot_data.reset_index(drop=True, inplace=True)
