@@ -444,7 +444,7 @@ def main():
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
-        if 'F' in filtered_data.columns:
+        if not filtered_data.empty:
             # Assuming score is in the 6th column
             score_column = filtered_data.columns[5]  # Column indices start from 0
 
