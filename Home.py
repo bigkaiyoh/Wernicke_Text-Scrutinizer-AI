@@ -6,7 +6,6 @@ import pandas as pd
 import time
 import deepl
 from streamlit_option_menu import option_menu
-import matplotlib.pyplot as plt
 
 #Secret keys
 api = st.secrets.api_key
@@ -444,19 +443,10 @@ def main():
         st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
 
         # Progression graph
-        st.header(translate("スコア推移", "Progression Graph", JP))
         if 'F' in filtered_data.columns:
-            for framework in selected_frameworks:
-                for section in selected_sections:
-                    subset = filtered_data[(filtered_data['test_framework'] == framework) & (filtered_data['test_section'] == section)]
-                    if not subset.empty:
-                        plt.plot(subset['F'], label=f"{framework}-{section}")
-            
-            plt.xlabel("Attempts")
-            plt.ylabel("Score")
-            plt.title("Progression of Scores")
-            plt.legend()
-            st.pyplot(plt)
+            # Create a pivot table for the line chart
+            pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns=['test_framework', 'test_section'], values='F')
+            st.line_chart(pivot_data)
         else:
             st.error("Score data not available for plotting.")
         
