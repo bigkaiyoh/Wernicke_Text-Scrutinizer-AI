@@ -230,7 +230,7 @@ def add_new_data(email, option, grade, style, user_input, evaluation):
             "test_framework": test_framework,
             "test_section": style,
             "user_input": user_input,
-            "Wernick_output": evaluation,
+            "Wernicke_output": evaluation,
         }
     )
     return new_data
@@ -439,7 +439,7 @@ def main():
         filtered_data = display_data[display_data['test_framework'].isin(selected_frameworks) & display_data['test_section'].isin(selected_sections)]
 
         # Display filtered data (Columns D and E)
-        st.dataframe(filtered_data[['user_input', 'Wernick_output']])
+        st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
 
 
 if __name__ == "__main__":
