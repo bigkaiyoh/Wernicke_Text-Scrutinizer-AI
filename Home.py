@@ -446,7 +446,7 @@ def main():
         st.header(translate("スコア推移", "Progression Graph", JP))
         if not filtered_data.empty:
             # Assuming score is in the 6th column
-            score_column = filtered_data.columns[5]  # Column indices start from 0
+            score_column = filtered_data.columns[4]  # Column indices start from 0
 
             # Create a pivot table for the line chart
             pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns=['test_framework', 'test_section'], values=score_column)
