@@ -449,10 +449,7 @@ def main():
             filtered_data['framework_section'] = filtered_data['test_framework'] + "-" + filtered_data['test_section']
 
             # Assuming the scores are in the 6th column
-            score_column = filtered_data.columns[5]  # Adjust the index as needed
-
-            # Reset index to ensure it's a simple range index
-            filtered_data_reset = filtered_data.reset_index()
+            score_column = filtered_data.columns[6]  # Adjust the index as needed
 
             # Create a pivot table for the line chart
             pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns='framework_section', values=score_column, aggfunc='first')
