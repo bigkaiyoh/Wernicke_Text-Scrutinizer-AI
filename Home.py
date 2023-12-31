@@ -454,9 +454,6 @@ def main():
             # Assuming the scores are in the 6th column of the original 'filtered_data'
             score_column = plot_data.columns[4]  # Adjust this index if necessary
 
-            # Reset the index to ensure a simple range index starting from 0
-            plot_data.reset_index(drop=True, inplace=True)
-
             # Create a dictionary to store the mapping of unique combinations to their starting x-values
             combination_to_x = {}
 
