@@ -482,8 +482,12 @@ def main():
                 # Plot the line chart with specified x-axis values and default colors
                 st.line_chart(pivot_data)
             with cl2:
-                average_score = data['score'].mean()
-                st.metric("Average Score", f"{average_score:.2f}")
+                # Group the data by 'framework_section' and calculate the average score for each group
+                grouped_data = plot_data.groupby('framework_section')
+                for group_name, group_data in grouped_data:
+                    # Calculate average score for this group
+                    average_score = group_data[score_column].mean()
+                    st.metric(f"Average Score for {group_name}", f"{average_score:.2f}")
         else:
             st.error("No data available for plotting.")
 
