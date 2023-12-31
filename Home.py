@@ -453,7 +453,7 @@ def main():
 
             # Pivot the data for plotting
             pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns='framework_section', values=score_column, aggfunc='first')
-
+            pivot_data = pivot_data.reset_index(drop=True)
             # Plot the line chart
             st.line_chart(pivot_data)
         else:
