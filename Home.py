@@ -6,6 +6,7 @@ import pandas as pd
 import time
 import deepl
 from streamlit_option_menu import option_menu
+import matplotlib.pyplot as plt
 
 #Secret keys
 api = st.secrets.api_key
@@ -211,7 +212,7 @@ def establish_gsheets_connection():
     conn = st.connection("gsheets", type=GSheetsConnection)
 
     # Fetch existing Wernicke data
-    existing_data = conn.read(worksheet="シート1", usecols=list(range(5)), ttl=5)
+    existing_data = conn.read(worksheet="シート1", usecols=list(range(6)), ttl=5)
     existing_data = existing_data.dropna(how="all")
 
     return conn, existing_data
@@ -424,25 +425,41 @@ def main():
         # Initialize selected frameworks and sections
         unique_frameworks = display_data['test_framework'].unique()
         unique_sections = display_data['test_section'].unique()
-        selected_frameworks = list(unique_frameworks)  # Default to all frameworks
-        selected_sections = list(unique_sections)  # Default to all sections
 
         # Layout for multiselect filters
         col1, col2 = st.columns(2)
 
         with col1:
             # Multiselect for test_framework (Column B)
-            selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=selected_frameworks)
+            selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
 
         with col2:
             # Multiselect for test_section (Column C)
-            selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=selected_sections)
+            selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
 
         # Filtering data based on selections
         filtered_data = display_data[display_data['test_framework'].isin(selected_frameworks) & display_data['test_section'].isin(selected_sections)]
 
         # Display filtered data (Columns D and E)
         st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
+
+        # Progression graph
+        st.header(translate("スコア推移", "Progression Graph", JP))
+        if 'F' in filtered_data.columns:
+            for framework in selected_frameworks:
+                for section in selected_sections:
+                    subset = filtered_data[(filtered_data['test_framework'] == framework) & (filtered_data['test_section'] == section)]
+                    if not subset.empty:
+                        plt.plot(subset['F'], label=f"{framework}-{section}")
+            
+            plt.xlabel("Attempts")
+            plt.ylabel("Score")
+            plt.title("Progression of Scores")
+            plt.legend()
+            st.pyplot(plt)
+        else:
+            st.error("Score data not available for plotting.")
+        
 
 
 if __name__ == "__main__":
