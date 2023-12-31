@@ -445,18 +445,19 @@ def main():
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
         if not filtered_data.empty:
-            # Combine 'test_framework' and 'test_section' into a single column
-            filtered_data['framework_section'] = filtered_data['test_framework'] + "-" + filtered_data['test_section']
+            # Display the column names for debugging
+            st.write("Column names in filtered_data:", filtered_data.columns)
+            # # Combine 'test_framework' and 'test_section' into a single column for plotting
+            # filtered_data['framework_section'] = filtered_data['test_framework'] + "-" + filtered_data['test_section']
 
-            # Assuming the scores are in the 6th column
-            score_column = filtered_data.columns[5]  # Adjust the index as needed
+            # # Assuming the scores are in the 6th column of the original 'filtered_data'
+            # score_column = filtered_data.columns[5]  # Adjust this index if necessary
 
-            # Reset index to create a simple range index for the pivot operation
-            filtered_data = filtered_data.reset_index(drop=True)
+            # # Pivot the data for plotting
+            # pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns='framework_section', values=score_column, aggfunc='first')
 
-            # Create a pivot table for the line chart
-            pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns='framework_section', values=score_column, aggfunc='first')
-            st.line_chart(pivot_data)
+            # # Plot the line chart
+            # st.line_chart(pivot_data)
         else:
             st.error("Score data not available for plotting.")
         
