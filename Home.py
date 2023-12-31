@@ -350,6 +350,9 @@ def main():
                                 JP))
 
             if submit_button:
+                if not style:  # Check if style is not selected
+                    st.error("Please select a test style (Writing or Speaking) before grading.")
+                    
                 temporary.empty()
                 st.session_state.submit_clicked = True
                 st.session_state.translation_completed = False
