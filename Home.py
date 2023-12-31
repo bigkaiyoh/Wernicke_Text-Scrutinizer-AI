@@ -487,7 +487,7 @@ def main():
                 for group_name, group_data in grouped_data:
                     # Calculate average score for this group
                     average_score = group_data[score_column].mean()
-                    st.metric(label = f"Average Score", value = f"{average_score:.2f}", delta = "{group_name}")
+                    st.metric(label = "Average Score", value = f"{average_score:.2f}", delta = f"{group_name}")
         else:
             st.error("No data available for plotting.")
 
