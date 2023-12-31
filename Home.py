@@ -445,23 +445,46 @@ def main():
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
         if not filtered_data.empty:
+            # Create a new DataFrame specifically for plotting
             plot_data = filtered_data.copy()
 
             # Combine 'test_framework' and 'test_section' into a single column for plotting
             plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
 
-            score_column = plot_data.columns[4] 
+            # Assuming the scores are in the 6th column of the original 'filtered_data'
+            score_column = plot_data.columns[5]  # Adjust this index if necessary
 
             # Reset the index to ensure a simple range index starting from 0
             plot_data.reset_index(drop=True, inplace=True)
 
-            # Pivot the data for plotting
-            pivot_data = plot_data.pivot_table(index=plot_data.index, columns='framework_section', values=score_column, aggfunc='first')
+            # Create a dictionary to store the mapping of unique combinations to their starting x-values
+            combination_to_x = {}
 
-            # Plot the line chart
-            st.line_chart(pivot_data)
+            # Initialize x_values as an empty list
+            x_values = []
+
+            # Iterate through the rows and calculate x-values
+            for index, row in plot_data.iterrows():
+                combination = row['framework_section']
+                if combination not in combination_to_x:
+                    # If it's the first occurrence of this combination, set x to 1
+                    combination_to_x[combination] = 1
+                else:
+                    # Otherwise, increment x for this combination
+                    combination_to_x[combination] += 1
+                x_values.append(combination_to_x[combination])
+
+            # Add the x_values as a new column in the plot_data DataFrame
+            plot_data['x_values'] = x_values
+
+            # Pivot the data for plotting
+            pivot_data = plot_data.pivot_table(index='x_values', columns='framework_section', values=score_column, aggfunc='first')
+
+            # Plot the line chart with specified x-axis values and default colors
+            st.line_chart(pivot_data, use_container_width=True)
         else:
             st.error("No data available for plotting.")
+
         
 
 
