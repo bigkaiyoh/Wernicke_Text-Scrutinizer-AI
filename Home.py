@@ -478,7 +478,7 @@ def main():
             pivot_data = plot_data.pivot_table(index='x_values', columns='framework_section', values=score_column, aggfunc='first')
 
             # Plot the line chart with specified x-axis values and default colors
-            st.line_chart(pivot_data, use_container_width=True)
+            st.line_chart(pivot_data)
         else:
             st.error("No data available for plotting.")
 
