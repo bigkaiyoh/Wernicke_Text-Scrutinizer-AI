@@ -445,19 +445,23 @@ def main():
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
         if not filtered_data.empty:
-            # Combine 'test_framework' and 'test_section' into a single column for plotting
-            filtered_data['framework_section'] = filtered_data['test_framework'] + "-" + filtered_data['test_section']
+            plot_data = filtered_data.copy()
 
-            # Assuming the scores are in the 6th column of the original 'filtered_data'
-            score_column = filtered_data.columns[4]  # Adjust this index if necessary
+            # Combine 'test_framework' and 'test_section' into a single column for plotting
+            plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
+
+            score_column = plot_data.columns[4] 
+
+            # Reset the index to ensure a simple range index starting from 0
+            plot_data.reset_index(drop=True, inplace=True)
 
             # Pivot the data for plotting
-            pivot_data = filtered_data.pivot_table(index=filtered_data.index, columns='framework_section', values=score_column, aggfunc='first')
-            pivot_data = pivot_data.reset_index(drop=True)
+            pivot_data = plot_data.pivot_table(index=plot_data.index, columns='framework_section', values=score_column, aggfunc='first')
+
             # Plot the line chart
             st.line_chart(pivot_data)
         else:
-            st.error("Score data not available for plotting.")
+            st.error("No data available for plotting.")
         
 
 
