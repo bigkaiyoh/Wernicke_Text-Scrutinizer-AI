@@ -28,7 +28,7 @@ if "translation_completed" not in st.session_state:
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
 if 'current_page' not in st.session_state:
-    st.session_state.current_page = translate("採点添削", "Evaluation", JP)
+    st.session_state.current_page = "Evaluation"
 
 #Page Configuration
 st.set_page_config(
