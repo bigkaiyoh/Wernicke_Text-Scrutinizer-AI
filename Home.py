@@ -87,7 +87,7 @@ def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
 def display_intro(JP):
-    st.image("https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5-e1702608203525.png",
+    st.image("https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png",
              use_column_width="auto")
 
 def set_test_configuration(JP, key_suffix=""):
@@ -284,8 +284,9 @@ def deepl_translation(text, target_language):
 
 def main():
     # Add logo to the sidebar
-    logo_url = "https://nuginy.com/wp-content/uploads/2023/12/b21208974d2bc89426caefc47db0fca5.png"
-    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    logo_url = "https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png"
+    short_logo = "https://nuginy.com/wp-content/uploads/2024/01/23f602002a0787321609a4bf3b8ef051.png"
+    st.sidebar.image(short_logo, width=190)  # Adjust width as needed
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
