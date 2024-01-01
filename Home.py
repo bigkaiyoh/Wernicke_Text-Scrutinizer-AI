@@ -291,6 +291,8 @@ def main():
     # Initialize placeholder variable
     placeholder = None
 
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = translate("採点添削", "Evaluation", JP)  # Default page
     if st.session_state.is_authenticated == False:
         #Page before Login
         placeholder = show_prelog(logo_url, JP)
@@ -313,12 +315,13 @@ def main():
     icons=["vector-pen", "person-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
     )
+    # Update the current_page in session state when a new page is selected
+    if st.session_state.current_page != selected:
+        st.session_state.current_page = selected
 
-    if selected == translate("採点添削", "Evaluation", JP):
+    if st.session_state.current_page == translate("採点添削", "Evaluation", JP):
         # Main Area
         col1, col2 = st.columns([1, 2])
-
-    # Check if the user is authenticated
         
         with col1:
             #Display title and introductory text based on the language toggle
@@ -410,7 +413,7 @@ def main():
         # elif question and not user_input:
         #     no_input_error(JP)
 
-    if selected == translate("マイページ", "My History", JP):
+    if st.session_state.current_page == translate("マイページ", "My History", JP):
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email
         display_data = user_data.drop(columns=['user_email'])
