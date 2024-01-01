@@ -282,7 +282,7 @@ def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png"
     short_logo = "https://nuginy.com/wp-content/uploads/2024/01/23f602002a0787321609a4bf3b8ef051.png"
-    st.sidebar.image(short_logo, width=190)  # Adjust width as needed
+    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
     #set_background_image("https://nuginy.com/wp-content/uploads/2023/12/Blurred-Papua-Background.jpg")
 
