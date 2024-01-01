@@ -225,11 +225,11 @@ def add_new_data(email, option, grade, style, user_input, evaluation):
     # Add new data to the existing data
     jst = pytz.timezone('Asia/Tokyo')
     timestamp_jst = datetime.now(jst).strftime("%Y-%m-%d %H:%M:%S")
-    
+
     new_data = pd.Series(
         {
             "user_email": email,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp": timestamp_jst,
             "test_framework": test_framework,
             "test_section": style,
             "user_input": user_input,
