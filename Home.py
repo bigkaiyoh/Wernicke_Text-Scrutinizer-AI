@@ -86,10 +86,6 @@ def set_background_image(url):
 def translate(text_japanese, text_english, is_japanese):
     return text_japanese if is_japanese else text_english
 
-def display_intro(JP):
-    st.image("https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png",
-             use_column_width="auto")
-
 def set_test_configuration(JP, key_suffix=""):
     option = st.selectbox(
         translate("テストを選択してください", "Choose Test Framework", JP),
@@ -297,7 +293,7 @@ def main():
 
     if st.session_state.is_authenticated == False:
         #Page before Login
-        placeholder = show_prelog(logo_url, JP)
+        placeholder = show_prelog(short_logo, JP)
         
     #authentication required
     add_auth(required = True)
@@ -326,7 +322,8 @@ def main():
         
         with col1:
             #Display title and introductory text based on the language toggle
-            display_intro(JP)
+            st.image(short_logo,
+             use_column_width="auto")
             #Set Test Configuration
             option, grade, style = set_test_configuration(JP)
             
