@@ -27,6 +27,8 @@ if "translation_completed" not in st.session_state:
     st.session_state['translation_completed'] = False
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = translate("採点添削", "Evaluation", JP)
 
 #Page Configuration
 st.set_page_config(
@@ -291,8 +293,6 @@ def main():
     # Initialize placeholder variable
     placeholder = None
 
-    # if 'current_page' not in st.session_state:
-    #     st.session_state.current_page = translate("採点添削", "Evaluation", JP)  # Default page
     if st.session_state.is_authenticated == False:
         #Page before Login
         placeholder = show_prelog(logo_url, JP)
@@ -309,15 +309,12 @@ def main():
     conn, existing_data = establish_gsheets_connection()
 
     # --- NAVIGATION MENU ---
-    selected = option_menu(
+    st.session_state.current_page = option_menu(
     menu_title=None,
     options=[translate("採点添削", "Evaluation", JP), translate("マイページ", "My History", JP)],
     icons=["vector-pen", "person-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
     )
-    # Update the current_page in session state when a new page is selected
-    if st.session_state.current_page != selected:
-        st.session_state.current_page = selected
 
     if st.session_state.current_page == translate("採点添削", "Evaluation", JP):
         # Main Area
