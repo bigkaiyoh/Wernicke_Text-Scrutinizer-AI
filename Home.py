@@ -6,6 +6,7 @@ import pandas as pd
 import time
 import deepl
 from streamlit_option_menu import option_menu
+from datetime import datetime
 
 #Secret keys
 api = st.secrets.api_key
@@ -207,7 +208,7 @@ def establish_gsheets_connection():
     conn = st.connection("gsheets", type=GSheetsConnection)
 
     # Fetch existing Wernicke data
-    existing_data = conn.read(worksheet="シート1", usecols=list(range(6)), ttl=5)
+    existing_data = conn.read(worksheet="シート1", usecols=list(range(7)), ttl=5)
     existing_data = existing_data.dropna(how="all")
 
     return conn, existing_data
@@ -223,10 +224,11 @@ def add_new_data(email, option, grade, style, user_input, evaluation):
     new_data = pd.Series(
         {
             "user_email": email,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "test_framework": test_framework,
             "test_section": style,
             "user_input": user_input,
-            "Wernicke_output": evaluation,
+            "Wernicke_output": evaluation
         }
     )
     return new_data
@@ -449,8 +451,7 @@ def main():
                 # Combine 'test_framework' and 'test_section' into a single column for plotting
                 plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
 
-                # Assuming the scores are in the 6th column of the original 'filtered_data'
-                score_column = plot_data.columns[4]  # Adjust this index if necessary
+                score_column = plot_data.columns[5]  # Adjust this index if necessary
 
                 # Create a dictionary to store the mapping of unique combinations to their starting x-values
                 combination_to_x = {}
