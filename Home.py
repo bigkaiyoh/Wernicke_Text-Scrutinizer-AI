@@ -291,8 +291,8 @@ def main():
     # Initialize placeholder variable
     placeholder = None
 
-    if 'current_page' not in st.session_state:
-        st.session_state.current_page = translate("採点添削", "Evaluation", JP)  # Default page
+    # if 'current_page' not in st.session_state:
+    #     st.session_state.current_page = translate("採点添削", "Evaluation", JP)  # Default page
     if st.session_state.is_authenticated == False:
         #Page before Login
         placeholder = show_prelog(logo_url, JP)
