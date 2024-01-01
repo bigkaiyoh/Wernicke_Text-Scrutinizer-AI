@@ -7,6 +7,8 @@ import time
 import deepl
 from streamlit_option_menu import option_menu
 from datetime import datetime
+import pytz
+
 
 #Secret keys
 api = st.secrets.api_key
@@ -221,6 +223,9 @@ def add_new_data(email, option, grade, style, user_input, evaluation):
         test_framework = option
 
     # Add new data to the existing data
+    jst = pytz.timezone('Asia/Tokyo')
+    timestamp_jst = datetime.now(jst).strftime("%Y-%m-%d %H:%M:%S")
+    
     new_data = pd.Series(
         {
             "user_email": email,
