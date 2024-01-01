@@ -293,7 +293,7 @@ def main():
 
     if st.session_state.is_authenticated == False:
         #Page before Login
-        placeholder = show_prelog(short_logo, JP)
+        placeholder = show_prelog(logo_url, JP)
         
     #authentication required
     add_auth(required = True)
