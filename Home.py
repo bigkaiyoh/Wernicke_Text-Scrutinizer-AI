@@ -27,8 +27,6 @@ if "translation_completed" not in st.session_state:
     st.session_state['translation_completed'] = False
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
-if 'current_page' not in st.session_state:
-    st.session_state.current_page = "Evaluation"
 
 #Page Configuration
 st.set_page_config(
@@ -309,14 +307,14 @@ def main():
     conn, existing_data = establish_gsheets_connection()
 
     # --- NAVIGATION MENU ---
-    st.session_state.current_page = option_menu(
+    selected = option_menu(
     menu_title=None,
     options=[translate("採点添削", "Evaluation", JP), translate("マイページ", "My History", JP)],
     icons=["vector-pen", "person-fill"],  # https://icons.getbootstrap.com/
     orientation="horizontal",
     )
 
-    if st.session_state.current_page == translate("採点添削", "Evaluation", JP):
+    if selected == translate("採点添削", "Evaluation", JP):
         # Main Area
         col1, col2 = st.columns([1, 2])
         
@@ -410,7 +408,7 @@ def main():
         # elif question and not user_input:
         #     no_input_error(JP)
 
-    if st.session_state.current_page == translate("マイページ", "My History", JP):
+    if selected == translate("マイページ", "My History", JP):
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email
         display_data = user_data.drop(columns=['user_email'])
