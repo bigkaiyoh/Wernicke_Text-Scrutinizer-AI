@@ -9,6 +9,12 @@ from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
 
+#Page Configuration
+st.set_page_config(
+    page_title = "Wernicke",
+    page_icon = "🧠",
+    layout = "wide"
+)
 
 #Secret keys
 api = st.secrets.api_key
@@ -30,13 +36,6 @@ if "translation_completed" not in st.session_state:
     st.session_state['translation_completed'] = False
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
-
-#Page Configuration
-st.set_page_config(
-    page_title = "Wernicke",
-    page_icon = "🧠",
-    layout = "wide"
-)
 
 #Removing Hooter and Footer
 hide_st_style = """
