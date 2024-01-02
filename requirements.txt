@@ -3,4 +3,3 @@ openai
 st-gsheets-connection
 deepl
 streamlit_option_menu
-streamlit_authenticator
