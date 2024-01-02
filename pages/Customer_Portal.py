@@ -2,6 +2,9 @@ import streamlit as st
 import stripe
 from Home import add_bottom, translate
 
+if 'is_authenticated' not in st.session_state:
+    st.session_state.is_authenticated = False
+
 st.set_page_config(
     page_title = "Customer Portal",
     page_icon = "🧠",
