@@ -2,6 +2,11 @@ import streamlit as st
 import stripe
 from Home import add_bottom, translate
 
+stripe.api_key = st.secrets.stripe_api_key
+
+if 'is_authenticated' not in st.session_state:
+    st.session_state['is_authenticated'] = False
+
 
 st.set_page_config(
     page_title = "Customer Portal",
@@ -17,8 +22,6 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
-
-stripe.api_key = st.secrets.stripe_api_key
 
 class User:
     def __init__(self, email, is_japanese):
