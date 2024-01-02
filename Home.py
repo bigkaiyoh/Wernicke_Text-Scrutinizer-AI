@@ -8,9 +8,6 @@ import deepl
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
-# import parts from modules/
-from modules.evaluation import handle_evaluation_section
-from modules.my_history import handle_history_section
 
 
 #Secret keys
@@ -325,10 +322,176 @@ def main():
     )
 
     if selected == translate("採点添削", "Evaluation", JP):
-        handle_evaluation_section(short_logo, conn, existing_data, JP)
+        # Main Area
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            #Display title and introductory text based on the language toggle
+            st.image(short_logo,
+             use_column_width="auto")
+            #Set Test Configuration
+            option, grade, style = set_test_configuration(JP)
+            
+            #Get user input
+            q = st.text_input(translate("問題（必須ではない）", "Question (not mandatory)", JP), 
+                                help = translate("IELTS-Task2 の精度アップ", "suggested for IELTS-Task2", JP)
+                                )
+            user_input = get_user_input(style, JP)
+
+            submit_button = st.button(translate("採点", "Grade it!", JP),
+                                    key = "gradeit")
+
+        with col2:
+            st.header(translate("　　フィードバック", "  Feedback", JP))
+            temporary = st.empty()
+            t = temporary.container()
+            with t:
+                message = st.chat_message("assistant")
+                message.write(translate(
+                                "今日は君の言葉が芸術になる日£:。)",
+                                "Today is a blank canvas waiting for your linguistic masterpiece.", 
+                                JP))
+
+            if submit_button:
+                temporary.empty()
+                if not style:  # Check if style is not selected
+                    st.error("Please select a test style (Writing or Speaking) before grading.")
+                else:
+                    st.session_state.submit_clicked = True
+                    st.session_state.translation_completed = False
+
+                    if user_input:
+                        if style == "Speaking":
+                            # Transcribe audio
+                            user_input = client.audio.transcriptions.create(
+                                model="whisper-1",
+                                file=user_input,
+                                response_format="text"
+                            )
+                        #reset the thread
+                        if 'client' in st.session_state:
+                            del st.session_state.client
+                        if q:
+                            user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
+                        a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
+                        
+                        # Store the evaluation in session state after generating it
+                        st.session_state.evaluation = evaluation
+
+                        # Add new data and update Google Sheets
+                        new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
+                        update_google_sheets(conn, existing_data, new_data)
+                    else:
+                        no_input_error(JP)
+
+            # Handling the translation
+            translation_button_placeholder = st.empty()
+            tr = translation_button_placeholder.container()
+            if st.session_state.submit_clicked and not st.session_state.translation_completed:
+                if 'evaluation' in st.session_state:
+                    if tr.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
+                        # Translate the evaluation
+                        translated_text = deepl_translation(st.session_state.evaluation, "JA")
+                        st.session_state.translated_evaluation = translated_text
+                        st.session_state.translation_completed = True
+                        translation_button_placeholder.empty()
+                if st.session_state.translation_completed:
+                    temporary.empty()
+                    user_message = st.chat_message("user")
+                    user_message.write(user_input)
+                    translated_message = st.chat_message("assistant")
+                    translated_message.write(st.session_state.translated_evaluation)
+
+
+        #Question Chat Box
+        # question = st.chat_input(translate(
+        #     "フィードバックについて質問ができます。",
+        #     "You can ask further questions regarding the feedback", JP),
+        #     key = "question"
+        #     )
+        # if question: 
+        #     st.session_state.question_clicked = True   
+        #     get_GPT_response(option, grade, style, question)
+        # elif question and not user_input:
+        #     no_input_error(JP)
 
     if selected == translate("マイページ", "My History", JP):
-        handle_history_section(existing_data, JP)
+        user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
+        # Do not display user_email
+        display_data = user_data.drop(columns=['user_email'])
+
+        # st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
+        num_submissions = len(user_data)
+        st.metric(label="You have practiced", value=f"{num_submissions}", delta="tests")
+
+        # Initialize selected frameworks and sections
+        unique_frameworks = display_data['test_framework'].unique()
+        unique_sections = display_data['test_section'].unique()
+
+        # Layout for multiselect filters
+        col1, col2 = st.columns(2)
+
+        with col1:
+            # Multiselect for test_framework (Column B)
+            selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
+
+        with col2:
+            # Multiselect for test_section (Column C)
+            selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
+
+        # Filtering data based on selections
+        filtered_data = display_data[display_data['test_framework'].isin(selected_frameworks) & display_data['test_section'].isin(selected_sections)]
+
+        # Display filtered data (Columns D and E)
+        st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
+
+        # Progression graph
+        st.header(translate("スコア推移", "Progression Graph", JP))
+        if not filtered_data.empty:
+            cl1, cl2 = st.columns([4, 1])
+            with cl1:
+                # Create a new DataFrame specifically for plotting
+                plot_data = filtered_data.copy()
+
+                # Combine 'test_framework' and 'test_section' into a single column for plotting
+                plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
+
+                score_column = plot_data.columns[5]  # Adjust this index if necessary
+
+                # Create a dictionary to store the mapping of unique combinations to their starting x-values
+                combination_to_x = {}
+
+                # Initialize x_values as an empty list
+                x_values = []
+
+                # Iterate through the rows and calculate x-values
+                for index, row in plot_data.iterrows():
+                    combination = row['framework_section']
+                    if combination not in combination_to_x:
+                        # If it's the first occurrence of this combination, set x to 1
+                        combination_to_x[combination] = 1
+                    else:
+                        # Otherwise, increment x for this combination
+                        combination_to_x[combination] += 1
+                    x_values.append(combination_to_x[combination])
+
+                # Add the x_values as a new column in the plot_data DataFrame
+                plot_data['x_values'] = x_values
+
+                # Pivot the data for plotting
+                pivot_data = plot_data.pivot_table(index='x_values', columns='framework_section', values=score_column, aggfunc='first')
+
+                # Plot the line chart with specified x-axis values and default colors
+                st.line_chart(pivot_data)
+            with cl2:
+                # Group the data by 'framework_section' and calculate the average score for each group
+                grouped_data = plot_data.groupby('framework_section')
+                for group_name, group_data in grouped_data:
+                    # Calculate average score for this group
+                    average_score = group_data[score_column].mean()
+                    st.metric(label = "Average Score", value = f"{average_score:.2f}", delta = f"{group_name}")
+        else:
+            st.error("No data available for plotting.")
 
 if __name__ == "__main__":
     main()
