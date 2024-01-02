@@ -325,7 +325,7 @@ def main():
     )
 
     if selected == translate("採点添削", "Evaluation", JP):
-        handle_evaluation_section(conn, existing_data, JP)
+        handle_evaluation_section(short_logo, conn, existing_data, JP)
 
     if selected == translate("マイページ", "My History", JP):
         handle_history_section(existing_data, JP)

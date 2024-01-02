@@ -4,7 +4,7 @@ from Home import translate, set_test_configuration, get_user_input, get_GPT_resp
 
 
 
-def handle_evaluation_section(conn, existing_data, JP):
+def handle_evaluation_section(short_logo, conn, existing_data, JP):
     # Main Area
     col1, col2 = st.columns([1, 2])
     
