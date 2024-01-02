@@ -1,6 +1,9 @@
 import streamlit as st
 from Home import translate, set_test_configuration, get_user_input, get_GPT_response, add_new_data, update_google_sheets
 
+
+
+
 def handle_evaluation_section(conn, existing_data, JP):
     # Main Area
     col1, col2 = st.columns([1, 2])
@@ -81,3 +84,15 @@ def handle_evaluation_section(conn, existing_data, JP):
                 user_message.write(user_input)
                 translated_message = st.chat_message("assistant")
                 translated_message.write(st.session_state.translated_evaluation)
+
+    #Question Chat Box
+    # question = st.chat_input(translate(
+    #     "フィードバックについて質問ができます。",
+    #     "You can ask further questions regarding the feedback", JP),
+    #     key = "question"
+    #     )
+    # if question: 
+    #     st.session_state.question_clicked = True   
+    #     get_GPT_response(option, grade, style, question)
+    # elif question and not user_input:
+    #     no_input_error(JP)
