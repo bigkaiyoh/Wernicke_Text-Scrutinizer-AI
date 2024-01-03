@@ -1,7 +1,7 @@
-# streamlit_app.py
-
-import hmac
 import streamlit as st
+import hmac
+import pandas as pd
+from Home import establish_gsheets_connection, translate
 
 
 def check_password():
@@ -23,6 +23,8 @@ def check_password():
             st.secrets.passwords[st.session_state["username"]],
         ):
             st.session_state["password_correct"] = True
+            username = st.session_state.get("username")
+            st.session_state.school_sheet_name = username.split('_')[1]
             del st.session_state["password"]  # Don't store the username or password.
             del st.session_state["username"]
         else:
@@ -38,10 +40,63 @@ def check_password():
         st.error("😕 User not known or password incorrect")
     return False
 
+def get_emails_for_school(conn, school_sheet_name):
+    """Retrieves a list of student emails from the school's specific sheet."""
+    emails_df = conn.read(worksheet=school_sheet_name, usecols=[0], ttl=60)
+    # return emails_df.dropna().squeeze().tolist()
+    return emails_df
 
-if not check_password():
-    st.stop()
 
-# Main Streamlit app starts here
-st.write("Here goes your normal Streamlit app...")
-st.button("Click me")
+
+def display_data_and_metrics(filtered_data):
+    # Example metric: Total number of submissions
+    total_submissions = len(filtered_data)
+    st.metric(label="Total Submissions", value=total_submissions)
+
+    # Initialize selected frameworks and sections
+    display_data = filtered_data
+    unique_emails = display_data['user_email'].unique()
+    unique_frameworks = display_data['test_framework'].unique()
+    unique_sections = display_data['test_section'].unique()
+
+    # selectors for filtering data
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        selected_emails = st.multiselect('Select User Email(s):', unique_emails, default=list(unique_emails))
+    with col2:
+        selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
+    with col3:
+        selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
+
+    # Filtering data based on selections
+    filtered_data = display_data[
+        display_data['user_email'].isin(selected_emails) &
+        display_data['test_framework'].isin(selected_frameworks) &
+        display_data['test_section'].isin(selected_sections)
+    ]
+    # Display the data table
+    st.dataframe(filtered_data)
+
+def main():
+    # Admin Dashboard
+    st.title("Admin Dashboard")
+
+    # Check if authenticated
+    if not check_password():
+        st.stop()
+
+    # Use the imported function
+    conn, main_data = establish_gsheets_connection()
+
+    # Get the list of student emails for this school
+    school_emails = get_emails_for_school(conn, st.session_state.school_sheet_name)
+
+    # Filter your main dataset by these emails
+    # Assuming your main dataset is in another sheet and has a column 'Email'
+    filtered_data = main_data[main_data['user_email'].isin(school_emails)]
+
+    # Display the filtered data and metrics
+    display_data_and_metrics(filtered_data)
+
+if __name__ == "__main__":
+    main()

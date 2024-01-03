@@ -285,6 +285,52 @@ def deepl_translation(text, target_language):
     result = translator.translate_text(text, target_lang=target_language)
     return result.text
 
+def display_progression_graph(filtered_data, JP):
+    st.header(translate("スコア推移", "Progression Graph", JP))
+    if not filtered_data.empty:
+        cl1, cl2 = st.columns([4, 1])
+        with cl1:
+            # Create a new DataFrame specifically for plotting
+            plot_data = filtered_data.copy()
+
+            # Combine 'test_framework' and 'test_section' into a single column for plotting
+            plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
+
+            score_column = plot_data.columns[5]  # Adjust this index if necessary
+
+            # Create a dictionary to store the mapping of unique combinations to their starting x-values
+            combination_to_x = {}
+
+            # Initialize x_values as an empty list
+            x_values = []
+
+            # Iterate through the rows and calculate x-values
+            for index, row in plot_data.iterrows():
+                combination = row['framework_section']
+                if combination not in combination_to_x:
+                    # If it's the first occurrence of this combination, set x to 1
+                    combination_to_x[combination] = 1
+                else:
+                    # Otherwise, increment x for this combination
+                    combination_to_x[combination] += 1
+                x_values.append(combination_to_x[combination])
+
+            # Add the x_values as a new column in the plot_data DataFrame
+            plot_data['x_values'] = x_values
+
+            # Pivot the data for plotting
+            pivot_data = plot_data.pivot_table(index='x_values', columns='framework_section', values=score_column, aggfunc='first')
+
+            # Plot the line chart with specified x-axis values and default colors
+            st.line_chart(pivot_data)
+        with cl2:
+            # Group the data by 'framework_section' and calculate the average score for each group
+            grouped_data = plot_data.groupby('framework_section')
+            for group_name, group_data in grouped_data:
+                # Calculate average score for this group
+                average_score = group_data[score_column].mean()
+                st.metric(label = "Average Score", value = f"{average_score:.2f}", delta = f"{group_name}")
+
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png"
@@ -446,50 +492,8 @@ def main():
         st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
 
         # Progression graph
-        st.header(translate("スコア推移", "Progression Graph", JP))
-        if not filtered_data.empty:
-            cl1, cl2 = st.columns([4, 1])
-            with cl1:
-                # Create a new DataFrame specifically for plotting
-                plot_data = filtered_data.copy()
+        display_progression_graph(filtered_data, JP)
 
-                # Combine 'test_framework' and 'test_section' into a single column for plotting
-                plot_data['framework_section'] = plot_data['test_framework'] + "-" + plot_data['test_section']
-
-                score_column = plot_data.columns[5]  # Adjust this index if necessary
-
-                # Create a dictionary to store the mapping of unique combinations to their starting x-values
-                combination_to_x = {}
-
-                # Initialize x_values as an empty list
-                x_values = []
-
-                # Iterate through the rows and calculate x-values
-                for index, row in plot_data.iterrows():
-                    combination = row['framework_section']
-                    if combination not in combination_to_x:
-                        # If it's the first occurrence of this combination, set x to 1
-                        combination_to_x[combination] = 1
-                    else:
-                        # Otherwise, increment x for this combination
-                        combination_to_x[combination] += 1
-                    x_values.append(combination_to_x[combination])
-
-                # Add the x_values as a new column in the plot_data DataFrame
-                plot_data['x_values'] = x_values
-
-                # Pivot the data for plotting
-                pivot_data = plot_data.pivot_table(index='x_values', columns='framework_section', values=score_column, aggfunc='first')
-
-                # Plot the line chart with specified x-axis values and default colors
-                st.line_chart(pivot_data)
-            with cl2:
-                # Group the data by 'framework_section' and calculate the average score for each group
-                grouped_data = plot_data.groupby('framework_section')
-                for group_name, group_data in grouped_data:
-                    # Calculate average score for this group
-                    average_score = group_data[score_column].mean()
-                    st.metric(label = "Average Score", value = f"{average_score:.2f}", delta = f"{group_name}")
         else:
             st.error("No data available for plotting.")
 
