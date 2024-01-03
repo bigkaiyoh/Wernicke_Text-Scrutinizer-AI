@@ -1,7 +1,7 @@
 import streamlit as st
 import hmac
 import pandas as pd
-from Home import establish_gsheets_connection, translate
+from Home import establish_gsheets_connection, display_progression_graph, translate
 
 
 def check_password():
@@ -43,8 +43,11 @@ def check_password():
 def get_emails_for_school(conn, school_sheet_name):
     """Retrieves a list of student emails from the school's specific sheet."""
     emails_df = conn.read(worksheet=school_sheet_name, usecols=[0], ttl=60)
-    # return emails_df.dropna().squeeze().tolist()
-    return emails_df
+
+    # Drop NaN values and convert the DataFrame column to a list
+    emails_list = emails_df.dropna().iloc[:, 0].tolist()
+    
+    return emails_list
 
 
 
@@ -77,6 +80,12 @@ def display_data_and_metrics(filtered_data):
     # Display the data table
     st.dataframe(filtered_data)
 
+    # Progression Graph for each student
+    for email in selected_emails:
+        st.header(f"Progression Graph for {email}")
+        email_filtered_data = filtered_data[filtered_data['user_email'] == email]
+        display_progression_graph(email_filtered_data, JP=True, score_column=6)
+
 def main():
     # Admin Dashboard
     st.title("Admin Dashboard")
@@ -89,11 +98,11 @@ def main():
     conn, main_data = establish_gsheets_connection()
 
     # Get the list of student emails for this school
-    school_emails = get_emails_for_school(conn, st.session_state.school_sheet_name)
+    student_emails = get_emails_for_school(conn, st.session_state.school_sheet_name)
 
     # Filter your main dataset by these emails
     # Assuming your main dataset is in another sheet and has a column 'Email'
-    filtered_data = main_data[main_data['user_email'].isin(school_emails)]
+    filtered_data = main_data[main_data['user_email'].isin(student_emails)]
 
     # Display the filtered data and metrics
     display_data_and_metrics(filtered_data)
