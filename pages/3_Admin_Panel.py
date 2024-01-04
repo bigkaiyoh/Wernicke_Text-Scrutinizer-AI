@@ -11,6 +11,20 @@ import numpy as np
 if 'username' not in st.session_state:
     st.session_state['username'] = None
 
+st.set_page_config(
+    page_title = "Admin_Panel",
+    page_icon = "👤",
+)
+
+#Removing Hooter and Footer
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 def check_password():
     """Returns `True` if the user had a correct password."""
