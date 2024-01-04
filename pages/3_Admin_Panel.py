@@ -110,9 +110,9 @@ def display_data_and_metrics(filtered_data):
     def plot_recent_submissions(data):
         # Set the timezone to Japan Standard Time
         jst = pytz.timezone('Asia/Tokyo')
-        
-        # Get today's date in JST
         today = datetime.now(jst).date()
+
+        recent_data = data.copy()
         
         # Filter data for the last 7 days
         last_7_days = [today - timedelta(days=i) for i in range(7)]
