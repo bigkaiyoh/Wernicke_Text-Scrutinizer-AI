@@ -26,43 +26,32 @@ if 'username' not in st.session_state:
     st.session_state['username'] = None
 
 
-
 def check_password():
     """Returns `True` if the user had a correct password."""
-
+    
     def login_form():
         """Form with widgets to collect user information"""
         with st.form("Credentials"):
-            st.text_input("Username", key="username")
-            st.text_input("Password", type="password", key="password")
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
             submitted = st.form_submit_button("Log in")
+
             if submitted:
-                st.session_state["username"] = st.session_state.get("username", None)  # Set the username here
-                password_entered()
+                if username in st.secrets["passwords"] and hmac.compare_digest(
+                    password, st.secrets.passwords[username]
+                ):
+                    st.session_state["password_correct"] = True
+                    st.session_state['username'] = username
+                    st.session_state.school_sheet_name = username.split('_')[1]
+                    st.rerun()
+                else:
+                    st.session_state["password_correct"] = False
+                    st.error("😕 User not known or password incorrect")
 
-    def password_entered():
-        """Checks whether a password entered by the user is correct."""
-        if st.session_state["username"] in st.secrets[
-            "passwords"
-        ] and hmac.compare_digest(
-            st.session_state["password"],
-            st.secrets.passwords[st.session_state["username"]],
-        ):
-            st.session_state["password_correct"] = True
-            st.session_state.school_sheet_name = st.session_state.username.split('_')[1]
-            del st.session_state["password"]  # Don't store the username or password.
-        else:
-            st.session_state["password_correct"] = False
-            st.session_state.username = None
 
-    # Return True if the username + password is validated.
     if st.session_state.get("password_correct", False):
         return True
-
-    # Show inputs for username + password.
     login_form()
-    if "password_correct" in st.session_state:
-        st.error("😕 User not known or password incorrect")
     return False
 
 def logout():
