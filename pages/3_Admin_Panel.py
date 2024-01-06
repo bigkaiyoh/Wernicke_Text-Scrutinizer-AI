@@ -34,7 +34,10 @@ def check_password():
         with st.form("Credentials"):
             st.text_input("Username", key="username")
             st.text_input("Password", type="password", key="password")
-            st.form_submit_button("Log in", on_click=password_entered)
+            submitted = st.form_submit_button("Log in")
+            if submitted:
+                st.session_state["username"] = st.session_state.get("username", None)  # Set the username here
+                password_entered()
 
     def password_entered():
         """Checks whether a password entered by the user is correct."""
@@ -45,7 +48,6 @@ def check_password():
             st.secrets.passwords[st.session_state["username"]],
         ):
             st.session_state["password_correct"] = True
-            st.session_state.username = st.session_state["username"]
             st.session_state.school_sheet_name = st.session_state.username.split('_')[1]
             del st.session_state["password"]  # Don't store the username or password.
         else:
@@ -97,15 +99,14 @@ def display_data_and_metrics(filtered_data):
         unique_sections = display_data['test_section'].unique()
 
         # selectors for filtering data
-        col1, col2, col3, col4 = st.columns(4)
+        selected_emails = st.multiselect('Select User Email(s):', unique_emails, default=list(unique_emails))
+        col1, col2, col3 = st.columns(3)
         with col1:
             # Allow users to select a single date or a range
             selected_date = st.date_input('Select Date(s):', [])
         with col2:
-            selected_emails = st.multiselect('Select User Email(s):', unique_emails, default=list(unique_emails))
-        with col3:
             selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
-        with col4:
+        with col3:
             selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
 
         # If a range of dates is selected, filter between those dates
