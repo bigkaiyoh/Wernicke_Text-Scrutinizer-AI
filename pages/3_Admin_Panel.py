@@ -7,15 +7,10 @@ import pytz
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Initialize 'username' in session state if it's not already set
-if 'username' not in st.session_state:
-    st.session_state['username'] = None
-
 st.set_page_config(
     page_title = "Admin_Panel",
     page_icon = "👤",
 )
-
 #Removing Hooter and Footer
 hide_st_style = """
             <style>
@@ -25,6 +20,12 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
+# Initialize 'username' in session state if it's not already set
+if 'username' not in st.session_state:
+    st.session_state['username'] = None
+
+
 
 def check_password():
     """Returns `True` if the user had a correct password."""
