@@ -1,11 +1,15 @@
 import streamlit as st
 import hmac
 import pandas as pd
-from Home import establish_gsheets_connection, display_progression_graph, add_bottom, translate
+from Home import establish_gsheets_connection, display_progression_graph, add_bottom, translate, run_assistant
 from datetime import datetime, timedelta
 import pytz
 import matplotlib.pyplot as plt
 import numpy as np
+import json
+
+#Secret Keys
+error_assistant = st.secrets.error_assistant
 
 st.set_page_config(
     page_title = "Admin_Panel",
@@ -82,11 +86,13 @@ def display_data_and_metrics(filtered_data):
         st.metric(label="from", value=todays_total_users, delta = "students")
     
     def filters(filtered_data):
+        # Convert the 'date' column to datetime type
+        filtered_data['date'] = pd.to_datetime(filtered_data['date'])
+
         # Initialize selected frameworks and sections
-        display_data = filtered_data
-        unique_emails = display_data['user_email'].unique()
-        unique_frameworks = display_data['test_framework'].unique()
-        unique_sections = display_data['test_section'].unique()
+        unique_emails = filtered_data['user_email'].unique()
+        unique_frameworks = filtered_data['test_framework'].unique()
+        unique_sections = filtered_data['test_section'].unique()
 
         # selectors for filtering data
         selected_emails = st.multiselect('Select User Email(s):', unique_emails, default=list(unique_emails))
@@ -99,22 +105,26 @@ def display_data_and_metrics(filtered_data):
         with col3:
             selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
 
-        # If a range of dates is selected, filter between those dates
+        # Filter based on selected dates
         if len(selected_date) == 2:
             start_date, end_date = selected_date
             filtered_data = filtered_data[
-                (filtered_data['date'] >= start_date) & (filtered_data['date'] <= end_date)
+                (filtered_data['date'].dt.date >= start_date) & 
+                (filtered_data['date'].dt.date <= end_date)
             ]
         elif len(selected_date) == 1:
-            filtered_data = filtered_data[filtered_data['date'] == selected_date[0]]
-        
+            filtered_data = filtered_data[
+                filtered_data['date'].dt.date == selected_date[0]
+            ]
+
         # Continue to filter based on other selections
         filtered_data = filtered_data[
-            display_data['user_email'].isin(selected_emails) &
-            display_data['test_framework'].isin(selected_frameworks) &
-            display_data['test_section'].isin(selected_sections)
+            filtered_data['user_email'].isin(selected_emails) &
+            filtered_data['test_framework'].isin(selected_frameworks) &
+            filtered_data['test_section'].isin(selected_sections)
         ]
         return filtered_data, selected_emails
+
 
     def plot_recent_submissions(data):
         # Set the timezone to Japan Standard Time
@@ -163,13 +173,32 @@ def display_data_and_metrics(filtered_data):
         filtered_data, selected_emails = filters(filtered_data)
     
     # Display the data table
-    st.dataframe(filtered_data)
+    st.dataframe(filtered_data[['timestamp', 'user_email', 'test_framework', 'test_section', 'user_input', 'Wernicke_output']])
+
+    # error_analyzer(filtered_data)
 
     # Progression Graph for each student
     for email in selected_emails:
         st.header(f"Progression Graph for {email}")
         email_filtered_data = filtered_data[filtered_data['user_email'] == email]
         display_progression_graph(email_filtered_data, JP=True, score_column=6)
+
+def save_filtered_data_as_json(filtered_data):
+    # Select specific columns and convert to JSON string
+    selected_columns = filtered_data[['test_framework', 'test_section', 'user_input', 'Wernicke_output']]
+    json_data = selected_columns.to_json(orient='records')
+
+    return json_data
+
+def error_analyzer(filtered_data):
+    # Place the button above the table
+    if st.button('Analyze Common Errors', key='analyze_errors_btn'):
+        json_data = save_filtered_data_as_json(filtered_data)
+        st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
+        
+    if 'assistant_response' in st.session_state:
+        st.header("Common Errors Analysis")
+        st.write(st.session_state.assistant_response)
 
 def main():
     # Admin Dashboard

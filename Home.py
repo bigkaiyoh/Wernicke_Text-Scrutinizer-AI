@@ -154,7 +154,7 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
     else:
         return assistant_id, None
 
-def run_assistant(assistant_id, txt, return_content=False):
+def run_assistant(assistant_id, txt, return_content=False, display_chat=True):
     if 'client' not in st.session_state:
         st.session_state.client = OpenAI(api_key=api)
 
@@ -197,8 +197,9 @@ def run_assistant(assistant_id, txt, return_content=False):
                         content = msg.content[0].text.value
                         
                         # Use st.chat_message to display the message based on the role
-                        with st.chat_message(role):
-                            st.write(content)
+                        if display_chat:
+                            with st.chat_message(role):
+                                st.write(content)
                     break
                 # Wait for a short time before checking the status again
                 time.sleep(1)
