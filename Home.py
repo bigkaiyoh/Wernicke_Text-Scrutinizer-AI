@@ -155,6 +155,7 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
         return assistant_id, None
 
 def run_assistant(assistant_id, txt, return_content=False, display_chat=True):
+    content = None
     if 'client' not in st.session_state:
         st.session_state.client = OpenAI(api_key=api)
 
