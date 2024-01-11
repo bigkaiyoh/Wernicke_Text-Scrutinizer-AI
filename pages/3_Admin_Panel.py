@@ -181,7 +181,7 @@ def display_data_and_metrics(filtered_data):
     # Progression Graph for each student
     st.header("Progression Graph")
     for email in selected_emails:
-        st.subheader(f"[{email}]")
+        st.subheader(f"progress of {email}")
         email_filtered_data = filtered_data[filtered_data['user_email'] == email]
         display_progression_graph(email_filtered_data, JP=True, score_column=6)
 
