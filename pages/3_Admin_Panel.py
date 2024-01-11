@@ -212,15 +212,16 @@ def summarize_feedback(filtered_data):
 
 def error_analyzer(filtered_data):
     json_data = None
-    
+
     if st.button('Analyze Common Errors', key='analyze_errors_btn'):
         json_data = summarize_feedback(filtered_data)
         st.write(json_data)
 
-    st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
-    if 'assistant_response' in st.session_state:
-        st.header("Common Errors Analysis")
-        st.write(st.session_state.assistant_response)
+    if json_data:
+        st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
+        if 'assistant_response' in st.session_state:
+            st.header("Common Errors Analysis")
+            st.write(st.session_state.assistant_response)
 
 def main():
     # Admin Dashboard
