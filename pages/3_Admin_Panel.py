@@ -179,10 +179,12 @@ def display_data_and_metrics(filtered_data):
     error_analyzer(filtered_data)
 
     # Progression Graph for each student
-    for email in selected_emails:
-        st.header(f"Progression Graph for {email}")
-        email_filtered_data = filtered_data[filtered_data['user_email'] == email]
-        display_progression_graph(email_filtered_data, JP=True, score_column=6)
+    st.header("Progression Graph")
+    with st.expander("view graphs", expanded=True):
+        for email in selected_emails:
+            st.subheader(f"{email}")
+            email_filtered_data = filtered_data[filtered_data['user_email'] == email]
+            display_progression_graph(email_filtered_data, JP=True, score_column=6)
 
 def summarize_feedback(filtered_data):
     # Regex patterns for each section
