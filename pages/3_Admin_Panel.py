@@ -15,6 +15,7 @@ error_assistant = st.secrets.error_assistant
 st.set_page_config(
     page_title = "Admin_Panel",
     page_icon = "👤",
+    layout = "wide"
 )
 #Removing Hooter and Footer
 hide_st_style = """
