@@ -7,6 +7,7 @@ import pytz
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+import re
 
 #Secret Keys
 error_assistant = st.secrets.error_assistant
@@ -175,7 +176,7 @@ def display_data_and_metrics(filtered_data):
     # Display the data table
     st.dataframe(filtered_data[['timestamp', 'user_email', 'test_framework', 'test_section', 'user_input', 'Wernicke_output']])
 
-    # error_analyzer(filtered_data)
+    error_analyzer(filtered_data)
 
     # Progression Graph for each student
     for email in selected_emails:
@@ -183,19 +184,40 @@ def display_data_and_metrics(filtered_data):
         email_filtered_data = filtered_data[filtered_data['user_email'] == email]
         display_progression_graph(email_filtered_data, JP=True, score_column=6)
 
-def save_filtered_data_as_json(filtered_data):
-    # Select specific columns and convert to JSON string
-    selected_columns = filtered_data[['test_framework', 'test_section', 'user_input', 'Wernicke_output']]
-    json_data = selected_columns.to_json(orient='records')
+def summarize_feedback(filtered_data):
+    # Regex patterns for each section
+    patterns = {
+        "Identify and Explain Errors": r"\*\*Identify and Explain Errors:\*\*(.*?)\*\*",
+        "Advanced Language Suggestions": r"\*\*Advanced Language Suggestions:\*\*(.*?)\*\*",
+        "Feedback on Structure and Coherence": r"\*\*Feedback on Structure and Coherence:\*\*(.*?)(?=\*\*|$)"
+    }
 
-    return json_data
+    # Initialize aggregated feedback dictionary
+    aggregated_feedback = {
+        "Identify and Explain Errors": [],
+        "Advanced Language Suggestions": [],
+        "Feedback on Structure and Coherence": []
+    }
+
+    # Process each feedback entry
+    for feedback in filtered_data['Wernicke_output']:
+        for section, pattern in patterns.items():
+            match = re.search(pattern, feedback, re.DOTALL)
+            if match and match.group(1).strip():
+                aggregated_feedback[section].append(match.group(1).strip())
+
+    # Convert the aggregated feedback to a JSON-like string
+    json_like_string = json.dumps(aggregated_feedback, indent=4)
+    return json_like_string
 
 def error_analyzer(filtered_data):
-    # Place the button above the table
+    json_data = None
+    
     if st.button('Analyze Common Errors', key='analyze_errors_btn'):
-        json_data = save_filtered_data_as_json(filtered_data)
-        st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
-        
+        json_data = summarize_feedback(filtered_data)
+        st.write(json_data)
+
+    st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
     if 'assistant_response' in st.session_state:
         st.header("Common Errors Analysis")
         st.write(st.session_state.assistant_response)
