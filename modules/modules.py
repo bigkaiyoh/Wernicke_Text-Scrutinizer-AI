@@ -41,3 +41,17 @@ def plot_recent_submissions(data):
         
         # Display the plot
         st.pyplot(plt)
+
+def filter_by_dates(data, selected_date):
+    # Filter based on selected dates
+    if len(selected_date) == 2:
+        start_date, end_date = selected_date
+        data = data[
+            (data['date'].dt.date >= start_date) & 
+            (data['date'].dt.date <= end_date)
+        ]
+    elif len(selected_date) == 1:
+        data = data[
+            data['date'].dt.date == selected_date[0]
+        ]
+    return data

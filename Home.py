@@ -8,7 +8,7 @@ import deepl
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
-from modules.modules import plot_recent_submissions
+from modules.modules import plot_recent_submissions, filter_by_dates
 
 
 #Secret keys
@@ -491,18 +491,25 @@ def main():
         unique_sections = display_data['test_section'].unique()
 
         # Layout for multiselect filters
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
 
         with col1:
+            # Allow users to select a single date or a range
+            selected_date = st.date_input('Select Date(s):', [])
+        with col2:
             # Multiselect for test_framework (Column B)
             selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
 
-        with col2:
+        with col3:
             # Multiselect for test_section (Column C)
             selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
 
+        # Filter based on selected dates
+        filtered_data = filter_by_dates(display_data, selected_date)
         # Filtering data based on selections
-        filtered_data = display_data[display_data['test_framework'].isin(selected_frameworks) & display_data['test_section'].isin(selected_sections)]
+        filtered_data = display_data[
+            display_data['test_framework'].isin(selected_frameworks) & 
+            display_data['test_section'].isin(selected_sections)]
 
         # Display filtered data (Columns D and E)
         st.dataframe(filtered_data[['user_input', 'Wernicke_output']])

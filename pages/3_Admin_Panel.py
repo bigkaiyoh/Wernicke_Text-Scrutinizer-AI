@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import numpy as np
 import json
 import re
-from modules.modules import todays_total_submissions, plot_recent_submissions
+from modules.modules import todays_total_submissions, plot_recent_submissions, filter_by_dates
 
 #Secret Keys
 error_assistant = st.secrets.error_assistant
@@ -96,16 +96,7 @@ def display_data_and_metrics(filtered_data):
             selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
 
         # Filter based on selected dates
-        if len(selected_date) == 2:
-            start_date, end_date = selected_date
-            filtered_data = filtered_data[
-                (filtered_data['date'].dt.date >= start_date) & 
-                (filtered_data['date'].dt.date <= end_date)
-            ]
-        elif len(selected_date) == 1:
-            filtered_data = filtered_data[
-                filtered_data['date'].dt.date == selected_date[0]
-            ]
+        filtered_data = filter_by_dates(filtered_data, selected_date)
 
         # Continue to filter based on other selections
         filtered_data = filtered_data[
