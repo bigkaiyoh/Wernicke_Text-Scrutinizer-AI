@@ -488,10 +488,10 @@ def main():
             plot_recent_submissions(display_data)
 
         # Filter based on selected dates
-        display_data = filters(display_data, apply_email_filter=False)
+        filtered_data = filters(display_data, apply_email_filter=False)
         
         # Display filtered data (Columns D and E)
-        st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
+        st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
