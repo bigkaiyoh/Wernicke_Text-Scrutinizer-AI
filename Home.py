@@ -469,7 +469,7 @@ def main():
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email and add a date row
         display_data = user_data.drop(columns=['user_email'])
-        display_data['date'] = pd.to_datetime(display_data['timestamp']).dt.date
+        display_data['date'] = pd.to_datetime(display_data['timestamp']).dt.strftime('%Y-%m-%d')
 
         cl1, cl2 = st.columns([2, 3])
         with cl1:
