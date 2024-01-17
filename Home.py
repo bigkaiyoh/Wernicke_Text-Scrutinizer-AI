@@ -470,12 +470,13 @@ def main():
         display_data = user_data.drop(columns=['user_email'])
         display_data['date'] = pd.to_datetime(display_data['timestamp']).dt.date
 
-        # st.write(translate("これまでのデータ:", "Your Past Submissions:", JP))
-        num_submissions = len(user_data)
-        st.metric(label="You have practiced", value=f"{num_submissions}", delta="tests")
-
         cl1, cl2 = st.columns([2, 3])
         with cl1:
+            # total submission
+            st.subheader(translate("提出履歴:", "Your Past Submissions:", JP))
+            num_submissions = len(user_data)
+            st.metric(label="You have practiced", value=f"{num_submissions}", delta="tests")
+            # today's submission
             jst = pytz.timezone('Asia/Tokyo')
             today = datetime.now(jst).date()
             todays_data = display_data[display_data['date'] == today]
