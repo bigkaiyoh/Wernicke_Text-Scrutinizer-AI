@@ -469,7 +469,7 @@ def main():
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email and add a date row
         display_data = user_data.drop(columns=['user_email'])
-        display_data['date'] = pd.to_datetime(display_data['timestamp']).dt.strftime('%Y-%m-%d')
+        display_data['date'] = pd.to_datetime(display_data['timestamp']).dt.date
 
         cl1, cl2 = st.columns([2, 3])
         with cl1:
@@ -490,6 +490,9 @@ def main():
         # Filter based on selected dates
         filtered_data = filters(display_data, apply_email_filter=False)
         
+        # Convert 'date' to string format for display
+        filtered_data['date'] = filtered_data['date'].dt.strftime('%Y-%m-%d')
+
         # Display filtered data (Columns D and E)
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
