@@ -488,12 +488,11 @@ def main():
             plot_recent_submissions(display_data)
 
         # Filter based on selected dates
+        st.header("Filter data")
         filtered_data = filters(display_data, apply_email_filter=False)
         
-        # Convert 'date' to string format for display
+        # Display filtered data
         filtered_data['date'] = filtered_data['date'].dt.strftime('%Y-%m-%d')
-
-        # Display filtered data (Columns D and E)
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
         # Progression graph
