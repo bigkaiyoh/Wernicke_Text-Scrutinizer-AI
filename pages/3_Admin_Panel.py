@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import numpy as np
 import json
 import re
-from modules.modules import todays_total_submissions, plot_recent_submissions, filter_by_dates
+from modules.modules import todays_total_submissions, plot_recent_submissions, filters
 
 #Secret Keys
 error_assistant = st.secrets.error_assistant
@@ -75,39 +75,6 @@ def get_emails_for_school(conn, school_sheet_name):
     return emails_list
 
 def display_data_and_metrics(filtered_data):
-    def filters(filtered_data):
-        # Convert the 'date' column to datetime type
-        filtered_data['date'] = pd.to_datetime(filtered_data['date'])
-
-        # Initialize selected frameworks and sections
-        unique_emails = filtered_data['user_email'].unique()
-        unique_frameworks = filtered_data['test_framework'].unique()
-        unique_sections = filtered_data['test_section'].unique()
-
-        # selectors for filtering data
-        selected_emails = st.multiselect('Select User Email(s):', unique_emails, default=list(unique_emails))
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            # Allow users to select a single date or a range
-            selected_date = st.date_input('Select Date(s):', [])
-        with col2:
-            selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
-        with col3:
-            selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
-
-        # Filter based on selected dates
-        filtered_data = filter_by_dates(filtered_data, selected_date)
-
-        # Continue to filter based on other selections
-        filtered_data = filtered_data[
-            filtered_data['user_email'].isin(selected_emails) &
-            filtered_data['test_framework'].isin(selected_frameworks) &
-            filtered_data['test_section'].isin(selected_sections)
-        ]
-        return filtered_data, selected_emails
-
-
-    # ------ STARTS HERE ------
     filtered_data['date'] = pd.to_datetime(filtered_data['timestamp']).dt.date
 
     # Today's total submissions

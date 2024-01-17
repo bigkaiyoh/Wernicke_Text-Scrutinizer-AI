@@ -8,7 +8,7 @@ import deepl
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
-from modules.modules import plot_recent_submissions, filter_by_dates
+from modules.modules import plot_recent_submissions, filters
 
 
 #Secret keys
@@ -464,6 +464,7 @@ def main():
         # elif question and not user_input:
         #     no_input_error(JP)
 
+
     if selected == translate("マイページ", "My History", JP):
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email and add a date row
@@ -486,33 +487,11 @@ def main():
         with cl2:
             plot_recent_submissions(display_data)
 
-        # Initialize selected frameworks and sections
-        unique_frameworks = display_data['test_framework'].unique()
-        unique_sections = display_data['test_section'].unique()
-
-        # Layout for multiselect filters
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-            # Allow users to select a single date or a range
-            selected_date = st.date_input('Select Date(s):', [])
-        with col2:
-            # Multiselect for test_framework (Column B)
-            selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
-
-        with col3:
-            # Multiselect for test_section (Column C)
-            selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
-
         # Filter based on selected dates
-        filtered_data = filter_by_dates(display_data, selected_date)
-        # Filtering data based on selections
-        filtered_data = display_data[
-            display_data['test_framework'].isin(selected_frameworks) & 
-            display_data['test_section'].isin(selected_sections)]
-
+        display_data = filters(display_data, apply_email_filter=False)
+        
         # Display filtered data (Columns D and E)
-        st.dataframe(filtered_data[['user_input', 'Wernicke_output']])
+        st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))

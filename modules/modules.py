@@ -59,7 +59,6 @@ def plot_recent_submissions(data):
     # Display the plot
     st.pyplot(plt)
 
-
 def filter_by_dates(data, selected_date):
     # Filter based on selected dates
     if len(selected_date) == 2:
@@ -73,3 +72,43 @@ def filter_by_dates(data, selected_date):
             data['date'].dt.date == selected_date[0]
         ]
     return data
+
+def filters(filtered_data, apply_email_filter=True):
+    # Convert the 'date' column to datetime type
+    filtered_data['date'] = pd.to_datetime(filtered_data['date'])
+
+    # Initialize selected frameworks and sections
+    unique_frameworks = filtered_data['test_framework'].unique()
+    unique_sections = filtered_data['test_section'].unique()
+
+    # Container for selected emails - only used if email filtering is applied
+    if apply_email_filter:
+        unique_emails = filtered_data['user_email'].unique()
+        selected_emails = st.multiselect('Select User Email(s):', unique_emails, default=list(unique_emails))
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        # Allow users to select a single date or a range
+        selected_date = st.date_input('Select Date(s):', [])
+    with col2:
+        selected_frameworks = st.multiselect('Select Test Framework(s):', unique_frameworks, default=list(unique_frameworks))
+    with col3:
+        selected_sections = st.multiselect('Select Test Section(s):', unique_sections, default=list(unique_sections))
+
+    # Filter based on selected dates
+    filtered_data = filter_by_dates(filtered_data, selected_date)
+
+    # Continue to filter based on other selections
+    if apply_email_filter:
+        filtered_data = filtered_data[filtered_data['user_email'].isin(selected_emails)]
+
+    filtered_data = filtered_data[
+        filtered_data['test_framework'].isin(selected_frameworks) &
+        filtered_data['test_section'].isin(selected_sections)
+    ]
+
+    # Conditionally return selected_emails
+    if apply_email_filter:
+        return filtered_data, selected_emails
+    else:
+        return filtered_data
