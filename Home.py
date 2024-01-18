@@ -403,35 +403,36 @@ def main():
 
             if submit_button:
                 temporary.empty()
-                if not style:  # Check if style is not selected
-                    st.error("Please select a test style (Writing or Speaking) before grading.")
-                else:
-                    st.session_state.submit_clicked = True
-                    st.session_state.translation_completed = False
-
-                    if user_input:
-                        if style == "Speaking":
-                            # Transcribe audio
-                            user_input = client.audio.transcriptions.create(
-                                model="whisper-1",
-                                file=user_input,
-                                response_format="text"
-                            )
-                        #reset the thread
-                        if 'client' in st.session_state:
-                            del st.session_state.client
-                        if q:
-                            user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
-                        a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
-                        
-                        # Store the evaluation in session state after generating it
-                        st.session_state.evaluation = evaluation
-
-                        # Add new data and update Google Sheets
-                        new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
-                        update_google_sheets(conn, existing_data, new_data)
+                with st.container(height = 800):
+                    if not style:  # Check if style is not selected
+                        st.error("Please select a test style (Writing or Speaking) before grading.")
                     else:
-                        no_input_error(JP)
+                        st.session_state.submit_clicked = True
+                        st.session_state.translation_completed = False
+
+                        if user_input:
+                            if style == "Speaking":
+                                # Transcribe audio
+                                user_input = client.audio.transcriptions.create(
+                                    model="whisper-1",
+                                    file=user_input,
+                                    response_format="text"
+                                )
+                            #reset the thread
+                            if 'client' in st.session_state:
+                                del st.session_state.client
+                            if q:
+                                user_input = "Question: " + q + "\n\n" + "Answer: " + user_input
+                            a_id, evaluation = get_GPT_response(option, grade, style, user_input, return_content=True)
+                            
+                            # Store the evaluation in session state after generating it
+                            st.session_state.evaluation = evaluation
+
+                            # Add new data and update Google Sheets
+                            new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
+                            update_google_sheets(conn, existing_data, new_data)
+                        else:
+                            no_input_error(JP)
 
             # Handling the translation
             translation_button_placeholder = st.empty()
