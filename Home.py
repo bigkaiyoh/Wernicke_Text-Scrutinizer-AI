@@ -403,7 +403,7 @@ def main():
 
             if submit_button:
                 temporary.empty()
-                with st.container(height = 800):
+                with st.container(height=800, border=False):
                     if not style:  # Check if style is not selected
                         st.error("Please select a test style (Writing or Speaking) before grading.")
                     else:
