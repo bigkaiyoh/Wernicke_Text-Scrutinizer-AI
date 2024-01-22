@@ -4,12 +4,4 @@ st-gsheets-connection
 deepl
 streamlit_option_menu
 matplotlib
-flask
-flask-cors
-requests
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
-google-api-python-client
-python-dotenv
-gunicorn
+
