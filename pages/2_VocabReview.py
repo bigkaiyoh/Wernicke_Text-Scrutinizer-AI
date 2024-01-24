@@ -174,7 +174,7 @@ def main():
             with c1:
                 manage_word_form('add', st.query_params['user'])
             with c2:
-                manage_word_form('add', st.query_params['user'])
+                manage_word_form('delete', st.query_params['user'])
         else:
             st.subheader(translate("新しく覚えた単語を追加しましょう！", "Add a word you newly learned!", JP))
             manage_word_form('add', st.query_params['user'])
