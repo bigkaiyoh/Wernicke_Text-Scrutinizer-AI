@@ -91,33 +91,24 @@ def main():
         if words:
             print_words(words, JP)
 
-            # Use a common state variable for both text inputs
-            if 'word_input' not in st.session_state:
-                st.session_state.word_input = ''
             c1, c2 = st.columns(2)
             with c1:
-                added_word = st.text_input("Enter a word to add 👇", 
-                                           key="word_input", 
-                                           value=st.session_state.word_input
-                                           )
+                added_word = st.text_input("Enter a word to add 👇", key="new_word")
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
                         st.session_state['added_success'] = True
-                        st.session_state.word_input = ''
+                        st.session_state.new_word = ''
                         st.rerun()
                 # Handle success message
                 if st.session_state.get('added_success', False):
                     st.success("Word added successfully!")
                     st.session_state['added_success'] = False
             with c2:
-                deleted_word = st.text_input("Enter a word to delete 👇", 
-                                             key="word_input", 
-                                             value=st.session_state.word_input
-                                             )
+                deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
                         st.session_state['deleted_success'] = True
-                        st.session_state.word_input = ''
+                        st.session_state.delete_word = ''
                         st.rerun()
                 # Handle success message
                 if st.session_state.get('deleted_success', False):
