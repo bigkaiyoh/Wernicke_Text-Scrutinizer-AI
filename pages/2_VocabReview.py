@@ -56,25 +56,54 @@ def handle_chat_input(JP):
         st.session_state.chat_history.extend([("user", user_input), ("assistant", response)])
         display_chat_history()
 
-def add_word_to_sheet(user_id, word):
-    # Replace with the URL of your Flask backend
-    request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/add_word'
-    response = requests.post(request_url, json={'user_id': user_id, 'word': word})
-    if response.status_code == 200:
-        return True
-    else:
-        st.error(f'Failed to add word. Status code: {response.status_code}')
-        return False
 
-def delete_word_from_sheet(user_id, word):
-    # Replace with the URL of your Flask backend
-    request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/delete_word'
-    response = requests.post(request_url, json={'user_id': user_id, 'word': word})
-    if response.status_code == 200:
-        return True
-    else:
-        st.error(f'Failed to delete word. Status code: {response.status_code}')
-        return False
+def add_word_form():
+    def add_to_sheet(user_id, word):
+        # Replace with the URL of your Flask backend
+        request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/add_word'
+        response = requests.post(request_url, json={'user_id': user_id, 'word': word})
+        if response.status_code == 200:
+            return True
+        else:
+            st.error(f'Failed to add word. Status code: {response.status_code}')
+            return False
+        
+    # -------- Start Here --------
+    with st.form(key='add_word_form', clear_on_submit=True, border=False):
+        added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
+        submit_add = st.form_submit_button("Add Word")
+        if submit_add:
+            if add_to_sheet(st.query_params['user'], added_word):
+                st.session_state['added_success'] = True
+                st.rerun()
+    # Handle success message
+    if st.session_state.get('added_success', False):
+        st.success("Word added successfully!")
+        st.session_state['added_success'] = False
+
+def delete_word_form():
+    def delete_from_sheet(user_id, word):
+        # Replace with the URL of your Flask backend
+        request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/delete_word'
+        response = requests.post(request_url, json={'user_id': user_id, 'word': word})
+        if response.status_code == 200:
+            return True
+        else:
+            st.error(f'Failed to delete word. Status code: {response.status_code}')
+            return False
+        
+    # -------- Start Here --------
+    with st.form(key='delete_word_form', clear_on_submit=True, border=False):
+        deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
+        submit_delete = st.form_submit_button("Delete Word")
+        if submit_delete:
+            if delete_from_sheet(st.query_params['user'], deleted_word):
+                st.session_state['deleted_success'] = True
+                st.rerun()
+    # Handle success message
+    if st.session_state.get('deleted_success', False):
+        st.success("Word deleted successfully!")
+        st.session_state['deleted_success'] = False
 
 def main():
     # Add logo to the sidebar
@@ -98,33 +127,14 @@ def main():
 
         if words:
             print_words(words, JP)
-
             c1, c2 = st.columns(2)
             with c1:
-                with st.form(key='add_word_form', clear_on_submit=True, border=False):
-                    added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
-                    submit_add = st.form_submit_button("Add Word")
-                    if submit_add:
-                        if add_word_to_sheet(st.query_params['user'], added_word):
-                            st.session_state['added_success'] = True
-                            st.rerun()
-                # Handle success message
-                if st.session_state.get('added_success', False):
-                    st.success("Word added successfully!")
-                    st.session_state['added_success'] = False
+                add_word_form()
             with c2:
-                with st.form(key='delete_word_form', clear_on_submit=True, border=False):
-                    deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
-                    submit_delete = st.form_submit_button("Delete Word")
-                    if submit_delete:
-                        if delete_word_from_sheet(st.query_params['user'], deleted_word):
-                            st.session_state['deleted_success'] = True
-                            st.rerun()
-                    
-                # Handle success message
-                if st.session_state.get('deleted_success', False):
-                    st.success("Word deleted successfully!")
-                    st.session_state['deleted_success'] = False
+                delete_word_form()
+        else:
+            st.subheader(translate("新しく覚えた単語を追加しましょう！", "Add a word you newly learned!", JP))
+            add_word_form()
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
