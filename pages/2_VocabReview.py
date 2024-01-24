@@ -64,6 +64,16 @@ def add_word_to_sheet(user_id, word):
         st.error(f'Failed to add word. Status code: {response.status_code}')
         return False
 
+def delete_word_from_sheet(user_id, word):
+    # Replace with the URL of your Flask backend
+    request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/delete_word'
+    response = requests.post(request_url, json={'user_id': user_id, 'word': word})
+    if response.status_code == 200:
+        return True
+    else:
+        st.error(f'Failed to delete word. Status code: {response.status_code}')
+        return False
+
 def main():
     # Add logo to the sidebar
     st.title("Vocab Review!")
@@ -88,7 +98,11 @@ def main():
                         st.rerun()
                         st.success("Word added successfully!")
             with c2:
-                st.write("")
+                deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
+                if st.button("Delete Word", key="delete_word_btn"):
+                    if delete_word_from_sheet(st.query_params['user'], deleted_word):
+                        st.success("Word deleted successfully!")
+                        st.rerun()
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
