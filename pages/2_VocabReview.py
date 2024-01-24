@@ -78,6 +78,7 @@ def make_request(endpoint, json_data):
     if response.status_code == 200:
         return True
     else:
+        st.error(f'Status code: {response.status_code}')
         return False
 
 def add_word_form():
@@ -85,7 +86,7 @@ def add_word_form():
         added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
         submit_add = st.form_submit_button("Add Word")
         if submit_add:
-            if make_request("add", {'user_id': st.query_params['user'], 'word': added_word}):
+            if make_request("add_word", {'user_id': st.query_params['user'], 'word': added_word}):
                 st.session_state['added_success'] = True
                 st.rerun()
             else:
@@ -100,7 +101,7 @@ def delete_word_form():
         deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
         submit_delete = st.form_submit_button("Delete Word")
         if submit_delete:
-            if make_request("delete", {'user_id': st.query_params['user'], 'word': deleted_word}):
+            if make_request("delete_word", {'user_id': st.query_params['user'], 'word': deleted_word}):
                 st.session_state['deleted_success'] = True
                 st.rerun()
             else:
