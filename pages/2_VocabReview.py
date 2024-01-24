@@ -94,7 +94,7 @@ def main():
 
             c1, c2 = st.columns(2)
             with c1:
-                with st.form(key='add_word_form', clear_on_submit=True):
+                with st.form(key='add_word_form', clear_on_submit=True, border=False):
                     added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
                     submit_add = st.form_submit_button("Add Word")
                     if submit_add:
@@ -106,11 +106,14 @@ def main():
                     st.success("Word added successfully!")
                     st.session_state['added_success'] = False
             with c2:
-                deleted_word = st.text_input("Enter a word to delete 👇")
-                if st.button("Delete Word", key="delete_word_btn"):
-                    if delete_word_from_sheet(st.query_params['user'], deleted_word):
-                        st.session_state['deleted_success'] = True
-                        st.rerun()
+                with st.form(key='delete_word_form', clear_on_submit=True, border=False):
+                    deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
+                    submit_delete = st.form_submit_button("Delete Word")
+                    if submit_delete:
+                        if delete_word_from_sheet(st.query_params['user'], deleted_word):
+                            st.session_state['deleted_success'] = True
+                            st.rerun()
+                    
                 # Handle success message
                 if st.session_state.get('deleted_success', False):
                     st.success("Word deleted successfully!")
