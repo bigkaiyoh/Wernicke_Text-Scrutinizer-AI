@@ -2,6 +2,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 import pytz
+import requests
 from datetime import datetime, timedelta
 
 def todays_total_submissions(data):
@@ -112,3 +113,29 @@ def filters(filtered_data, apply_email_filter=True):
         return filtered_data, selected_emails
     else:
         return filtered_data
+    
+# from VocabReview  keep it in both so that VocabReview may be used 
+# independently in the future
+def add_word_form():
+    def add_to_sheet(user_id, word):
+        # Replace with the URL of your Flask backend
+        request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/add_word'
+        response = requests.post(request_url, json={'user_id': user_id, 'word': word})
+        if response.status_code == 200:
+            return True
+        else:
+            st.error(f'Failed to add word. Status code: {response.status_code}')
+            return False
+        
+    # -------- Start Here --------
+    with st.form(key='add_word_form', clear_on_submit=True, border=False):
+        added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
+        submit_add = st.form_submit_button("Add Word")
+        if submit_add:
+            if add_to_sheet(st.query_params['user'], added_word):
+                st.session_state['added_success'] = True
+                st.rerun()
+    # Handle success message
+    if st.session_state.get('added_success', False):
+        st.success("Word added successfully!")
+        st.session_state['added_success'] = False
