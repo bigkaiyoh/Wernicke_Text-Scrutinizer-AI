@@ -8,7 +8,7 @@ import deepl
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
-from modules.modules import plot_recent_submissions, filters, add_word_tinyform
+from modules.modules import plot_recent_submissions, filters, add_word_form
 
 
 #Secret keys
@@ -392,7 +392,6 @@ def main():
 
         with col2:
             st.header(translate("　　フィードバック", "  Feedback", JP))
-            add_word_tinyform()
             temporary = st.empty()
             t = temporary.container()
             with t:
@@ -435,7 +434,7 @@ def main():
                         else:
                             no_input_error(JP)
 
-            # Handling the translation
+            # Handling the translation and new vocab form
             translation_button_placeholder = st.empty()
             tr = translation_button_placeholder.container()
             if st.session_state.submit_clicked and not st.session_state.translation_completed:
@@ -446,12 +445,17 @@ def main():
                         st.session_state.translated_evaluation = translated_text
                         st.session_state.translation_completed = True
                         translation_button_placeholder.empty()
+                    add_word_form
                 if st.session_state.translation_completed:
                     temporary.empty()
                     user_message = st.chat_message("user")
                     user_message.write(user_input)
                     translated_message = st.chat_message("assistant")
                     translated_message.write(st.session_state.translated_evaluation)
+
+            # Handling new vocab form
+            add_v_placeholder = st.empty()
+
 
 
         #Question Chat Box
