@@ -90,9 +90,7 @@ def main():
     if st.session_state.is_authenticated:
         st.sidebar.write("Successfully Subscribed!")
         st.sidebar.write(st.session_state.email)
-        st.experimental_set_query_params(
-            user=st.session_state.email,
-        )
+        st.query_params.user = st.session_state.email
 
     #setup the page
     if "user" in st.query_params:
