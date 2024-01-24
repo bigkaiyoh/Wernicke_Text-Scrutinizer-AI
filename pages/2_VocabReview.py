@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import time
 from Home import add_bottom, translate, run_assistant
 
 
@@ -95,15 +96,32 @@ def main():
                 added_word = st.text_input("Enter a word to add 👇", key="new_word")
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
+                        st.session_state['added_success'] = True
                         st.rerun()
-                    st.success("Word added successfully!")
+                if st.session_state.get('added_success', False):
+                    success_message = st.empty()
+                    success_message.success("Word added successfully!")
+                    # Wait for 5 seconds
+                    time.sleep(5)
+                    # Clear the success message
+                    success_message.empty()
+                    # Reset the flag
+                    st.session_state['added_success'] = False
             with c2:
                 deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
+                        st.session_state['deleted_success'] = True
                         st.rerun()
-                    st.success("Word deleted successfully!")
-                        
+                if st.session_state.get('deleted_success', False):
+                    success_message = st.empty()
+                    success_message.success("Word deleted successfully!")
+                    # Wait for 5 seconds
+                    time.sleep(5)
+                    # Clear the success message
+                    success_message.empty()
+                    # Reset the flag
+                    st.session_state['delet_success'] = False
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
