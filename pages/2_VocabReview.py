@@ -93,10 +93,13 @@ def main():
 
             c1, c2 = st.columns(2)
             with c1:
-                added_word = st.text_input("Enter a word to add 👇", key="new_word")
+                if 'new_word' not in st.session_state:
+                    st.session_state.new_word = ''
+                added_word = st.text_input("Enter a word to add 👇", key="new_word", value=st.session_state.new_word)
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
                         st.session_state['added_success'] = True
+                        # Clear the text input after processing
                         st.session_state.new_word = ''
                         st.rerun()
                 # Handle success message
@@ -104,10 +107,14 @@ def main():
                     st.success("Word added successfully!")
                     st.session_state['added_success'] = False
             with c2:
-                deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
+                if 'delete_word' not in st.session_state:
+                    st.session_state.delete_word = ''
+
+                deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word", value=st.session_state.delete_word)
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
                         st.session_state['deleted_success'] = True
+                        # Clear the text input after processing
                         st.session_state.delete_word = ''
                         st.rerun()
                 # Handle success message
