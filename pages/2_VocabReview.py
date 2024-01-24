@@ -88,6 +88,9 @@ def main():
     #setup the page
     if "user" in st.query_params:
         words = fetch_user_words(st.query_params['user'], JP)
+        # Clear boxes
+        added_word = None
+        deleted_word = None
         if words:
             print_words(words, JP)
 
