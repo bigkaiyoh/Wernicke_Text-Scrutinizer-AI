@@ -101,8 +101,9 @@ def main():
                 deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
-                        st.success("Word deleted successfully!")
                         st.rerun()
+                        st.success("Word deleted successfully!")
+                        
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
