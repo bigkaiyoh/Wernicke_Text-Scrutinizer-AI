@@ -100,6 +100,7 @@ def main():
                 # Handle success message
                 if st.session_state.get('added_success', False):
                     st.success("Word added successfully!")
+                    st.session_state['added_success'] = False
             with c2:
                 deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
                 if st.button("Delete Word", key="delete_word_btn"):
@@ -109,6 +110,7 @@ def main():
                 # Handle success message
                 if st.session_state.get('added_success', False):
                     st.success("Word deleted successfully!")
+                    st.session_state['deleted_success'] = False
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
