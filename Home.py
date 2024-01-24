@@ -8,7 +8,7 @@ import deepl
 from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
-from modules.modules import plot_recent_submissions, filters, add_word_form
+from modules.modules import plot_recent_submissions, filters
 
 
 #Secret keys
@@ -445,18 +445,12 @@ def main():
                         st.session_state.translated_evaluation = translated_text
                         st.session_state.translation_completed = True
                         translation_button_placeholder.empty()
-                    add_word_form()
                 if st.session_state.translation_completed:
                     temporary.empty()
                     user_message = st.chat_message("user")
                     user_message.write(user_input)
                     translated_message = st.chat_message("assistant")
                     translated_message.write(st.session_state.translated_evaluation)
-
-            # Handling new vocab form
-            add_v_placeholder = st.empty()
-
-
 
         #Question Chat Box
         # question = st.chat_input(translate(
