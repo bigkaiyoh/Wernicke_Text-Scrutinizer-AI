@@ -71,82 +71,45 @@ def handle_chat_input(JP):
         st.session_state.chat_history.extend([("user", user_input), ("assistant", response)])
         display_chat_history()
 
-
-# def add_word_form():
-#     def add_to_sheet(user_id, word):
-#         # Replace with the URL of your Flask backend
-#         request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/add_word'
-#         response = requests.post(request_url, json={'user_id': user_id, 'word': word})
-#         if response.status_code == 200:
-#             return True
-#         else:
-#             st.error(f'Failed to add word. Status code: {response.status_code}')
-#             return False
-        
-#     # -------- Start Here --------
-#     with st.form(key='add_word_form', clear_on_submit=True, border=False):
-#         added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
-#         submit_add = st.form_submit_button("Add Word")
-#         if submit_add:
-#             if add_to_sheet(st.query_params['user'], added_word):
-#                 st.session_state['added_success'] = True
-#                 st.rerun()
-#     # Handle success message
-#     if st.session_state.get('added_success', False):
-#         st.success("Word added successfully!")
-#         st.session_state['added_success'] = False
-
-# def delete_word_form():
-#     def delete_from_sheet(user_id, word):
-#         # Replace with the URL of your Flask backend
-#         request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/delete_word'
-#         response = requests.post(request_url, json={'user_id': user_id, 'word': word})
-#         if response.status_code == 200:
-#             return True
-#         else:
-#             st.error(f'Failed to delete word. Status code: {response.status_code}')
-#             return False
-        
-#     # -------- Start Here --------
-#     with st.form(key='delete_word_form', clear_on_submit=True, border=False):
-#         deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
-#         submit_delete = st.form_submit_button("Delete Word")
-#         if submit_delete:
-#             if delete_from_sheet(st.query_params['user'], deleted_word):
-#                 st.session_state['deleted_success'] = True
-#                 st.rerun()
-#     # Handle success message
-#     if st.session_state.get('deleted_success', False):
-#         st.success("Word deleted successfully!")
-#         st.session_state['deleted_success'] = False
-
 def make_request(endpoint, json_data):
     base_url = 'https://wernicke-flask-39b91a2e8071.herokuapp.com'
     request_url = f'{base_url}/{endpoint}'
-    try:
-        response = requests.post(request_url, json=json_data)
-        response.raise_for_status()
-        return response.json(), None
-    except requests.RequestException as e:
-        return None, f'Failed to complete request. Status code: {response.status_code}, Error: {e}'
+    response = requests.post(request_url, json=json_data)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
 
-def manage_word_form(action, user_id):
-    endpoint = 'add_word' if action == 'add' else 'delete_word'
-    button_label = "Add Word" if action == 'add' else "Delete Word"
-    input_label = "Enter a word to add 👇" if action == 'add' else "Enter a word to delete 👇"
-    input_key = "add_word_input" if action == 'add' else "delete_word_input"
-
-    with st.form(key=f'{action}_word_form', clear_on_submit=True):
-        word = st.text_input(input_label, key=input_key)
-        submit = st.form_submit_button(button_label)
-
-        if submit and word:
-            result, error = make_request(endpoint, {'user_id': user_id, 'word': word})
-            if error:
-                st.error(error)
-            else:
-                st.success(f"Word {action}ed successfully!")
+def add_word_form():
+    with st.form(key='add_word_form', clear_on_submit=True, border=False):
+        added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
+        submit_add = st.form_submit_button("Add Word")
+        if submit_add:
+            if make_request("add", {'user_id': st.query_params['user'], 'word': added_word}):
+                st.session_state['added_success'] = True
                 st.rerun()
+            else:
+                st.error("Failed to add a word. Please try again")
+    # Handle success message
+    if st.session_state.get('added_success', False):
+        st.success("Word added successfully!")
+        st.session_state['added_success'] = False
+    
+def delete_word_form():
+    with st.form(key='delete_word_form', clear_on_submit=True, border=False):
+        deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
+        submit_delete = st.form_submit_button("Delete Word")
+        if submit_delete:
+            if make_request("delete", {'user_id': st.query_params['user'], 'word': deleted_word}):
+                st.session_state['deleted_success'] = True
+                st.rerun()
+            else:
+                st.error("Failed to delete a word. Please check spelling")
+    # Handle success message
+    if st.session_state.get('deleted_success', False):
+        st.success("Word deleted successfully!")
+        st.session_state['deleted_success'] = False
+
 
 def main():
     # Add logo to the sidebar
@@ -172,12 +135,12 @@ def main():
             print_words(words, JP)
             c1, c2 = st.columns(2)
             with c1:
-                manage_word_form('add', st.query_params['user'])
+                add_word_form()
             with c2:
-                manage_word_form('delete', st.query_params['user'])
+                delete_word_form()
         else:
             st.subheader(translate("新しく覚えた単語を追加しましょう！", "Add a word you newly learned!", JP))
-            manage_word_form('add', st.query_params['user'])
+            add_word_form()
 
         #initialize chatbot
         st.header(translate("単語復習コーチ", "Review Vocabulary With ME!", JP))
@@ -206,9 +169,6 @@ def main():
                            JP))
 
     
-
-
-
 
 if __name__ == "__main__":
     main()
