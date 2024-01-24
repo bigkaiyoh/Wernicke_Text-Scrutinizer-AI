@@ -116,7 +116,7 @@ def filters(filtered_data, apply_email_filter=True):
     
 # from VocabReview  keep it in both so that VocabReview may be used 
 # independently in the future
-def add_word_form():
+def add_word_tinyform():
     def add_to_sheet(user_id, word):
         # Replace with the URL of your Flask backend
         request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/add_word'
@@ -128,9 +128,12 @@ def add_word_form():
             return False
         
     # -------- Start Here --------
-    with st.form(key='add_word_form', clear_on_submit=True, border=False):
-        added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
-        submit_add = st.form_submit_button("Add Word")
+    with st.form(key='add_word_tinyform', clear_on_submit=True, border=True):
+        c1, c2 = st.columns(3, 1)
+        with c1:
+            added_word = st.text_input(key="add_word_input", placeholder="Add new vocabulary")
+        with c2:
+            submit_add = st.form_submit_button("Add")
         if submit_add:
             if add_to_sheet(st.query_params['user'], added_word):
                 st.session_state['added_success'] = True
