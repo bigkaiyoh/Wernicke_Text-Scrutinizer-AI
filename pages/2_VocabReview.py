@@ -2,42 +2,57 @@ import streamlit as st
 import requests
 from Home import add_bottom, translate, run_assistant
 
+
 #Secret Keys
 vocab_assistant = st.secrets.vocabulary_assistant
+
+# Initialize chat history in session state if not present
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+if 'chatbot_active' not in st.session_state:
+    st.session_state.chatbot_active = False
+
 
 def print_words(words, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
 
     with st.expander("See Your Achievement!"):
-        num_columns = 3  # You can adjust this number based on your preference
+        num_columns = 3
         columns = st.columns(num_columns)
         for index, word in enumerate(words):
             with columns[index % num_columns]:
                 st.write(word)
 
-def setup(JP):
-    if "user" in st.query_params:
-        user_id = st.query_params.user
-        # Replace with the URL of your Flask backend
-        request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/get_words?user_id={user_id}'
+def fetch_user_words(user_id, JP):
+    request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/get_words?user_id={user_id}'
+    try:
         response = requests.get(request_url)
-
-        
-        if response.status_code == 200:
-            words = response.json().get('words', [])
-            if words:
-                print_words(words, JP)
-                return words
-            else:
-                st.write("No words found for you")
-        else:
-            st.error(f'Failed to retrieve words. Status code: {response.status_code}')
-            st.write("Response content for debugging:", response.text)  # Debug: print error response    
-    else:
-        st.write("Please log-in through LINE")
+        response.raise_for_status()
+        words = response.json().get('words', [])
+        return words
+    except requests.RequestException as e:
+        st.error(f'Failed to retrieve words: {e}')
+        st.write("Response content for debugging:", e.response.text if e.response else "No response")
+        return []
 
 def activate_chatbot():
     st.session_state.chatbot_active = True
+
+def display_chat_history():
+    for role, message in st.session_state.chat_history:
+        with st.chat_message(role):
+            st.write(message)
+
+def handle_chat_input(JP):
+    user_input = st.chat_input(translate(
+        "単語の意味について質問したりクイズを出してもらいましょう！",
+        "Ask about the meanings of words or get quizzed!", JP),
+        key="user_input")
+
+    if user_input:
+        response = run_assistant(vocab_assistant, user_input, return_content=True, display_chat=False)
+        st.session_state.chat_history.extend([("user", user_input), ("assistant", response)])
+        display_chat_history()
 
 def main():
     # Add logo to the sidebar
@@ -50,14 +65,13 @@ def main():
     # Language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
 
-    # Initialize chat history in session state if not present
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-    if 'chatbot_active' not in st.session_state:
-        st.session_state.chatbot_active = False
-
     #setup the page
-    words = setup(JP)
+    if "user" in st.query_params:
+        words = fetch_user_words(st.query_params['user'], JP)
+        if words:
+            print_words(words, JP)
+    else:
+        st.write("Please log-in through LINE")
 
     #initialize chatbot
     st.header(translate("単語復習コーチ", "Review Vocabulary With ME!", JP))
@@ -75,31 +89,12 @@ def main():
             top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
             st.session_state.chat_history.append(("assistant", top_message))
                 
-            # Display the chat history
-            for role, message in st.session_state.chat_history:
-                with st.chat_message(role):
-                    st.write(message)
+            # Display the initial quiz
+            display_chat_history()
             
 
     if st.session_state.chatbot_active:
-        # Chat input for user to continue the conversation
-        user_input = st.chat_input(translate(
-            "単語の意味について質問したりクイズを出してもらいましょう！",
-            "Ask about the meanings of words or get quizzed!", JP),
-            key="user_input")
-
-        if user_input:
-            # Send user input to the chatbot and get the response
-            response = run_assistant(vocab_assistant, user_input, return_content=True, display_chat=False)
-
-            # Update the chat history with the new user input and response
-            st.session_state.chat_history.append(("user", user_input))
-            st.session_state.chat_history.append(("assistant", response))
-
-            # Re-display updated chat history
-            for role, message in st.session_state.chat_history:
-                with st.chat_message(role):
-                    st.write(message)
+        handle_chat_input(JP)
 
 
 
