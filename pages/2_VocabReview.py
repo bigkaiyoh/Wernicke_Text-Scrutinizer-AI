@@ -33,7 +33,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 def print_words(words, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
 
-    with st.expander("See Your Achievement!"):
+    with st.expander("See Your Achievement!", expanded=True):
         num_columns = 3
         columns = st.columns(num_columns)
         for index, word in enumerate(words):
