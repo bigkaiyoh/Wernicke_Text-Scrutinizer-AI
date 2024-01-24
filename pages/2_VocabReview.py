@@ -91,7 +91,7 @@ def main():
         st.sidebar.write("Successfully Subscribed!")
         st.sidebar.write(st.session_state.email)
         st.query_params(
-            user=[st.session_state.email]
+            user=st.session_state.email,
         )
 
     #setup the page
