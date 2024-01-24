@@ -11,6 +11,10 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 if 'chatbot_active' not in st.session_state:
     st.session_state.chatbot_active = False
+if 'reset_add_input' not in st.session_state:
+    st.session_state.reset_add_input = False
+if 'reset_delete_input' not in st.session_state:
+    st.session_state.reset_delete_input = False
 
 
 def print_words(words, JP):
@@ -94,20 +98,28 @@ def main():
 
             c1, c2 = st.columns(2)
             with c1:
-                added_word = st.text_input("Enter a word to add 👇", value="")
+                added_word = st.text_input("Enter a word to add 👇", 
+                                           value="" if st.session_state.reset_add_input else None, 
+                                           key="add_word_input"
+                                           )
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
                         st.session_state['added_success'] = True
+                        st.session_state.reset_add_input = True
                         st.rerun()
                 # Handle success message
                 if st.session_state.get('added_success', False):
                     st.success("Word added successfully!")
                     st.session_state['added_success'] = False
             with c2:
-                deleted_word = st.text_input("Enter a word to delete 👇", value="")
+                deleted_word = st.text_input("Enter a word to delete 👇", 
+                                             value="" if st.session_state.reset_delete_input else None, 
+                                             key="delete_word_input"
+                                             )
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
                         st.session_state['deleted_success'] = True
+                        st.session_state.reset_delete_input = True
                         st.rerun()
                 # Handle success message
                 if st.session_state.get('deleted_success', False):
