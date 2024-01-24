@@ -108,7 +108,7 @@ def main():
                         st.session_state['deleted_success'] = True
                         st.rerun()
                 # Handle success message
-                if st.session_state.get('added_success', False):
+                if st.session_state.get('deleted_success', False):
                     st.success("Word deleted successfully!")
                     st.session_state['deleted_success'] = False
     else:
