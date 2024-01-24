@@ -9,6 +9,7 @@ from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
 from modules.modules import plot_recent_submissions, filters
+from pages import add_word_form
 
 
 #Secret keys
@@ -451,6 +452,10 @@ def main():
                     user_message.write(user_input)
                     translated_message = st.chat_message("assistant")
                     translated_message.write(st.session_state.translated_evaluation)
+            
+            # add a newly learned word
+            st.subheader("Add a new word here for later review")
+            add_word_form()
 
 
         #Question Chat Box

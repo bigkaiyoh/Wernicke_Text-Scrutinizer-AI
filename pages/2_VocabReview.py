@@ -2,6 +2,10 @@ import streamlit as st
 import requests
 from Home import add_bottom, translate, run_assistant
 
+st.set_page_config(
+    page_title = "Vocabulary Review",
+    page_icon = "📚",
+)
 
 #Secret Keys
 vocab_assistant = st.secrets.vocabulary_assistant
@@ -13,6 +17,17 @@ if 'chatbot_active' not in st.session_state:
     st.session_state.chatbot_active = False
 if 'is_authenticated' not in st.session_state:
     st.session_state['is_authenticated'] = False
+
+
+#Removing Hooter and Footer
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
 def print_words(words, JP):
