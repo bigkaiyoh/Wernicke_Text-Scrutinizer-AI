@@ -82,12 +82,13 @@ def main():
             print_words(words, JP)
             c1, c2 = st.columns(2)
             with c1:
-                st.write(translate("単語を追加", "Add Word", JP))
-            with c2:
                 added_word = st.text_input("Enter a word here 👇", key="new_word")
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
+                        st.rerun()
                         st.success("Word added successfully!")
+            with c2:
+                st.write("")
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
