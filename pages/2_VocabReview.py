@@ -11,6 +11,8 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 if 'chatbot_active' not in st.session_state:
     st.session_state.chatbot_active = False
+if 'is_authenticated' not in st.session_state:
+    st.session_state['is_authenticated'] = False
 
 
 def print_words(words, JP):
@@ -84,6 +86,13 @@ def main():
 
     # Language switch toggle
     JP = st.toggle("Japanese (日本語)", value=False)
+
+    if st.session_state.is_authenticated:
+        st.sidebar.write("Successfully Subscribed!")
+        st.sidebar.write(st.session_state.email)
+        st.query_params(
+            user=[st.session_state.email]
+        )
 
     #setup the page
     if "user" in st.query_params:
