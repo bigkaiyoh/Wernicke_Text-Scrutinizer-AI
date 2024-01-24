@@ -445,7 +445,7 @@ def main():
                         st.session_state.translated_evaluation = translated_text
                         st.session_state.translation_completed = True
                         translation_button_placeholder.empty()
-                    add_word_form
+                    add_word_form()
                 if st.session_state.translation_completed:
                     temporary.empty()
                     user_message = st.chat_message("user")
