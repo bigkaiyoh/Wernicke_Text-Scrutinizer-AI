@@ -129,7 +129,7 @@ def add_word_tinyform():
         
     # -------- Start Here --------
     with st.form(key='add_word_tinyform', clear_on_submit=True, border=True):
-        c1, c2 = st.columns(3, 1)
+        c1, c2 = st.columns([3, 1])
         with c1:
             added_word = st.text_input(key="add_word_input", placeholder="Add new vocabulary")
         with c2:
