@@ -54,6 +54,16 @@ def handle_chat_input(JP):
         st.session_state.chat_history.extend([("user", user_input), ("assistant", response)])
         display_chat_history()
 
+def add_word_to_sheet(user_id, word):
+    # Replace with the URL of your Flask backend
+    request_url = f'https://wernicke-flask-39b91a2e8071.herokuapp.com/add_word'
+    response = requests.post(request_url, json={'user_id': user_id, 'word': word})
+    if response.status_code == 200:
+        return True
+    else:
+        st.error(f'Failed to add word. Status code: {response.status_code}')
+        return False
+
 def main():
     # Add logo to the sidebar
     st.title("Vocab Review!")
@@ -70,8 +80,16 @@ def main():
         words = fetch_user_words(st.query_params['user'], JP)
         if words:
             print_words(words, JP)
+            c1, c2 = st.columns(2)
+            with c1:
+                st.write(translate("単語を追加", "Add Word", JP))
+            with c2:
+                added_word = st.text_input("Enter a word here 👇", key="new_word")
+                if st.button("Add Word", key="add_word"):
+                    if add_word_to_sheet(st.query_params['user'], added_word):
+                        st.success("Word added successfully!")
     else:
-        st.write("Please log-in through LINE")
+        st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
 
     #initialize chatbot
     st.header(translate("単語復習コーチ", "Review Vocabulary With ME!", JP))
