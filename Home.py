@@ -9,7 +9,7 @@ from streamlit_option_menu import option_menu
 from datetime import datetime
 import pytz
 from modules.modules import plot_recent_submissions, filters
-from pages import add_word_form
+from pages.2_VocabReview import add_word_form
 
 
 #Secret keys
