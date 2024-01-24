@@ -92,17 +92,17 @@ def main():
             print_words(words, JP)
             c1, c2 = st.columns(2)
             with c1:
-                added_word = st.text_input("Enter a word here 👇", key="new_word")
+                added_word = st.text_input("Enter a word to add 👇", key="new_word")
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
                         st.rerun()
-                        st.success("Word added successfully!")
+                    st.success("Word added successfully!")
             with c2:
                 deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word")
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
                         st.rerun()
-                        st.success("Word deleted successfully!")
+                    st.success("Word deleted successfully!")
                         
     else:
         st.write("Please log-in either through LINE or Wernicke for personalized quizzes")
