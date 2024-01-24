@@ -88,15 +88,13 @@ def main():
     #setup the page
     if "user" in st.query_params:
         words = fetch_user_words(st.query_params['user'], JP)
-        # Clear boxes
-        added_word = None
-        deleted_word = None
+
         if words:
             print_words(words, JP)
 
             c1, c2 = st.columns(2)
             with c1:
-                added_word = st.text_input("Enter a word to add 👇")
+                added_word = st.text_input("Enter a word to add 👇", value="")
                 if st.button("Add Word", key="add_word"):
                     if add_word_to_sheet(st.query_params['user'], added_word):
                         st.session_state['added_success'] = True
@@ -106,7 +104,7 @@ def main():
                     st.success("Word added successfully!")
                     st.session_state['added_success'] = False
             with c2:
-                deleted_word = st.text_input("Enter a word to delete 👇")
+                deleted_word = st.text_input("Enter a word to delete 👇", value="")
                 if st.button("Delete Word", key="delete_word_btn"):
                     if delete_word_from_sheet(st.query_params['user'], deleted_word):
                         st.session_state['deleted_success'] = True
