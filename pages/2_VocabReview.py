@@ -30,6 +30,16 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
+def get_or_create_user_id(email):
+    try:
+        response = requests.post('http://<your-flask-app-url>/get_or_create_user', json={'email': email})
+        if response.status_code == 200:
+            return response.json().get('user_id')
+        else:
+            st.error(f"Failed to retrieve or create user ID. Status code: {response.status_code}")
+    except requests.RequestException as e:
+        st.error(f"Error connecting to the backend: {e}")
+
 def print_words(words, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
 
@@ -131,7 +141,9 @@ def main():
     if st.session_state.is_authenticated:
         st.sidebar.write("Successfully Subscribed!")
         st.sidebar.write(st.session_state.email)
-        st.query_params.user = st.session_state.email
+        user_id = get_or_create_user_id(st.session_state.email)
+        if user_id:
+            st.query_params.user = user_id
 
     #setup the page
     if "user" in st.query_params:
