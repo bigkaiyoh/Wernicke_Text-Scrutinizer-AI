@@ -85,12 +85,15 @@ def add_word_form():
     with st.form(key='add_word_form', clear_on_submit=True, border=False):
         added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
         submit_add = st.form_submit_button("Add Word")
-        if submit_add:
+        if submit_add and added_word.strip():
             if make_request("add_word", {'user_id': st.query_params['user'], 'word': added_word}):
                 st.session_state['added_success'] = True
                 st.rerun()
             else:
                 st.error("Failed to add a word. Please try again")
+        elif submit_add:
+            st.warning("Please enter a word to add.", icon="⚠️")
+
     # Handle success message
     if st.session_state.get('added_success', False):
         st.success("Word added successfully!")
@@ -100,12 +103,14 @@ def delete_word_form():
     with st.form(key='delete_word_form', clear_on_submit=True, border=False):
         deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
         submit_delete = st.form_submit_button("Delete Word")
-        if submit_delete:
+        if submit_delete and deleted_word.strip():
             if make_request("delete_word", {'user_id': st.query_params['user'], 'word': deleted_word}):
                 st.session_state['deleted_success'] = True
                 st.rerun()
             else:
                 st.error("Failed to delete a word. Please check spelling")
+        elif submit_delete:
+            st.warning("Please enter a word to delete.", icon="⚠️")
     # Handle success message
     if st.session_state.get('deleted_success', False):
         st.success("Word deleted successfully!")
