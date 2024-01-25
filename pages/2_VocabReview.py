@@ -32,7 +32,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 
 def get_or_create_user_id(email):
     try:
-        response = requests.post('http://<your-flask-app-url>/get_or_create_user', json={'email': email})
+        response = requests.post('https://wernicke-flask-39b91a2e8071.herokuapp.com/get_or_create_user', json={'email': email})
         if response.status_code == 200:
             return response.json().get('user_id')
         else:
