@@ -131,8 +131,12 @@ def main():
     # Add logo to the sidebar
     st.title("Vocab Review!")
     logo_url = "https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png"
-    short_logo = "https://nuginy.com/wp-content/uploads/2024/01/23f602002a0787321609a4bf3b8ef051.png"
-    st.sidebar.image(logo_url, width=190)  # Adjust width as needed
+    LINE_logo = "https://nuginy.com/wp-content/uploads/2024/01/126f8f4e35877e29952fe58e4f3d2379.png"
+    with st.sidebar:
+        st.image(logo_url, width=190)  # Adjust width as needed
+        line_url = "https://lin.ee/t3WKARy"
+        st.write("簡単LINE連携は[こちら！](%s)" % line_url)
+        st.caption("登録メールアドレスを送信するだけ")
     add_bottom("https://nuginy.com/wp-content/uploads/2023/12/BottomLogo-e1702481750193.png")
 
     # Language switch toggle
