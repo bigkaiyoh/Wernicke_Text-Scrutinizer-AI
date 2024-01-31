@@ -10,7 +10,7 @@ import random
 import string
 from dotenv import load_dotenv
 
-
+client = OpenAI(api_key=os.environ.get('openai_api'))
 
 #load_dotenv()  # Load environment variables
 
@@ -90,15 +90,28 @@ def modify_sheet(operation, user_id, word=None):
     sheet = service.spreadsheets()
 
     if operation == 'add':
-        values = [['', user_id, word]]
+        # Fetch data from GPT-3
+        word_data = table_content(word)
+
+        values = [
+            ['', 
+             user_id, 
+             word,
+             word_data["pronunciation"],
+            word_data["definition"],
+            word_data["synonyms"],
+            word_data["examples"]
+            ]
+        ]
         body = {'values': values}
+        range_to_update = 'シート1!A:G'
         result = sheet.values().append(
             spreadsheetId=SPREADSHEET_ID, 
-            range=RANGE_NAME, 
+            range=range_to_update, 
             valueInputOption='RAW', 
             body=body
         ).execute()
-        return result.get('updates').get('updatedCells')
+        return result.get('updates', {}).get('updatedCells', 0)
 
     elif operation == 'delete':
         result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
@@ -123,7 +136,38 @@ def modify_sheet(operation, user_id, word=None):
                 return True
         return False
 
+def format_list_with_newlines(items):
+    return '\n'.join(f'{index+1}. {item}' for index, item in enumerate(items))
 
+def table_content(word):
+    example_json = {
+        "word": word,
+        "pronunciation": "",
+        "definition": "",
+        "synonyms": ["", "", ""],
+        "examples": ["", "", ""]
+    }
+    prompt = f"Provide the phonetic symbol, 
+            shorter than 20 words definition, 
+            3 synonyms, and 
+            3 example sentences for the word '{word}' in JSON format."
+    response = client.chat.completions.create(
+    model="gpt-3.5-turbo-1106",
+    response_format={ "type": "json_object" },
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant designed to output JSON like the following data schema" + json.dumps(example_json)},
+        {"role": "user", "content": prompt}
+    ]
+    )
+    content = response.choices[0].message['content']
+    word_data = json.loads(content)
+    
+    return {
+        "pronunciation": word_data.get("pronunciation", ""),
+        "definition": word_data.get("definition", ""),
+        "synonyms": format_list_with_newlines(word_data.get("synonyms", [])),
+        "examples": format_list_with_newlines(word_data.get("examples", []))
+    }
 
 @app.route('/add_word', methods=['POST'])
 def add_word():
