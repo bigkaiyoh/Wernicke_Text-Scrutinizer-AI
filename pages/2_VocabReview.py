@@ -169,8 +169,8 @@ def main():
         if words_details:
             # print_words(words, JP)
             column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
-            df = pd.DataFrame(words_details, hide_index=True, columns=column_order)
-            st.dataframe(df)
+            df = pd.DataFrame(words_details, columns=column_order)
+            st.dataframe(df, hide_index=True)
 
             c1, c2 = st.columns(2)
             with c1:
