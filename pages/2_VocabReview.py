@@ -50,18 +50,6 @@ def print_words(words, JP):
         for index, word in enumerate(words):
             with columns[index % num_columns]:
                 st.write(word)
-        
-# def fetch_user_words(user_id, JP):
-#     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
-#     try:
-#         response = requests.get(request_url)
-#         response.raise_for_status()
-#         words = response.json().get('words', [])
-#         return words
-#     except requests.RequestException as e:
-#         st.error(f'Failed to retrieve words: {e}')
-#         st.write("Response content for debugging:", e.response.text if e.response else "No response")
-#         return []
 
 def display_table(table_content, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
