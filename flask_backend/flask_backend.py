@@ -95,9 +95,9 @@ def modify_sheet(operation, user_id, word=None):
 
         values = [
             ['', 
-             user_id, 
-             word,
-             word_data["pronunciation"],
+            user_id, 
+            word,
+            word_data["pronunciation"],
             word_data["definition"],
             word_data["synonyms"],
             word_data["examples"]
@@ -141,7 +141,6 @@ def format_list_with_newlines(items):
 
 def table_content(word):
     example_json = {
-        "word": word,
         "pronunciation": "",
         "definition": "",
         "synonyms": ["", "", ""],
@@ -149,14 +148,14 @@ def table_content(word):
     }
     prompt = f"Provide the phonetic symbol, shorter than 20 words definition, 3 synonyms, and 3 example sentences for the word '{word}' in JSON format."
     response = client.chat.completions.create(
-    model="gpt-3.5-turbo-1106",
-    response_format={ "type": "json_object" },
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant designed to output JSON like the following data schema" + json.dumps(example_json)},
-        {"role": "user", "content": prompt}
-    ]
+        model="gpt-3.5-turbo-1106",
+        response_format={ "type": "json_object" },
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant designed to output JSON like the following data schema" + json.dumps(example_json)},
+            {"role": "user", "content": prompt}
+        ]
     )
-    content = response.choices[0].message['content']
+    content = response.choices[0].message.content
     word_data = json.loads(content)
     
     return {
