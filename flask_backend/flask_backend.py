@@ -111,7 +111,7 @@ def get_words():
             }
             word_details.append(word_info)
 
-    return jsonify(word_details)
+    return word_details
 
 
 def modify_sheet(operation, user_id, word=None):
