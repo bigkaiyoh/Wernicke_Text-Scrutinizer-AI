@@ -41,15 +41,15 @@ def get_or_create_user_id(email):
     except requests.RequestException as e:
         st.error(f"Error connecting to the backend: {e}")
 
-# def print_words(words, JP):
-#     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
+def print_words(words, JP):
+    st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
 
-#     with st.expander("See Your Achievement!", expanded=True):
-#         num_columns = 3
-#         columns = st.columns(num_columns)
-#         for index, word in enumerate(words):
-#             with columns[index % num_columns]:
-#                 st.write(word)
+    with st.expander("See Your Achievement!", expanded=True):
+        num_columns = 3
+        columns = st.columns(num_columns)
+        for index, word in enumerate(words):
+            with columns[index % num_columns]:
+                st.write(word)
         
 # def fetch_user_words(user_id, JP):
 #     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
@@ -65,10 +65,10 @@ def get_or_create_user_id(email):
 
 def display_table(table_content, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
-    with st.expander("See Your Achievement!", expanded=True):
-        column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
-        df = pd.DataFrame(table_content, columns=column_order)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+    
+    column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
+    df = pd.DataFrame(table_content, columns=column_order)
+    st.dataframe(df, use_container_width=True, hide_index=True)
 
 def fetch_table_content(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
@@ -174,8 +174,13 @@ def main():
         table_content = fetch_table_content(st.query_params.user, JP)
         # if words:
         if table_content:
-            # print_words(words, JP)
-            display_table(table_content, JP)
+            tab1, tab2 = st.tabs(["🏆 Words", "📕 Dictionary"])
+
+            with tab1:
+                words = [word['word'] for word in table_content]
+                print_words(words, JP)
+            with tab2:
+                display_table(table_content, JP)
 
             c1, c2 = st.columns(2)
             with c1:
