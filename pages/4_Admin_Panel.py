@@ -150,7 +150,7 @@ def main():
     if not check_password():
         st.stop()
 
-    tab1, tab2 = st.tabs(["📜 Tests", "📕 Vocabulary"])
+    tab1, tab2 = st.tabs(["📜 Tests Submission Report", "📕 New Vocabulary"])
 
     with tab1:
         # Use the imported function
