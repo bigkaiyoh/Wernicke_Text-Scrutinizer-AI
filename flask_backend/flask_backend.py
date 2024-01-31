@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from openai import OpenAI
 import os
 import base64
 import json
@@ -21,7 +22,7 @@ service_account_file = os.environ.get('GOOGLE_SHEETS_CREDENTIALS_FILE')
 
 # Google Sheet ID and range
 SPREADSHEET_ID = os.environ.get('SPREADSHEET_ID')
-RANGE_NAME = 'シート1!A:B'
+RANGE_NAME = 'シート1!A:C'
 
 USER_SHEET_ID = os.environ.get('USERSHEET_ID')
 USER_RANGE_NAME = 'シート1!A:C'
@@ -78,9 +79,9 @@ def get_words():
 
     matching_words = []
     for row in values:
-        # Assuming ID is in column 'A' and words in column 'B'
-        if row[0] == user_id:
-            matching_words.append(row[1])
+        # Assuming ID is in column 'B' and words in column 'C'
+        if row[1] == user_id:
+            matching_words.append(row[2])
 
     return {'words': matching_words}
 
@@ -89,7 +90,7 @@ def modify_sheet(operation, user_id, word=None):
     sheet = service.spreadsheets()
 
     if operation == 'add':
-        values = [[user_id, word]]
+        values = [['', user_id, word]]
         body = {'values': values}
         result = sheet.values().append(
             spreadsheetId=SPREADSHEET_ID, 
@@ -104,7 +105,7 @@ def modify_sheet(operation, user_id, word=None):
         values = result.get('values', [])
 
         for index, row in enumerate(values):
-            if row[0] == user_id and row[1] == word:
+            if len(row) > 2 and row[1] == user_id and row[2] == word:
                 body = {
                     "requests": [{
                         "deleteDimension": {
@@ -121,6 +122,7 @@ def modify_sheet(operation, user_id, word=None):
                     spreadsheetId=SPREADSHEET_ID, body=body).execute()
                 return True
         return False
+
 
 
 @app.route('/add_word', methods=['POST'])
