@@ -41,17 +41,36 @@ def get_or_create_user_id(email):
     except requests.RequestException as e:
         st.error(f"Error connecting to the backend: {e}")
 
-def print_words(words, JP):
+# def print_words(words, JP):
+#     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
+
+#     with st.expander("See Your Achievement!", expanded=True):
+#         num_columns = 3
+#         columns = st.columns(num_columns)
+#         for index, word in enumerate(words):
+#             with columns[index % num_columns]:
+#                 st.write(word)
+        
+# def fetch_user_words(user_id, JP):
+#     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
+#     try:
+#         response = requests.get(request_url)
+#         response.raise_for_status()
+#         words = response.json().get('words', [])
+#         return words
+#     except requests.RequestException as e:
+#         st.error(f'Failed to retrieve words: {e}')
+#         st.write("Response content for debugging:", e.response.text if e.response else "No response")
+#         return []
+
+def display_table(table_content, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
-
     with st.expander("See Your Achievement!", expanded=True):
-        num_columns = 3
-        columns = st.columns(num_columns)
-        for index, word in enumerate(words):
-            with columns[index % num_columns]:
-                st.write(word)
+        column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
+        df = pd.DataFrame(table_content, columns=column_order)
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
-def fetch_and_display_user_words(user_id, JP):
+def fetch_table_content(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
     try:
         response = requests.get(request_url)
@@ -60,18 +79,6 @@ def fetch_and_display_user_words(user_id, JP):
         return response.json()
     except requests.RequestException as e:
         st.error(f'Failed to retrieve word details: {e}')
-        return []
-
-def fetch_user_words(user_id, JP):
-    request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
-    try:
-        response = requests.get(request_url)
-        response.raise_for_status()
-        words = response.json().get('words', [])
-        return words
-    except requests.RequestException as e:
-        st.error(f'Failed to retrieve words: {e}')
-        st.write("Response content for debugging:", e.response.text if e.response else "No response")
         return []
 
 def activate_chatbot():
@@ -164,13 +171,11 @@ def main():
     #setup the page
     if "user" in st.query_params:
         # words = fetch_user_words(st.query_params['user'], JP)
-        words_details = fetch_and_display_user_words(st.query_params.user, JP)
+        table_content = fetch_table_content(st.query_params.user, JP)
         # if words:
-        if words_details:
+        if table_content:
             # print_words(words, JP)
-            column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
-            df = pd.DataFrame(words_details, columns=column_order)
-            st.dataframe(df, use_container_width=True, hide_index=True)
+            display_table(table_content, JP)
 
             c1, c2 = st.columns(2)
             with c1:
