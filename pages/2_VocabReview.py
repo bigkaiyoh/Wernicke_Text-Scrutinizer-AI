@@ -50,6 +50,7 @@ def print_words(words, JP):
         for index, word in enumerate(words):
             with columns[index % num_columns]:
                 st.write(word)
+
 def fetch_and_display_user_words(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
     try:
@@ -167,7 +168,8 @@ def main():
         # if words:
         if words_details:
             # print_words(words, JP)
-            df = pd.DataFrame(words_details)
+            column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
+            df = pd.DataFrame(words_details, columns=column_order)
             st.dataframe(df)
 
             c1, c2 = st.columns(2)
