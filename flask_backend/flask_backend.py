@@ -11,13 +11,13 @@ from dotenv import load_dotenv
 
 
 
-load_dotenv()  # Load environment variables
+#load_dotenv()  # Load environment variables
 
 app = Flask(__name__)
 CORS(app)
 
 # Replace with your Google Sheets API credentials file
-GOOGLE_SHEETS_CREDENTIALS_FILE = os.environ.get('GOOGLE_SHEETS_CREDENTIALS_FILE')
+service_account_file = os.environ.get('GOOGLE_SHEETS_CREDENTIALS_FILE')
 
 # Google Sheet ID and range
 SPREADSHEET_ID = os.environ.get('SPREADSHEET_ID')
@@ -28,7 +28,7 @@ USER_RANGE_NAME = 'シート1!A:C'
 
 
 def get_google_sheets_service():
-    creds_json = base64.b64decode(os.environ.get('GOOGLE_SHEETS_CREDENTIALS'))
+    creds_json = base64.b64decode(service_account_file)
     creds = service_account.Credentials.from_service_account_info(json.loads(creds_json))
     service = build('sheets', 'v4', credentials=creds)
     return service
