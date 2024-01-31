@@ -54,18 +54,12 @@ def fetch_and_display_user_words(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
     try:
         response = requests.get(request_url)
-        response.raise_for_status()
-        word_details = response.json()
-        if word_details:
-            # Convert the list of dictionaries into a DataFrame and display it
-            df = pd.DataFrame(word_details)
-            st.dataframe(df)
-        else:
-            st.write(translate("まだ単語がありません。追加してみましょう！", "No words yet. Add some!", JP))
+        response.raise_for_status()  # Will raise an exception for HTTP errors
+        # Directly return the JSON response since it's already the list of word details
+        return response.json()
     except requests.RequestException as e:
-        st.error(f'Failed to retrieve words: {e}')
-        st.write("Response content for debugging:", e.response.text if e.response else "No response")
-
+        st.error(f'Failed to retrieve word details: {e}')
+        return []
 
 def fetch_user_words(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
@@ -168,11 +162,13 @@ def main():
 
     #setup the page
     if "user" in st.query_params:
-        words = fetch_user_words(st.query_params['user'], JP)
-
-        if words:
+        # words = fetch_user_words(st.query_params['user'], JP)
+        words_details = fetch_and_display_user_words(user_id, JP)
+        # if words:
+        if words_details:
             # print_words(words, JP)
-            fetch_and_display_user_words(user_id, JP)
+            df = pd.DataFrame(words_details)
+            st.dataframe(df)
 
             c1, c2 = st.columns(2)
             with c1:
@@ -189,18 +185,18 @@ def main():
         if st.session_state.chatbot_active == False:
             chatbot = st.button(translate("単語練習を始める", "Start practicing vocabulary", JP))
 
-            if chatbot:
-                st.session_state.chatbot_active = True
-                # Send the initial message to the chatbot and get the response
-                if words:
-                    initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
-                else:
-                    initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
-                top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
-                st.session_state.chat_history.append(("assistant", top_message))
+            # if chatbot:
+            #     st.session_state.chatbot_active = True
+            #     # Send the initial message to the chatbot and get the response
+            #     if words:
+            #         initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
+            #     else:
+            #         initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
+            #     top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
+            #     st.session_state.chat_history.append(("assistant", top_message))
                     
-                # Display the initial quiz
-                display_chat_history()
+            #     # Display the initial quiz
+            #     display_chat_history()
                 
         if st.session_state.chatbot_active:
             handle_chat_input(JP)
