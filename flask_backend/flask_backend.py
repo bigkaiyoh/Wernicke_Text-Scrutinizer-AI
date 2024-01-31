@@ -22,7 +22,7 @@ service_account_file = os.environ.get('GOOGLE_SHEETS_CREDENTIALS_FILE')
 
 # Google Sheet ID and range
 SPREADSHEET_ID = os.environ.get('SPREADSHEET_ID')
-RANGE_NAME = 'シート1!A:C'
+RANGE_NAME = 'シート1!A:G'
 
 USER_SHEET_ID = os.environ.get('USERSHEET_ID')
 USER_RANGE_NAME = 'シート1!A:C'
@@ -69,21 +69,50 @@ def get_or_create_user():
         return jsonify({'error': 'Email is required'}), 400
     
 
+# @app.route('/get_words', methods=['GET'])
+# def get_words():
+#     user_id = request.args.get('user_id')
+#     print("Received user_id in Flask:", user_id) 
+#     sheet = service.spreadsheets()
+#     result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
+#     values = result.get('values', [])
+
+#     matching_words = []
+#     for row in values:
+#         # Assuming ID is in column 'B' and words in column 'C'
+#         if row[1] == user_id:
+#             matching_words.append(row[2])
+
+#     return {'words': matching_words}
+    
 @app.route('/get_words', methods=['GET'])
 def get_words():
     user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'User ID is required'}), 400
+
     print("Received user_id in Flask:", user_id) 
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
+    # Adjusted the range to include pronunciation, definition, synonyms, and examples
+    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range='シート1!B:G').execute()
     values = result.get('values', [])
 
-    matching_words = []
+    # List to hold the words and their details
+    word_details = []
     for row in values:
-        # Assuming ID is in column 'B' and words in column 'C'
-        if row[1] == user_id:
-            matching_words.append(row[2])
+        if row[1] == user_id:  # Filter rows by user_id
+            # Directly unpack row elements into the word details dictionary
+            word_info = {
+                "word": row[2],
+                "pronunciation": row[3],
+                "definition": row[4],
+                "synonyms": row[5],
+                "examples": row[6]
+            }
+            word_details.append(word_info)
 
-    return {'words': matching_words}
+    return jsonify(word_details)
+
 
 def modify_sheet(operation, user_id, word=None):
     global service  # Use the global service variable

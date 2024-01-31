@@ -50,9 +50,22 @@ def print_words(words, JP):
         for index, word in enumerate(words):
             with columns[index % num_columns]:
                 st.write(word)
+def fetch_and_display_user_words(user_id, JP):
+    request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
+    try:
+        response = requests.get(request_url)
+        response.raise_for_status()
+        word_details = response.json()
+        if word_details:
+            # Convert the list of dictionaries into a DataFrame and display it
+            df = pd.DataFrame(word_details)
+            st.dataframe(df)
+        else:
+            st.write(translate("まだ単語がありません。追加してみましょう！", "No words yet. Add some!", JP))
+    except requests.RequestException as e:
+        st.error(f'Failed to retrieve words: {e}')
+        st.write("Response content for debugging:", e.response.text if e.response else "No response")
 
-# def print_table(word):
-    
 
 def fetch_user_words(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
@@ -158,8 +171,8 @@ def main():
         words = fetch_user_words(st.query_params['user'], JP)
 
         if words:
-            print_words(words, JP)
-            # print_table(words)
+            # print_words(words, JP)
+            fetch_and_display_user_words(user_id, JP)
 
             c1, c2 = st.columns(2)
             with c1:
