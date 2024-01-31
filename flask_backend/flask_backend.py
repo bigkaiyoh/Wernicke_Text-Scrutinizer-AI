@@ -94,7 +94,7 @@ def get_words():
     print("Received user_id in Flask:", user_id) 
     sheet = service.spreadsheets()
     # Adjusted the range to include pronunciation, definition, synonyms, and examples
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range='シート1!B:G').execute()
+    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
     values = result.get('values', [])
 
     # List to hold the words and their details
