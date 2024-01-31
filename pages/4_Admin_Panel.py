@@ -150,17 +150,22 @@ def main():
     if not check_password():
         st.stop()
 
-    # Use the imported function
-    conn, main_data = establish_gsheets_connection()
+    tab1, tab2 = st.tabs(["📜 Tests", "📕 Vocabulary"])
 
-    # Get the list of student emails for this school
-    student_emails = get_emails_for_school(conn, st.session_state.school_sheet_name)
+    with tab1:
+        # Use the imported function
+        conn, main_data = establish_gsheets_connection()
 
-    # Filter dataset by emails
-    filtered_data = main_data[main_data['user_email'].isin(student_emails)]
+        # Get the list of student emails for this school
+        student_emails = get_emails_for_school(conn, st.session_state.school_sheet_name)
 
-    # Display the filtered data and metrics
-    display_data_and_metrics(filtered_data)
+        # Filter dataset by emails
+        filtered_data = main_data[main_data['user_email'].isin(student_emails)]
+
+        # Display the filtered data and metrics
+        display_data_and_metrics(filtered_data)
+    with tab2:
+        st.subheader("Student's Vocabulary Practice")
 
 
     # -------- SIDEBAR --------
