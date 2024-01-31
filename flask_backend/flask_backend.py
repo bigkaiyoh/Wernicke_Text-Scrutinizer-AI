@@ -147,10 +147,7 @@ def table_content(word):
         "synonyms": ["", "", ""],
         "examples": ["", "", ""]
     }
-    prompt = f"Provide the phonetic symbol, 
-            shorter than 20 words definition, 
-            3 synonyms, and 
-            3 example sentences for the word '{word}' in JSON format."
+    prompt = f"Provide the phonetic symbol, shorter than 20 words definition, 3 synonyms, and 3 example sentences for the word '{word}' in JSON format."
     response = client.chat.completions.create(
     model="gpt-3.5-turbo-1106",
     response_format={ "type": "json_object" },
