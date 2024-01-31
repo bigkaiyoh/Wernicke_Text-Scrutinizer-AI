@@ -111,6 +111,7 @@ def make_request(endpoint, json_data):
         return False
 
 def add_word_form():
+    st.session_state.chatbot_active = False
     with st.form(key='add_word_form', clear_on_submit=True, border=False):
         added_word = st.text_input("Enter a word to add 👇", key="add_word_input")
         submit_add = st.form_submit_button("Add Word")
@@ -129,6 +130,7 @@ def add_word_form():
         st.session_state['added_success'] = False
     
 def delete_word_form():
+    st.session_state.chatbot_active = False
     with st.form(key='delete_word_form', clear_on_submit=True, border=False):
         deleted_word = st.text_input("Enter a word to delete 👇", key="delete_word_input")
         submit_delete = st.form_submit_button("Delete Word")
