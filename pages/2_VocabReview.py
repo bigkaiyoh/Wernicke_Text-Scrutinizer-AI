@@ -197,18 +197,18 @@ def main():
         if st.session_state.chatbot_active == False:
             chatbot = st.button(translate("単語練習を始める", "Start practicing vocabulary", JP))
 
-            # if chatbot:
-            #     st.session_state.chatbot_active = True
-            #     # Send the initial message to the chatbot and get the response
-            #     if words:
-            #         initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
-            #     else:
-            #         initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
-            #     top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
-            #     st.session_state.chat_history.append(("assistant", top_message))
+            if chatbot:
+                st.session_state.chatbot_active = True
+                # Send the initial message to the chatbot and get the response
+                if words:
+                    initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
+                else:
+                    initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
+                top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
+                st.session_state.chat_history.append(("assistant", top_message))
                     
-            #     # Display the initial quiz
-            #     display_chat_history()
+                # Display the initial quiz
+                display_chat_history()
                 
         if st.session_state.chatbot_active:
             handle_chat_input(JP)
