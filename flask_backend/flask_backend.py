@@ -159,6 +159,7 @@ def table_content(word):
     word_data = json.loads(content)
     
     return {
+        "word": word,
         "pronunciation": word_data.get("pronunciation", ""),
         "definition": word_data.get("definition", ""),
         "synonyms": format_list_with_newlines(word_data.get("synonyms", [])),

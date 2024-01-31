@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import pandas as pd
 from Home import add_bottom, translate, run_assistant
 
 st.set_page_config(
@@ -49,6 +50,9 @@ def print_words(words, JP):
         for index, word in enumerate(words):
             with columns[index % num_columns]:
                 st.write(word)
+
+# def print_table(word):
+    
 
 def fetch_user_words(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
@@ -155,6 +159,8 @@ def main():
 
         if words:
             print_words(words, JP)
+            # print_table(words)
+
             c1, c2 = st.columns(2)
             with c1:
                 add_word_form()
