@@ -163,7 +163,7 @@ def main():
     #setup the page
     if "user" in st.query_params:
         # words = fetch_user_words(st.query_params['user'], JP)
-        words_details = fetch_and_display_user_words(user_id, JP)
+        words_details = fetch_and_display_user_words(st.query_params['user'], JP)
         # if words:
         if words_details:
             # print_words(words, JP)
