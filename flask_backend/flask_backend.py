@@ -226,8 +226,9 @@ def fill_missing_content(user_id):
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
     values = result.get('values', [])
+    updated_count = 0
     
-    updates = []
+    # updates = []
     for i, row in enumerate(values):
         # Assuming the user_id is in a specific column, e.g., the third column
         if row[1] == user_id and (len(row) < 4 or not all(row[3:6])):
@@ -239,18 +240,36 @@ def fill_missing_content(user_id):
                 word_data["synonyms"],
                 word_data["examples"]
             ]
-            updates.append({
-                'range': f'シート1!D{i+1}:G{i+1}', 
-                'values': [update_values]
-            })
 
-    if updates:
-        body = {'valueInputOption': 'USER_ENTERED', 'data': updates}
-        request = sheet.values().batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body)
-        response = request.execute()
-        return {'result': 'success', 'updated': len(updates)}
+            # Update the row individually
+            update_range = f'シート1!D{i+1}:G{i+1}'
+            body = {'values': [update_values]}
+            sheet.values().update(
+                spreadsheetId=SPREADSHEET_ID, 
+                range=update_range, 
+                valueInputOption='USER_ENTERED', 
+                body=body
+            ).execute()
+            updated_count += 1
+
+    # Return the result indicating how many words were updated
+    if updated_count > 0:
+        return {'result': 'success', 'updated': updated_count}
     else:
         return {'result': 'no updates needed'}
+     
+    #         updates.append({
+    #             'range': f'シート1!D{i+1}:G{i+1}', 
+    #             'values': [update_values]
+    #         })
+
+    # if updates:
+    #     body = {'valueInputOption': 'USER_ENTERED', 'data': updates}
+    #     request = sheet.values().batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body)
+    #     response = request.execute()
+    #     return {'result': 'success', 'updated': len(updates)}
+    # else:
+    #     return {'result': 'no updates needed'}
 
 # Endpoint to trigger filling missing content for a user
 @app.route('/fill_missing_content', methods=['POST'])
