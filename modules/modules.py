@@ -129,3 +129,13 @@ def fetch_table_content(user_id, JP):
         st.error(f'Failed to retrieve word details: {e}')
         return []
     
+
+def make_request(endpoint, json_data):
+    base_url = 'https://wernicke-backend.onrender.com'
+    request_url = f'{base_url}/{endpoint}'
+    response = requests.post(request_url, json=json_data)
+    if response.status_code == 200:
+        return True
+    else:
+        st.error(f'Status code: {response.status_code}')
+        return False

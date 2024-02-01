@@ -7,7 +7,7 @@ import numpy as np
 import json
 import re
 import requests
-from modules.modules import todays_total_submissions, plot_recent_submissions, filters, fetch_table_content
+from modules.modules import todays_total_submissions, plot_recent_submissions, filters, fetch_table_content, make_request
 
 #Secret Keys
 error_assistant = st.secrets.error_assistant
@@ -154,12 +154,27 @@ def fetch_nicknames_and_ids(emails):
 def display_words(words, JP):
     st.header(translate("生徒がこの１週間で学習した単語は", "Words your students have learned this week are", JP))
 
-    with st.expander("See Your Achievement!", expanded=True):
+    with st.expander("See Students' Achievement!", expanded=True):
         num_columns = 3
         columns = st.columns(num_columns)
         for index, word in enumerate(words):
             with columns[index % num_columns]:
                 st.write(word)
+
+def add_word_for_selected_users(user_ids, JP):
+    with st.form(key='add_word_for_selected_users_form', clear_on_submit=True):
+        added_word = st.text_input("Enter a word to add for selected students 👇", key="add_word_input_admin")
+        submit_add = st.form_submit_button("Add Word")
+
+        if submit_add and added_word.strip():
+            # Make a request to the backend to add the word for all provided user_ids
+            success = make_request("add_word_for_users", {'user_ids': user_ids, 'word': added_word})
+
+            if success:
+                st.success(f"Word '{added_word}' added successfully to all selected students!")
+            else:
+                st.error("Failed to add the word. Please try again.")
+
 
 
 def main():
@@ -199,13 +214,17 @@ def main():
         # Initialize an empty list to collect words from all selected students
         all_words = []
         if selected_nicknames:
+            all_user_ids = []
             for nickname in selected_nicknames:  # Iterate over each selected nickname
                 user_id = nicknames_with_ids[nickname]  # Directly access the user_id for the current nickname
                 table_content = fetch_table_content(user_id, JP)  # Fetch words for the user_id
                 words = [word['word'] for word in table_content]  # Extract words from the table content
                 all_words.extend(words)
+                all_user_ids.extend(user_id)
 
             display_words(all_words, JP)
+
+            add_word_for_selected_users(all_user_ids, JP)
 
     # -------- SIDEBAR --------
     with st.sidebar:

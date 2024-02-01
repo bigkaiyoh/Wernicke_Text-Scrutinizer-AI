@@ -318,6 +318,17 @@ def get_nicknames_and_ids():
 
     return nicknames_with_ids
 
+@app.route('/add_word_for_users', methods=['POST'])
+def add_word_for_users():
+    data = request.json
+    word = data['word']
+    user_ids = data['user_ids']
+
+    for user_id in user_ids:
+        # Logic to add 'word' to the vocabulary list for 'user_id'
+        pass
+
+    return {'message': 'Word added successfully'}, 200
 
 
 
