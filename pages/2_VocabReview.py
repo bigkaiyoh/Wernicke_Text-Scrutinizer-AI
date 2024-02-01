@@ -242,15 +242,15 @@ def main():
                     
                 if st.session_state.chatbot_active:
                     handle_chat_input(JP)
-            else:
-                st.write(translate("LINEかWernickeにログインして自分の苦手単語を復習しましょう！", 
-                                "Please log-in either through LINE or Wernicke for personalized quizzes",
-                                JP))
-                st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
-                                        "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
-                                        help = "Gmail Ready?")
         else:
             nickname_form(st.query_params.user)
+    else:
+        st.write(translate("LINEかWernickeにログインして自分の苦手単語を復習しましょう！", 
+                        "Please log-in either through LINE or Wernicke for personalized quizzes",
+                        JP))
+        st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
+                                "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
+                                help = "Gmail Ready?")
 
     
 
