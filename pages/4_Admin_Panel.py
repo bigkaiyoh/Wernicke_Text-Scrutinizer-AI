@@ -192,13 +192,14 @@ def main():
         # Fetch nicknames and corresponding user_ids for students
         nicknames_with_ids = fetch_nicknames_and_ids(student_emails)
         # Dropdown to select a student by nickname
-        selected_nickname = st.selectbox('Select Student by Nickname', options=list(nicknames_with_ids.keys()))
-
+        selected_nicknames = st.multiselect('Select Students by Nickname', 
+                                            options=list(nicknames_with_ids.keys()), 
+                                            default=list(nicknames_with_ids.keys())[0])
         # Initialize an empty list to collect words from all selected students
         all_words = []
-        if selected_nickname:
+        if selected_nicknames:
             # Fetch user_ids associated with the selected nickname
-            user_ids = nicknames_with_ids[selected_nickname]
+            user_ids = nicknames_with_ids[selected_nicknames]
 
             # Iterate over each user_id to fetch and aggregate learned words
             for user_id in user_ids:
