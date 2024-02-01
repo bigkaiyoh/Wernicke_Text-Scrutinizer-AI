@@ -230,7 +230,7 @@ def fill_missing_content(user_id):
     updates = []
     for i, row in enumerate(values):
         # Assuming the user_id is in a specific column, e.g., the third column
-        if row[2] == user_id and (len(row) < 4 or not all(row[3:6])):
+        if row[1] == user_id and (len(row) < 4 or not all(row[3:6])):
             word = row[0]  # Assuming the word is in the first column
             word_data = table_content(word)
             update_values = [
