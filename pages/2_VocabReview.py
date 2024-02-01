@@ -159,6 +159,21 @@ def delete_word_form():
 
     st.session_state.chatbot_active = False
 
+def check_nickname(user_id):
+    response = requests.post('https://wernicke-backend.onrender.com/check_nickname', json={'user_id': user_id})
+    if response.status_code == 200:
+        return response.json().get('nickname')
+    return None
+
+def nickname_form(user_id):
+    nickname_form = st.form("nickname_form")
+    nickname = nickname_form.text_input("Please enter your nickname:")
+    submit_button = nickname_form.form_submit_button("Submit")
+    if submit_button:
+        requests.post('https://your-backend-domain.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
+        st.success("Nickname updated successfully!")
+    st.rerun()
+
 def main():
     # Add logo to the sidebar
     st.title("Vocab Review!")
@@ -183,55 +198,59 @@ def main():
 
     #setup the page
     if "user" in st.query_params:
-        # words = fetch_user_words(st.query_params['user'], JP)
-        table_content = fetch_table_content(st.query_params.user, JP)
-        # if words:
-        if table_content:
-            tab1, tab2 = st.tabs(["🏆 Words", "📕 Dictionary"])
+        nickname = check_nickname(st.query_params.user)
+        if nickname is not None:
+            # words = fetch_user_words(st.query_params['user'], JP)
+            table_content = fetch_table_content(st.query_params.user, JP)
+            # if words:
+            if table_content:
+                tab1, tab2 = st.tabs(["🏆 Words", "📕 Dictionary"])
 
-            with tab1:
-                words = [word['word'] for word in table_content]
-                print_words(words, JP)
-            with tab2:
-                display_table(table_content, st.query_params.user, JP)
+                with tab1:
+                    words = [word['word'] for word in table_content]
+                    print_words(words, JP)
+                with tab2:
+                    display_table(table_content, st.query_params.user, JP)
 
-            c1, c2 = st.columns(2)
-            with c1:
+                c1, c2 = st.columns(2)
+                with c1:
+                    add_word_form()
+                with c2:
+                    delete_word_form()
+            else:
+                st.subheader(translate("新しく覚えた単語を追加しましょう！", "Add a word you newly learned!", JP))
                 add_word_form()
-            with c2:
-                delete_word_form()
-        else:
-            st.subheader(translate("新しく覚えた単語を追加しましょう！", "Add a word you newly learned!", JP))
-            add_word_form()
 
-        #initialize chatbot
-        st.header(translate("単語復習コーチ", "Review Vocabulary With ME!", JP))
+            #initialize chatbot
+            st.header(translate("単語復習コーチ", "Review Vocabulary With ME!", JP))
 
-        if st.session_state.chatbot_active == False:
-            chatbot = st.button(translate("単語練習を始める", "Start practicing vocabulary", JP))
+            if st.session_state.chatbot_active == False:
+                chatbot = st.button(translate("単語練習を始める", "Start practicing vocabulary", JP))
 
-            if chatbot:
-                st.session_state.chatbot_active = True
-                # Send the initial message to the chatbot and get the response
-                if table_content:
-                    initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
-                else:
-                    initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
-                top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
-                st.session_state.chat_history.append(("assistant", top_message))
+                if chatbot:
+                    st.session_state.chatbot_active = True
+                    # Send the initial message to the chatbot and get the response
+                    if table_content:
+                        initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
+                    else:
+                        initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
+                    top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
+                    st.session_state.chat_history.append(("assistant", top_message))
+                        
+                    # Display the initial quiz
+                    display_chat_history()
                     
-                # Display the initial quiz
-                display_chat_history()
-                
-        if st.session_state.chatbot_active:
-            handle_chat_input(JP)
-    else:
-        st.write(translate("LINEかWernickeにログインして自分の苦手単語を復習しましょう！", 
-                           "Please log-in either through LINE or Wernicke for personalized quizzes",
-                           JP))
-        st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
-                                 "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
-                                 help = "Gmail Ready?")
+                if st.session_state.chatbot_active:
+                    handle_chat_input(JP)
+            else:
+                st.write(translate("LINEかWernickeにログインして自分の苦手単語を復習しましょう！", 
+                                "Please log-in either through LINE or Wernicke for personalized quizzes",
+                                JP))
+                st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
+                                        "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
+                                        help = "Gmail Ready?")
+        else:
+            nickname_form(st.query_params.user)
 
     
 

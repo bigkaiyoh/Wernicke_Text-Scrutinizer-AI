@@ -228,7 +228,6 @@ def fill_missing_content(user_id):
     values = result.get('values', [])
     updated_count = 0
     
-    # updates = []
     for i, row in enumerate(values):
         # Assuming the user_id is in a specific column, e.g., the third column
         if row[1] == user_id and (len(row) < 4 or not all(row[3:6])):
@@ -257,19 +256,7 @@ def fill_missing_content(user_id):
         return {'result': 'success', 'updated': updated_count}
     else:
         return {'result': 'no updates needed'}
-     
-    #         updates.append({
-    #             'range': f'シート1!D{i+1}:G{i+1}', 
-    #             'values': [update_values]
-    #         })
 
-    # if updates:
-    #     body = {'valueInputOption': 'USER_ENTERED', 'data': updates}
-    #     request = sheet.values().batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body)
-    #     response = request.execute()
-    #     return {'result': 'success', 'updated': len(updates)}
-    # else:
-    #     return {'result': 'no updates needed'}
 
 # Endpoint to trigger filling missing content for a user
 @app.route('/fill_missing_content', methods=['POST'])
@@ -278,6 +265,44 @@ def fill_missing_content_endpoint():
     user_id = data['user_id']
     response = fill_missing_content(user_id)
     return response
+
+@app.route('/check_nickname', methods=['POST'])
+def check_nickname():
+    data = request.json
+    user_id = data['user_id']
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range='シート1!A:D').execute()
+    values = result.get('values', [])
+
+    for row in values:
+        if len(row) > 2 and row[2] == user_id:
+            nickname = row[3] if len(row) > 3 else None
+            return {'nickname': nickname}
+
+    return {'error': 'User not found'}, 404
+
+@app.route('/update_nickname', methods=['POST'])
+def update_nickname():
+    data = request.json
+    user_id = data['user_id']
+    nickname = data['nickname']
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range='シート1!A:D').execute()
+    values = result.get('values', [])
+
+    for i, row in enumerate(values):
+        if row[2] == user_id:
+            range_to_update = f'シート1!D{i+1}'
+            sheet.values().update(
+                spreadsheetId=USER_SHEET_ID,
+                range=range_to_update,
+                valueInputOption='RAW',
+                body={'values': [[nickname]]}
+            ).execute()
+            return {'success': True}
+
+    return {'error': 'User not found'}, 404
+
 
 
 
