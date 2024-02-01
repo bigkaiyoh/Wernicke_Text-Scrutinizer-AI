@@ -316,7 +316,7 @@ def get_nicknames_and_ids():
         if len(row) >= 4 and row[0] in emails:  # Column A contains emails
             nicknames_with_ids[row[3]] = row[2]  # Column D contains nicknames, Column C contains user_id
 
-    return jsonify(nicknames_with_ids)
+    return nicknames_with_ids
 
 
 
