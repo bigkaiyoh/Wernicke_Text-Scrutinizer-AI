@@ -206,9 +206,9 @@ def main():
     if "user" in st.query_params:
         nickname = check_nickname(st.query_params.user)
         if nickname is not None:
-            # words = fetch_user_words(st.query_params['user'], JP)
+            with st.sidebar:
+                st.write(f"Hey, {nickname}!")
             table_content = fetch_table_content(st.query_params.user, JP)
-            # if words:
             if table_content:
                 tab1, tab2 = st.tabs(["🏆 Words", "📕 Dictionary"])
 
