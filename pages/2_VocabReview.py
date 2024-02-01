@@ -51,11 +51,19 @@ def print_words(words, JP):
             with columns[index % num_columns]:
                 st.write(word)
 
-def display_table(table_content, JP):
+def display_table(table_content, user_id, JP):
     st.header(translate("あなたがこの１週間で学習した単語は", "Words you have learned this week are", JP))
     
     column_order = ['word', 'pronunciation', 'definition', 'synonyms', 'examples']
     df = pd.DataFrame(table_content, columns=column_order)
+
+    # Check for missing content
+    missing_content = any(df[col].eq('').any() for col in column_order)
+    if missing_content:
+        # Button to fill missing content
+        if st.button('Fill Missing Content'):
+            fill_missing_content_for_user(user_id)
+    
     st.dataframe(df, use_container_width=True, hide_index=True)
 
 def fill_missing_content_for_user(user_id):
@@ -78,9 +86,8 @@ def fetch_table_content(user_id, JP):
         # Directly return the JSON response since it's already the list of word details
         return response.json()
     except requests.RequestException as e:
-        # st.error(f'Failed to retrieve word details: {e}')
-        # return []
-        fill_missing_content_for_user(user_id)
+        st.error(f'Failed to retrieve word details: {e}')
+        return []
 
 def activate_chatbot():
     st.session_state.chatbot_active = True
@@ -184,7 +191,7 @@ def main():
                 words = [word['word'] for word in table_content]
                 print_words(words, JP)
             with tab2:
-                display_table(table_content, JP)
+                display_table(table_content, user_id, JP)
 
             c1, c2 = st.columns(2)
             with c1:

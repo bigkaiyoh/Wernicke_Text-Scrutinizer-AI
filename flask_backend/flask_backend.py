@@ -101,14 +101,15 @@ def get_words():
     # List to hold the words and their details
     word_details = []
     for row in values:
-        if row[1] == user_id:  # Filter rows by user_id
-            # Directly unpack row elements into the word details dictionary
+        if len(row) > 1 and row[1] == user_id:  # Ensure row has at least 2 elements and matches user_id
+            # Fill missing elements with empty strings
+            filled_row = row + [''] * (7 - len(row))  # Ensure row has at least 7 elements
             word_info = {
-                "word": row[2],
-                "pronunciation": row[3],
-                "definition": row[4],
-                "synonyms": row[5],
-                "examples": row[6]
+                "word": filled_row[2],
+                "pronunciation": filled_row[3],
+                "definition": filled_row[4],
+                "synonyms": filled_row[5],
+                "examples": filled_row[6]
             }
             word_details.append(word_info)
 
