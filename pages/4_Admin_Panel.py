@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 import numpy as np
 import json
 import re
-from modules.modules import todays_total_submissions, plot_recent_submissions, filters
+import requests
+from modules.modules import todays_total_submissions, plot_recent_submissions, filters, fetch_table_content
 
 #Secret Keys
 error_assistant = st.secrets.error_assistant
@@ -91,7 +92,7 @@ def display_data_and_metrics(filtered_data):
         filtered_data, selected_emails = filters(filtered_data)
     
     # Display the data table
-    st.dataframe(filtered_data[['timestamp', 'user_email', 'test_framework', 'test_section', 'user_input', 'Wernicke_output']])
+    st.dataframe(filtered_data[['timestamp', 'user_email', 'test_framework', 'test_section', 'user_input', 'Wernicke_output']], hide_index=True)
 
     error_analyzer(filtered_data)
 
@@ -142,7 +143,28 @@ def error_analyzer(filtered_data):
             with st.expander("See Analysis"):
                 st.write(st.session_state.assistant_response)
 
+def fetch_nicknames_and_ids(emails):
+    response = requests.post('https://your-backend-url.com/get_nicknames_and_ids', json={'emails': emails})
+    if response.status_code == 200:
+        return response.json()  # This will now be a dictionary mapping nicknames to user_ids
+    else:
+        st.error("Failed to fetch nicknames and user IDs.")
+        return {}
+
+def display_words(words, JP):
+    st.header(translate("生徒がこの１週間で学習した単語は", "Words your students have learned this week are", JP))
+
+    with st.expander("See Your Achievement!", expanded=True):
+        num_columns = 3
+        columns = st.columns(num_columns)
+        for index, word in enumerate(words):
+            with columns[index % num_columns]:
+                st.write(word)
+
+
 def main():
+    # Language switch toggle
+    JP = st.toggle("Japanese (日本語)", value=False)
     # Admin Dashboard
     st.title("Admin Dashboard")
 
@@ -167,6 +189,24 @@ def main():
     with tab2:
         st.subheader("Student's Vocabulary Practice")
 
+        # Fetch nicknames and corresponding user_ids for students
+        nicknames_with_ids = fetch_nicknames_and_ids(student_emails)
+        # Dropdown to select a student by nickname
+        selected_nickname = st.selectbox('Select Student by Nickname', options=list(nicknames_with_ids.keys()))
+
+        # Initialize an empty list to collect words from all selected students
+        all_words = []
+        if selected_nickname:
+            # Fetch user_ids associated with the selected nickname
+            user_ids = nicknames_with_ids[selected_nickname]
+
+            # Iterate over each user_id to fetch and aggregate learned words
+            for user_id in user_ids:
+                table_content = fetch_table_content(user_id, JP)
+                words = [word['word'] for word in table_content]
+                all_words.extend(words)
+
+            display_words(all_words, JP)
 
     # -------- SIDEBAR --------
     with st.sidebar:

@@ -303,6 +303,22 @@ def update_nickname():
 
     return {'error': 'User not found'}, 404
 
+@app.route('/get_nicknames_and_ids', methods=['POST'])
+def get_nicknames_and_ids():
+    emails = request.json['emails']
+    service = get_google_sheets_service()  # Function to authenticate and get service
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range='A:D').execute()  # Adjust range to include columns A, C, and D
+    values = result.get('values', [])
+
+    nicknames_with_ids = {}
+    for row in values:
+        if len(row) >= 4 and row[0] in emails:  # Column A contains emails
+            nicknames_with_ids[row[3]] = row[2]  # Column D contains nicknames, Column C contains user_id
+
+    return jsonify(nicknames_with_ids)
+
+
 
 
 
