@@ -168,10 +168,10 @@ def check_nickname(user_id):
 
 def nickname_form(user_id, JP):
     with st.form("nickname_form"):
-        st.header(translate("🤙🏻 ニックネームを登録してください", "🤙🏻 What Should We Call You?", JP))
+        st.header(translate("ニックネームを登録してください🎉", "What Should We Call You? 🎉", JP))
         nickname = st.text_input(translate("ニックネームを入力してください",
                                                     "Please enter your nickname:", 
-                                                    JP), help = translate("管理者に表示される名前です", "will be displayed on your teacher's page", JP))
+                                                    JP), help = translate("管理者に表示されます😶‍🌫️", "Nickname will be displayed on your teacher's page😶‍🌫️", JP))
         submit_button = st.form_submit_button("Submit")
         if submit_button:
             response = requests.post('https://wernicke-backend.onrender.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
