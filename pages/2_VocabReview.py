@@ -172,7 +172,7 @@ def nickname_form(user_id):
     if submit_button:
         requests.post('https://your-backend-domain.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
         st.success("Nickname updated successfully!")
-    st.rerun()
+        st.rerun()
 
 def main():
     # Add logo to the sidebar
