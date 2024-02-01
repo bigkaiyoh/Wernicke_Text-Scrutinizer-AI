@@ -63,6 +63,7 @@ def display_table(table_content, user_id, JP):
         # Button to fill missing content
         if st.button('Fill Missing Content'):
             fill_missing_content_for_user(user_id)
+            st.rerun()
     
     st.dataframe(df, use_container_width=True, hide_index=True)
 
