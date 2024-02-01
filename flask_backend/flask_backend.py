@@ -229,12 +229,19 @@ def fill_missing_content(user_id):
     updates = []
     for i, row in enumerate(values):
         # Assuming the user_id is in a specific column, e.g., the third column
-        if row[2] == user_id and (len(row) < 7 or not all(row[3:6])):
+        if row[2] == user_id and (len(row) < 4 or not all(row[3:6])):
             word = row[0]  # Assuming the word is in the first column
             word_data = table_content(word)
-            range_to_update = f'シート1!D{i+1}:G{i+1}'
-            update_body = {'values': [[word_data['pronunciation'], word_data['definition'], ", ".join(word_data['synonyms']), ", ".join(word_data['examples'])]]}
-            updates.append({'range': range_to_update, 'values': update_body['values']})
+            update_values = [
+                word_data["pronunciation"],
+                word_data["definition"],
+                word_data["synonyms"],
+                word_data["examples"]
+            ]
+            updates.append({
+                'range': f'シート1!D{i+1}:G{i+1}', 
+                'values': [update_values]
+            })
 
     if updates:
         body = {'valueInputOption': 'USER_ENTERED', 'data': updates}
