@@ -191,7 +191,7 @@ def main():
                 words = [word['word'] for word in table_content]
                 print_words(words, JP)
             with tab2:
-                display_table(table_content, user_id, JP)
+                display_table(table_content, st.query_params.user, JP)
 
             c1, c2 = st.columns(2)
             with c1:
