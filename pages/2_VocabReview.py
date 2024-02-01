@@ -170,9 +170,12 @@ def nickname_form(user_id):
     nickname = nickname_form.text_input("Please enter your nickname:")
     submit_button = nickname_form.form_submit_button("Submit")
     if submit_button:
-        requests.post('https://wernicke-backend.onrender.com/check_nickname', json={'user_id': user_id, 'nickname': nickname})
-        st.success("Nickname updated successfully!")
-        st.rerun()
+        response = requests.post('https://wernicke-backend.onrender.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
+        if response.ok:
+            st.success("Nickname updated successfully!")
+            st.rerun()  # Call rerun only after successful update to avoid infinite loop
+        else:
+            st.error("Failed to update nickname. Please try again.")
 
 def main():
     # Add logo to the sidebar
