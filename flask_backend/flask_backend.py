@@ -157,37 +157,17 @@ def delete_word_from_sheet(user_id, word, values):
             return True
     return False
 
-def update_word_in_sheet(user_id, word, word_data, values):
-    for index, row in enumerate(values):
-        if row[1] == user_id and row[2] == word:
-            range_to_update = f'シート1!B{index + 1}:G{index + 1}'
-            update_values = [[user_id, word] + list(word_data.values())]
-            body = {'values': update_values}
-            service.spreadsheets().values().update(
-                spreadsheetId=SPREADSHEET_ID, 
-                range=range_to_update, 
-                valueInputOption='USER_ENTERED', 
-                body=body
-            ).execute()
-            return True
-    return False
-
-def modify_sheet(operation, user_id, word, word_data=None):
+def modify_sheet(operation, user_id, word):
     global service  # Use the global service variable
     sheet = service.spreadsheets()
 
     if operation == 'add':
         return add_word_to_sheet(sheet, user_id, word)
 
-    else:
+    elif operation == 'delete':
         result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
         values = result.get('values', [])
-
-        if operation == 'delete':
-            return delete_word_from_sheet(user_id, word, values)
-            
-        elif operation == 'update':
-            return update_word_in_sheet(user_id, word, word_data, values)
+        return delete_word_from_sheet(user_id, word, values)
         
     return False
     
@@ -239,6 +219,40 @@ def delete_word():
         return {'result': 'success'}
     else:
         return {'result': 'word not found'}, 404
+
+def fill_missing_content(user_id):
+    # Fetch rows from the Google Sheet for the specified user_id
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
+    values = result.get('values', [])
+    
+    updates = []
+    for i, row in enumerate(values):
+        # Assuming the user_id is in a specific column, e.g., the third column
+        if row[2] == user_id and (len(row) < 7 or not all(row[3:6])):
+            word = row[0]  # Assuming the word is in the first column
+            word_data = table_content(word)
+            range_to_update = f'シート1!D{i+1}:G{i+1}'
+            update_body = {'values': [[word_data['pronunciation'], word_data['definition'], ", ".join(word_data['synonyms']), ", ".join(word_data['examples'])]]}
+            updates.append({'range': range_to_update, 'values': update_body['values']})
+
+    if updates:
+        body = {'valueInputOption': 'USER_ENTERED', 'data': updates}
+        request = sheet.values().batchUpdate(spreadsheetId=SPREADSHEET_ID, body=body)
+        response = request.execute()
+        return {'result': 'success', 'updated': len(updates)}
+    else:
+        return {'result': 'no updates needed'}
+
+# Endpoint to trigger filling missing content for a user
+@app.route('/fill_missing_content', methods=['POST'])
+def fill_missing_content_endpoint():
+    data = request.json
+    user_id = data['user_id']
+    response = fill_missing_content(user_id)
+    return jsonify(response)
+
+
 
 # if __name__ == '__main__':
 #     app.run(debug=True)

@@ -58,6 +58,18 @@ def display_table(table_content, JP):
     df = pd.DataFrame(table_content, columns=column_order)
     st.dataframe(df, use_container_width=True, hide_index=True)
 
+def fill_missing_content_for_user(user_id):
+    response = requests.post('https://wernicke-backend.onrender.com/fill_missing_content', json={'user_id': user_id})
+    if response.status_code == 200:
+        data = response.json()
+        if data.get('result') == 'success':
+            st.success(f'Missing content filled for {data.get("updated")} words.')
+        else:
+            st.info('No missing content needed to be filled.')
+    else:
+        st.error('Failed to fill missing content due to an error.')
+
+
 def fetch_table_content(user_id, JP):
     request_url = f'https://wernicke-backend.onrender.com/get_words?user_id={user_id}'
     try:
@@ -66,8 +78,9 @@ def fetch_table_content(user_id, JP):
         # Directly return the JSON response since it's already the list of word details
         return response.json()
     except requests.RequestException as e:
-        st.error(f'Failed to retrieve word details: {e}')
-        return []
+        # st.error(f'Failed to retrieve word details: {e}')
+        # return []
+        fill_missing_content_for_user(user_id)
 
 def activate_chatbot():
     st.session_state.chatbot_active = True
