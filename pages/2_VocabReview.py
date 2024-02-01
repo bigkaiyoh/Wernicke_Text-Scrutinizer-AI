@@ -166,19 +166,22 @@ def check_nickname(user_id):
         return response.json().get('nickname')
     return None
 
-def nickname_form(user_id):
-    nickname_form = st.form("nickname_form")
-    nickname = nickname_form.text_input("Please enter your nickname:")
-    submit_button = nickname_form.form_submit_button("Submit")
-    if submit_button:
-        response = requests.post('https://wernicke-backend.onrender.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
-        if response.ok:
-            st.balloons()
-            st.success("Thank you! Nickname updated successfully!")
-            time.sleep(3)
-            st.rerun()  # Call rerun only after successful update to avoid infinite loop
-        else:
-            st.error("Failed to update nickname. Please try again.")
+def nickname_form(user_id, JP):
+    with st.form("nickname_form"):
+        st.header(translate("🤙🏻 ニックネームを登録してください", "🤙🏻 What Should We Call You?", JP))
+        nickname = st.text_input(translate("ニックネームを入力してください",
+                                                    "Please enter your nickname:", 
+                                                    JP), help = translate("管理者に表示される名前です", "will be displayed on your teacher's page", JP))
+        submit_button = nickname_form.form_submit_button("Submit")
+        if submit_button:
+            response = requests.post('https://wernicke-backend.onrender.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
+            if response.ok:
+                st.balloons()
+                st.success("Thank you! Nickname updated successfully!")
+                time.sleep(3)
+                st.rerun()  # Call rerun only after successful update to avoid infinite loop
+            else:
+                st.error("Failed to update nickname. Please try again.")
 
 def main():
     # Add logo to the sidebar
@@ -206,8 +209,6 @@ def main():
     if "user" in st.query_params:
         nickname = check_nickname(st.query_params.user)
         if nickname is not None:
-            with st.sidebar:
-                st.write(f"Hey, {nickname}!")
             table_content = fetch_table_content(st.query_params.user, JP)
             if table_content:
                 tab1, tab2 = st.tabs(["🏆 Words", "📕 Dictionary"])
@@ -249,7 +250,7 @@ def main():
                 if st.session_state.chatbot_active:
                     handle_chat_input(JP)
         else:
-            nickname_form(st.query_params.user)
+            nickname_form(st.query_params.user, JP)
     else:
         st.write(translate("LINEかWernickeにログインして自分の苦手単語を復習しましょう！", 
                         "Please log-in either through LINE or Wernicke for personalized quizzes",
