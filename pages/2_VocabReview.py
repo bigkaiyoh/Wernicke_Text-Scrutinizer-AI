@@ -191,7 +191,7 @@ def main():
             if chatbot:
                 st.session_state.chatbot_active = True
                 # Send the initial message to the chatbot and get the response
-                if words:
+                if table_content:
                     initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
                 else:
                     initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
