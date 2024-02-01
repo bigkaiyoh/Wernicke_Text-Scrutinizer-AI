@@ -146,7 +146,6 @@ def error_analyzer(filtered_data):
 def fetch_nicknames_and_ids(emails):
     response = requests.post('https://wernicke-backend.onrender.com/get_nicknames_and_ids', json={'emails': emails})
     if response.status_code == 200:
-        st.write(response.json())
         return response.json()  # This will now be a dictionary mapping nicknames to user_ids
     else:
         st.error("Failed to fetch nicknames and user IDs.")
