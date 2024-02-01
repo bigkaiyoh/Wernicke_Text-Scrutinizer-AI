@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+import time
 from Home import add_bottom, translate, run_assistant
 
 st.set_page_config(
@@ -172,7 +173,9 @@ def nickname_form(user_id):
     if submit_button:
         response = requests.post('https://wernicke-backend.onrender.com/update_nickname', json={'user_id': user_id, 'nickname': nickname})
         if response.ok:
-            st.success("Nickname updated successfully!")
+            st.balloons()
+            st.success("Thank you! Nickname updated successfully!")
+            time.sleep(3)
             st.rerun()  # Call rerun only after successful update to avoid infinite loop
         else:
             st.error("Failed to update nickname. Please try again.")
