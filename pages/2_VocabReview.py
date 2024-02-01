@@ -178,7 +178,7 @@ def nickname_form(user_id, JP):
             if response.ok:
                 st.balloons()
                 st.success("Thank you! Nickname updated successfully!")
-                time.sleep(3)
+                time.sleep(2)
                 st.rerun()  # Call rerun only after successful update to avoid infinite loop
             else:
                 st.error("Failed to update nickname. Please try again.")
