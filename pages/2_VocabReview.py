@@ -68,15 +68,16 @@ def display_table(table_content, user_id, JP):
     st.dataframe(df, use_container_width=True, hide_index=True)
 
 def fill_missing_content_for_user(user_id):
-    response = requests.post('https://wernicke-backend.onrender.com/fill_missing_content', json={'user_id': user_id})
-    if response.status_code == 200:
-        data = response.json()
-        if data.get('result') == 'success':
-            st.success(f'Missing content filled for {data.get("updated")} words.')
+    with st.spinner(text='Filling missing content. This may take some time for more words...'):
+        response = requests.post('https://wernicke-backend.onrender.com/fill_missing_content', json={'user_id': user_id})
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('result') == 'success':
+                st.success(f'Missing content filled for {data.get("updated")} words.')
+            else:
+                st.info('No missing content needed to be filled.')
         else:
-            st.info('No missing content needed to be filled.')
-    else:
-        st.error('Failed to fill missing content due to an error.')
+            st.error('Failed to fill missing content due to an error.')
 
 
 def fetch_table_content(user_id, JP):
