@@ -37,6 +37,7 @@ def get_google_sheets_service():
 # Initialize Google Sheets Service at the start
 service = get_google_sheets_service()
 
+
 def get_or_create_user_id(email):
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range=USER_RANGE_NAME).execute()
@@ -101,35 +102,17 @@ def get_words():
     word_details = []
     for row in values:
         if row[1] == user_id:  # Filter rows by user_id
-            if len(row) < 7:  # Not all details are present
-                word_data = table_content(row[2])  # Fetch missing details for the word
-                # Update the sheet with the new details
-                modify_sheet('update', user_id, row[2], word_data)
-                word_info = {
-                    "word": row[2],
-                    "pronunciation": word_data["pronunciation"],
-                    "definition": word_data["definition"],
-                    "synonyms": word_data["synonyms"],
-                    "examples": word_data["examples"]
-                }
-            else:
-                # Directly unpack row elements into the word details dictionary
-                word_info = {
-                    "word": row[2],
-                    "pronunciation": row[3],
-                    "definition": row[4],
-                    "synonyms": row[5],
-                    "examples": row[6]
-                }
+            # Directly unpack row elements into the word details dictionary
+            word_info = {
+                "word": row[2],
+                "pronunciation": row[3],
+                "definition": row[4],
+                "synonyms": row[5],
+                "examples": row[6]
+            }
             word_details.append(word_info)
 
     return word_details
-
-def find_row_index(values, user_id, word):
-    for index, row in enumerate(values):
-        if row[1] == user_id and row[2] == word:
-            return index
-    return None
 
 def add_word_to_sheet(sheet, user_id, word):
     # Fetch data from GPT-3
@@ -146,10 +129,9 @@ def add_word_to_sheet(sheet, user_id, word):
         ]
     ]
     body = {'values': values}
-    range_to_update = 'シート1!A:G'
     result = sheet.values().append(
         spreadsheetId=SPREADSHEET_ID, 
-        range=range_to_update, 
+        range=RANGE_NAME, 
         valueInputOption='RAW', 
         body=body
     ).execute()
