@@ -194,7 +194,8 @@ def main():
         # Dropdown to select a student by nickname
         selected_nicknames = st.multiselect('Select Students by Nickname', 
                                             options=list(nicknames_with_ids.keys()), 
-                                            default=list(nicknames_with_ids.keys())[0])
+                                            default=[list(nicknames_with_ids.keys())[0]]
+                                            )
         # Initialize an empty list to collect words from all selected students
         all_words = []
         if selected_nicknames:
