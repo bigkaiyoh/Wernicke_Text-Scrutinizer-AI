@@ -195,18 +195,15 @@ def main():
         # Dropdown to select a student by nickname
         selected_nicknames = st.multiselect('Select Students by Nickname', 
                                             options=list(nicknames_with_ids.keys()), 
-                                            default=[list(nicknames_with_ids.keys())[0]]
+                                            default=[list(nicknames_with_ids.keys())]
                                             )
         # Initialize an empty list to collect words from all selected students
         all_words = []
         if selected_nicknames:
-            # Fetch user_ids associated with the selected nickname
-            user_ids = nicknames_with_ids[selected_nicknames]
-
-            # Iterate over each user_id to fetch and aggregate learned words
-            for user_id in user_ids:
-                table_content = fetch_table_content(user_id, JP)
-                words = [word['word'] for word in table_content]
+            for nickname in selected_nicknames:  # Iterate over each selected nickname
+                user_id = nicknames_with_ids[nickname]  # Directly access the user_id for the current nickname
+                table_content = fetch_table_content(user_id, JP)  # Fetch words for the user_id
+                words = [word['word'] for word in table_content]  # Extract words from the table content
                 all_words.extend(words)
 
             display_words(all_words, JP)
