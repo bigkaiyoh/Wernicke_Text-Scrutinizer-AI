@@ -101,69 +101,114 @@ def get_words():
     word_details = []
     for row in values:
         if row[1] == user_id:  # Filter rows by user_id
-            # Directly unpack row elements into the word details dictionary
-            word_info = {
-                "word": row[2],
-                "pronunciation": row[3],
-                "definition": row[4],
-                "synonyms": row[5],
-                "examples": row[6]
-            }
+            if len(row) < 7:  # Not all details are present
+                word_data = table_content(row[2])  # Fetch missing details for the word
+                # Update the sheet with the new details
+                modify_sheet('update', user_id, row[2], word_data)
+                word_info = {
+                    "word": row[2],
+                    "pronunciation": word_data["pronunciation"],
+                    "definition": word_data["definition"],
+                    "synonyms": word_data["synonyms"],
+                    "examples": word_data["examples"]
+                }
+            else:
+                # Directly unpack row elements into the word details dictionary
+                word_info = {
+                    "word": row[2],
+                    "pronunciation": row[3],
+                    "definition": row[4],
+                    "synonyms": row[5],
+                    "examples": row[6]
+                }
             word_details.append(word_info)
 
     return word_details
 
+def find_row_index(values, user_id, word):
+    for index, row in enumerate(values):
+        if row[1] == user_id and row[2] == word:
+            return index
+    return None
 
-def modify_sheet(operation, user_id, word=None):
+def add_word_to_sheet(sheet, user_id, word):
+    # Fetch data from GPT-3
+    word_data = table_content(word)
+
+    values = [
+        ['', 
+        user_id, 
+        word,
+        word_data["pronunciation"],
+        word_data["definition"],
+        word_data["synonyms"],
+        word_data["examples"]
+        ]
+    ]
+    body = {'values': values}
+    range_to_update = 'シート1!A:G'
+    result = sheet.values().append(
+        spreadsheetId=SPREADSHEET_ID, 
+        range=range_to_update, 
+        valueInputOption='RAW', 
+        body=body
+    ).execute()
+    return result.get('updates', {}).get('updatedCells', 0)
+
+def delete_word_from_sheet(user_id, word, values):
+    for index, row in enumerate(values):
+        if len(row) > 2 and row[1] == user_id and row[2] == word:
+            body = {
+                "requests": [{
+                    "deleteDimension": {
+                        "range": {
+                            "sheetId": 0,
+                            "dimension": "ROWS",
+                            "startIndex": index,
+                            "endIndex": index + 1
+                        }
+                    }
+                }]
+            }
+            service.spreadsheets().batchUpdate(
+                spreadsheetId=SPREADSHEET_ID, body=body).execute()
+            return True
+    return False
+
+def update_word_in_sheet(user_id, word, word_data, values):
+    for index, row in enumerate(values):
+        if row[1] == user_id and row[2] == word:
+            range_to_update = f'シート1!B{index + 1}:G{index + 1}'
+            update_values = [[user_id, word] + list(word_data.values())]
+            body = {'values': update_values}
+            service.spreadsheets().values().update(
+                spreadsheetId=SPREADSHEET_ID, 
+                range=range_to_update, 
+                valueInputOption='USER_ENTERED', 
+                body=body
+            ).execute()
+            return True
+    return False
+
+def modify_sheet(operation, user_id, word, word_data=None):
     global service  # Use the global service variable
     sheet = service.spreadsheets()
 
     if operation == 'add':
-        # Fetch data from GPT-3
-        word_data = table_content(word)
+        return add_word_to_sheet(sheet, user_id, word)
 
-        values = [
-            ['', 
-            user_id, 
-            word,
-            word_data["pronunciation"],
-            word_data["definition"],
-            word_data["synonyms"],
-            word_data["examples"]
-            ]
-        ]
-        body = {'values': values}
-        range_to_update = 'シート1!A:G'
-        result = sheet.values().append(
-            spreadsheetId=SPREADSHEET_ID, 
-            range=range_to_update, 
-            valueInputOption='RAW', 
-            body=body
-        ).execute()
-        return result.get('updates', {}).get('updatedCells', 0)
-
-    elif operation == 'delete':
+    else:
         result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
         values = result.get('values', [])
 
-        for index, row in enumerate(values):
-            if len(row) > 2 and row[1] == user_id and row[2] == word:
-                body = {
-                    "requests": [{
-                        "deleteDimension": {
-                            "range": {
-                                "sheetId": 0,
-                                "dimension": "ROWS",
-                                "startIndex": index,
-                                "endIndex": index + 1
-                            }
-                        }
-                    }]
-                }
-                service.spreadsheets().batchUpdate(
-                    spreadsheetId=SPREADSHEET_ID, body=body).execute()
-                return True
-        return False
+        if operation == 'delete':
+            return delete_word_from_sheet(user_id, word, values)
+            
+        elif operation == 'update':
+            return update_word_in_sheet(user_id, word, word_data, values)
+        
+    return False
+    
 
 def format_list_with_newlines(items):
     return '\n'.join(f'{index+1}. {item}' for index, item in enumerate(items))
