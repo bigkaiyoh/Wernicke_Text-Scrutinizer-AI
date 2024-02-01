@@ -257,7 +257,7 @@ def fill_missing_content_endpoint():
     data = request.json
     user_id = data['user_id']
     response = fill_missing_content(user_id)
-    return jsonify(response)
+    return response
 
 
 
