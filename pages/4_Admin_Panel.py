@@ -161,19 +161,19 @@ def display_words(words, JP):
             with columns[index % num_columns]:
                 st.write(word)
 
-def add_word_for_selected_users(user_ids, JP):
-    with st.form(key='add_word_for_selected_users_form', clear_on_submit=True):
-        added_word = st.text_input("Enter a word to add for selected students 👇", key="add_word_input_admin")
-        submit_add = st.form_submit_button("Add Word")
+# def add_word_for_selected_users(user_ids, JP):
+#     with st.form(key='add_word_for_selected_users_form', clear_on_submit=True):
+#         added_word = st.text_input("Enter a word to add for selected students 👇", key="add_word_input_admin")
+#         submit_add = st.form_submit_button("Add Word")
 
-        if submit_add and added_word.strip():
-            # Make a request to the backend to add the word for all provided user_ids
-            success = make_request("add_word_for_users", {'user_ids': user_ids, 'word': added_word})
+#         if submit_add and added_word.strip():
+#             # Make a request to the backend to add the word for all provided user_ids
+#             success = make_request("add_word_for_users", {'user_ids': user_ids, 'word': added_word})
 
-            if success:
-                st.success(f"Word '{added_word}' added successfully to all selected students!")
-            else:
-                st.error("Failed to add the word. Please try again.")
+#             if success:
+#                 st.success(f"Word '{added_word}' added successfully to all selected students!")
+#             else:
+#                 st.error("Failed to add the word. Please try again.")
 
 
 
@@ -224,7 +224,7 @@ def main():
 
             display_words(all_words, JP)
 
-            add_word_for_selected_users(all_user_ids, JP)
+            # add_word_for_selected_users(all_user_ids, JP)
 
     # -------- SIDEBAR --------
     with st.sidebar:
