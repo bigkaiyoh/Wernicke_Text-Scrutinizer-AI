@@ -134,7 +134,7 @@ def error_analyzer(filtered_data):
 
     if st.button('Analyze Common Errors', key='analyze_errors_btn'):
         json_data = summarize_feedback(filtered_data)
-        st.write(json_data) #debugging purpose
+        # st.write(json_data) #debugging purpose
 
     if json_data:
         st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
