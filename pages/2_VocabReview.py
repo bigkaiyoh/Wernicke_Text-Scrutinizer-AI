@@ -256,7 +256,7 @@ def main():
                         "Please log-in either through LINE or Wernicke for personalized quizzes",
                         JP))
         st.link_button(translate("今すぐログイン！", "Log In Now!", JP), 
-                                "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app/VocabReview%2F&scope=email&access_type=offline",
+                                "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=1001045070310-kp5s24oe6o0r699fcb37joigo4qeamfp.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Ftextgrader-wernicke.streamlit.app%2F&scope=email&access_type=offline",
                                 help = "Gmail Ready?")
 
     
