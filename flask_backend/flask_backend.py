@@ -37,12 +37,52 @@ def get_google_sheets_service():
 # Initialize Google Sheets Service at the start
 service = get_google_sheets_service()
 
+def sheet_operation(operation, spreadsheet_id, range_name, data=None, user_id=None, word=None):
+    sheet = service.spreadsheets()
+    if operation == "get":
+        result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        return result.get('values', [])
+    elif operation == "append":
+        body = {'values': [data]}
+        sheet.values().append(
+            spreadsheetId=spreadsheet_id, 
+            range=range_name, 
+            valueInputOption='RAW', 
+            body=body
+        ).execute()
+    elif operation == "update":
+        body = {'values': [data]}
+        sheet.values().update(
+            spreadsheetId=spreadsheet_id, 
+            range=range_name, 
+            valueInputOption='USER_ENTERED', 
+            body=body
+        ).execute()
+    
+    elif operation == "delete":
+        values = sheet_operation("get", spreadsheet_id, range_name)
+        for index, row in enumerate(values):
+            if len(row) > 2 and row[1] == user_id and row[2] == word:
+                body = {
+                    "requests": [{
+                        "deleteDimension": {
+                            "range": {
+                                "sheetId": 0,  # Adjust if using a specific sheet within the spreadsheet
+                                "dimension": "ROWS",
+                                "startIndex": index,
+                                "endIndex": index + 1
+                            }
+                        }
+                    }]
+                }
+                response = sheet.batchUpdate(spreadsheetId=spreadsheet_id, body=body).execute()
+                return response  # Or a custom response indicating success
+        return None
+
 
 def get_or_create_user_id(email):
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range=USER_RANGE_NAME).execute()
-    values = result.get('values', [])
-
+    values = sheet_operation("get", USER_SHEET_ID, USER_RANGE_NAME)
+    
     # Search for email in the first column and get ID from the third column
     for row in values:
         if len(row) > 0 and row[0] == email:
@@ -51,12 +91,7 @@ def get_or_create_user_id(email):
     # If not found, create a new user ID, append it, and return it
     new_user_id = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     new_row = [email, '', new_user_id]
-    sheet.values().append(
-        spreadsheetId=USER_SHEET_ID, 
-        range=USER_RANGE_NAME, 
-        valueInputOption='RAW', 
-        body={'values': [new_row]}
-    ).execute()
+    sheet_operation("append", USER_SHEET_ID, USER_RANGE_NAME, data=new_row)
     return new_user_id
 
 @app.route('/get_or_create_user', methods=['POST'])
@@ -93,10 +128,7 @@ def get_words():
         return jsonify({'error': 'User ID is required'}), 400
 
     print("Received user_id in Flask:", user_id) 
-    sheet = service.spreadsheets()
-    # Adjusted the range to include pronunciation, definition, synonyms, and examples
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
-    values = result.get('values', [])
+    values = sheet_operation("get", SPREADSHEET_ID, RANGE_NAME)
 
     # List to hold the words and their details
     word_details = []
@@ -115,62 +147,62 @@ def get_words():
 
     return word_details
 
-def add_word_to_sheet(sheet, user_id, word):
-    # Fetch data from GPT-3
-    word_data = table_content(word)
+# def add_word_to_sheet(sheet, user_id, word):
+#     # Fetch data from GPT-3
+#     word_data = table_content(word)
 
-    values = [
-        ['', 
-        user_id, 
-        word,
-        word_data["pronunciation"],
-        word_data["definition"],
-        word_data["synonyms"],
-        word_data["examples"]
-        ]
-    ]
-    body = {'values': values}
-    result = sheet.values().append(
-        spreadsheetId=SPREADSHEET_ID, 
-        range=RANGE_NAME, 
-        valueInputOption='RAW', 
-        body=body
-    ).execute()
-    return result.get('updates', {}).get('updatedCells', 0)
+#     values = [
+#         ['', 
+#         user_id, 
+#         word,
+#         word_data["pronunciation"],
+#         word_data["definition"],
+#         word_data["synonyms"],
+#         word_data["examples"]
+#         ]
+#     ]
+#     body = {'values': values}
+#     result = sheet.values().append(
+#         spreadsheetId=SPREADSHEET_ID, 
+#         range=RANGE_NAME, 
+#         valueInputOption='RAW', 
+#         body=body
+#     ).execute()
+#     return result.get('updates', {}).get('updatedCells', 0)
 
-def delete_word_from_sheet(user_id, word, values):
-    for index, row in enumerate(values):
-        if len(row) > 2 and row[1] == user_id and row[2] == word:
-            body = {
-                "requests": [{
-                    "deleteDimension": {
-                        "range": {
-                            "sheetId": 0,
-                            "dimension": "ROWS",
-                            "startIndex": index,
-                            "endIndex": index + 1
-                        }
-                    }
-                }]
-            }
-            service.spreadsheets().batchUpdate(
-                spreadsheetId=SPREADSHEET_ID, body=body).execute()
-            return True
-    return False
+# def delete_word_from_sheet(user_id, word, values):
+#     for index, row in enumerate(values):
+#         if len(row) > 2 and row[1] == user_id and row[2] == word:
+#             body = {
+#                 "requests": [{
+#                     "deleteDimension": {
+#                         "range": {
+#                             "sheetId": 0,
+#                             "dimension": "ROWS",
+#                             "startIndex": index,
+#                             "endIndex": index + 1
+#                         }
+#                     }
+#                 }]
+#             }
+#             service.spreadsheets().batchUpdate(
+#                 spreadsheetId=SPREADSHEET_ID, body=body).execute()
+#             return True
+#     return False
 
-def modify_sheet(operation, user_id, word):
-    global service  # Use the global service variable
-    sheet = service.spreadsheets()
+# def modify_sheet(operation, user_id, word):
+#     global service  # Use the global service variable
+#     sheet = service.spreadsheets()
 
-    if operation == 'add':
-        return add_word_to_sheet(sheet, user_id, word)
+#     if operation == 'add':
+#         return add_word_to_sheet(sheet, user_id, word)
 
-    elif operation == 'delete':
-        result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
-        values = result.get('values', [])
-        return delete_word_from_sheet(user_id, word, values)
+#     elif operation == 'delete':
+#         result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
+#         values = result.get('values', [])
+#         return delete_word_from_sheet(user_id, word, values)
         
-    return False
+#     return False
     
 
 def format_list_with_newlines(items):
@@ -206,26 +238,38 @@ def table_content(word):
 @app.route('/add_word', methods=['POST'])
 def add_word():
     data = request.json
-    result = modify_sheet('add', data['user_id'], data['word'])
-    if result:
-        return {'result': 'success', 'updatedCells': result}
-    else:
-        return {'result': 'error'}, 500
+    user_id, word = data['user_id'], data['word']
+    word_data = table_content(word)  # Continue using your function to get word details
+
+    values = [
+        ['', 
+        user_id, 
+        word,
+        word_data["pronunciation"],
+        word_data["definition"],
+        word_data["synonyms"],
+        word_data["examples"]
+        ]
+    ]
+
+    sheet_operation("append", SPREADSHEET_ID, RANGE_NAME, data=values)
+    return jsonify({'result': 'success'})
+
 
 @app.route('/delete_word', methods=['POST'])
 def delete_word():
     data = request.json
-    success = modify_sheet('delete', data['user_id'], data['word'])
-    if success:
-        return {'result': 'success'}
+    user_id, word = data['user_id'], data['word']
+    response = sheet_operation("delete", SPREADSHEET_ID, RANGE_NAME, user_id=user_id, word=word)
+    if response:
+        return jsonify({'result': 'success'})
     else:
-        return {'result': 'word not found'}, 404
+        return jsonify({'result': 'word not found'}), 404
+
 
 def fill_missing_content(user_id):
     # Fetch rows from the Google Sheet for the specified user_id
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME).execute()
-    values = result.get('values', [])
+    values = sheet_operation("get", SPREADSHEET_ID, RANGE_NAME)
     updated_count = 0
     
     for i, row in enumerate(values):
@@ -242,13 +286,7 @@ def fill_missing_content(user_id):
 
             # Update the row individually
             update_range = f'シート1!D{i+1}:G{i+1}'
-            body = {'values': [update_values]}
-            sheet.values().update(
-                spreadsheetId=SPREADSHEET_ID, 
-                range=update_range, 
-                valueInputOption='USER_ENTERED', 
-                body=body
-            ).execute()
+            sheet_operation("update", SPREADSHEET_ID, update_range, data=update_values)
             updated_count += 1
 
     # Return the result indicating how many words were updated
@@ -270,9 +308,7 @@ def fill_missing_content_endpoint():
 def check_nickname():
     data = request.json
     user_id = data['user_id']
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range='シート1!A:D').execute()
-    values = result.get('values', [])
+    values = sheet_operation("get", USER_SHEET_ID, 'シート1!A:D')
 
     for row in values:
         if len(row) > 2 and row[2] == user_id:
@@ -286,19 +322,14 @@ def update_nickname():
     data = request.json
     user_id = data['user_id']
     nickname = data['nickname']
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range='シート1!A:D').execute()
-    values = result.get('values', [])
+    
+    values = sheet_operation("get", USER_SHEET_ID, 'シート1!A:D')
+
 
     for i, row in enumerate(values):
-        if row[2] == user_id:
-            range_to_update = f'シート1!D{i+1}'
-            sheet.values().update(
-                spreadsheetId=USER_SHEET_ID,
-                range=range_to_update,
-                valueInputOption='RAW',
-                body={'values': [[nickname]]}
-            ).execute()
+        if len(row) > 2 and row[2] == user_id:  # Assuming user_id is in the third column
+            range_to_update = f'シート1!D{i+1}'  # Constructing the range for the fourth column
+            sheet_operation("update", USER_SHEET_ID, range_to_update, data=[[nickname]])
             return {'success': True}
 
     return {'error': 'User not found'}, 404
@@ -306,10 +337,8 @@ def update_nickname():
 @app.route('/get_nicknames_and_ids', methods=['POST'])
 def get_nicknames_and_ids():
     emails = request.json['emails']
-    service = get_google_sheets_service()  # Function to authenticate and get service
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=USER_SHEET_ID, range='A:D').execute()  # Adjust range to include columns A, C, and D
-    values = result.get('values', [])
+
+    values = sheet_operation("get", USER_SHEET_ID, 'シート1!A:D')
 
     nicknames_with_ids = {}
     for row in values:
