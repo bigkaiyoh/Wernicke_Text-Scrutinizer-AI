@@ -242,14 +242,13 @@ def add_word():
     word_data = table_content(word)  # Continue using your function to get word details
 
     values = [
-        ['', 
-        user_id, 
+        '',  # This will correspond to column A, which will be left empty
+        user_id,  # This will be placed in column B
         word,
         word_data["pronunciation"],
         word_data["definition"],
         word_data["synonyms"],
         word_data["examples"]
-        ]
     ]
 
     sheet_operation("append", SPREADSHEET_ID, RANGE_NAME, data=values)
