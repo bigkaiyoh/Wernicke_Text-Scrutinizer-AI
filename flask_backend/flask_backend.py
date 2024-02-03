@@ -55,7 +55,7 @@ def sheet_operation(operation, spreadsheet_id, range_name, data=None, user_id=No
         sheet.values().update(
             spreadsheetId=spreadsheet_id, 
             range=range_name, 
-            valueInputOption='USER_ENTERED', 
+            valueInputOption='RAW', 
             body=body
         ).execute()
     
