@@ -326,7 +326,7 @@ def update_nickname():
 
 
     for i, row in enumerate(values):
-        if len(row) > 2 and row[2] == user_id:  # Assuming user_id is in the third column
+        if row[2] == user_id:  # Assuming user_id is in the third column
             range_to_update = f'シート1!D{i+1}'  # Constructing the range for the fourth column
             sheet_operation("update", USER_SHEET_ID, range_to_update, data=[[nickname]])
             return {'success': True}
