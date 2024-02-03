@@ -37,7 +37,7 @@ def get_google_sheets_service():
 # Initialize Google Sheets Service at the start
 service = get_google_sheets_service()
 
-def sheet_operation(operation, spreadsheet_id, range_name, data=None, user_id=None, word=None):
+def sheet_operation(operation, spreadsheet_id, range_name, data=None, user_id=None, word=None, value_input_option='USER_ENTERED'):
     sheet = service.spreadsheets()
     if operation == "get":
         result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
@@ -47,7 +47,7 @@ def sheet_operation(operation, spreadsheet_id, range_name, data=None, user_id=No
         sheet.values().append(
             spreadsheetId=spreadsheet_id, 
             range=range_name, 
-            valueInputOption='RAW', 
+            valueInputOption=value_input_option, 
             body=body
         ).execute()
     elif operation == "update":
@@ -55,7 +55,7 @@ def sheet_operation(operation, spreadsheet_id, range_name, data=None, user_id=No
         sheet.values().update(
             spreadsheetId=spreadsheet_id, 
             range=range_name, 
-            valueInputOption='RAW', 
+            valueInputOption=value_input_option, 
             body=body
         ).execute()
     
@@ -324,11 +324,10 @@ def update_nickname():
     
     values = sheet_operation("get", USER_SHEET_ID, 'シート1!A:D')
 
-
     for i, row in enumerate(values):
-        if row[2] == user_id:  # Assuming user_id is in the third column
+        if len(row) > 2 and row[2] == user_id:
             range_to_update = f'シート1!D{i+1}'  # Constructing the range for the fourth column
-            sheet_operation("update", USER_SHEET_ID, range_to_update, data=[[nickname]])
+            sheet_operation("update", USER_SHEET_ID, range_to_update, data=[[nickname]], value_input_option='RAW')
             return {'success': True}
 
     return {'error': 'User not found'}, 404
