@@ -129,6 +129,7 @@ def add_word_form():
             if make_request("add_word", {'user_id': st.query_params['user'], 'word': added_word}):
                 st.session_state['added_success'] = True
                 st.session_state.chatbot_active = False
+                st.session_state.chat_history = []
                 st.rerun()
             else:
                 st.error("Failed to add a word. Please try again")
@@ -149,6 +150,7 @@ def delete_word_form():
             if make_request("delete_word", {'user_id': st.query_params['user'], 'word': deleted_word}):
                 st.session_state['deleted_success'] = True
                 st.session_state.chatbot_active = False
+                st.session_state.chat_history = []
                 st.rerun()
             else:
                 st.error("Failed to delete a word. Please check spelling")
