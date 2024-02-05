@@ -128,6 +128,7 @@ def add_word_form():
         if submit_add and added_word.strip():
             if make_request("add_word", {'user_id': st.query_params['user'], 'word': added_word}):
                 st.session_state['added_success'] = True
+                st.session_state.chatbot_active = False
                 st.rerun()
             else:
                 st.error("Failed to add a word. Please try again")
@@ -139,7 +140,6 @@ def add_word_form():
         st.success("Word added successfully!")
         st.session_state['added_success'] = False
 
-    st.session_state.chatbot_active = False
     
 def delete_word_form():
     with st.form(key='delete_word_form', clear_on_submit=True, border=False):
@@ -148,6 +148,7 @@ def delete_word_form():
         if submit_delete and deleted_word.strip():
             if make_request("delete_word", {'user_id': st.query_params['user'], 'word': deleted_word}):
                 st.session_state['deleted_success'] = True
+                st.session_state.chatbot_active = False
                 st.rerun()
             else:
                 st.error("Failed to delete a word. Please check spelling")
@@ -158,7 +159,6 @@ def delete_word_form():
         st.success("Word deleted successfully!")
         st.session_state['deleted_success'] = False
 
-    st.session_state.chatbot_active = False
 
 def check_nickname(user_id):
     response = requests.post('https://wernicke-backend.onrender.com/check_nickname', json={'user_id': user_id})
