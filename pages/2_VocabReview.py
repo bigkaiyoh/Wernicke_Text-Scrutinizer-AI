@@ -242,9 +242,9 @@ def main():
                     top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
                     st.session_state.chat_history.append(("assistant", top_message))
                         
+                    display_chat_history()
             # Display chat history and input field if chatbot is active
             if st.session_state.chatbot_active:
-                display_chat_history()
                 handle_chat_input(JP)
         else:
             nickname_form(st.query_params.user, JP)
