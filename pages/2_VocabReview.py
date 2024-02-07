@@ -232,7 +232,7 @@ def main():
             st.header(translate("単語復習コーチ", "Review Vocabulary With ME!", JP))
 
             if not st.session_state.chatbot_active:
-                if st.button(translate("単語練習を始める", "Start practicing vocabulary", JP)):
+                if st.button(translate("単語練習を始める", "Start practicing vocabulary", JP), key="create_quiz"):
                     st.session_state.chatbot_active = True
                     # Send the initial message to the chatbot and get the response
                     if table_content:
