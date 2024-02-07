@@ -22,6 +22,7 @@ deepl_api = st.secrets.deepl
 #Initialize OpenAI client and set default assistant_id
 client = OpenAI(api_key=api)
 a_id = "null"
+evaluation = None
 #Initialize session_state
 if "submit_clicked" not in st.session_state:
     st.session_state.submit_clicked = False
