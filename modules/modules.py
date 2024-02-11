@@ -21,7 +21,8 @@ def plot_recent_submissions(data):
     today = datetime.now(jst).date()
 
     # Ensure 'date' is a datetime object
-    data.loc[:, 'date'] = pd.to_datetime(data['date'])
+    data = data.copy()
+    data['date'] = pd.to_datetime(data['date'])
 
     # Create a date range for the last 7 days
     last_7_days = pd.date_range(start=today - timedelta(days=6), end=today)
@@ -76,7 +77,10 @@ def filter_by_dates(data, selected_date):
 
 def filters(filtered_data, apply_email_filter=True):
     # Convert the 'date' column to datetime type
-    filtered_data.loc[:, 'date'] = pd.to_datetime(filtered_data['date'])
+    # Make a copy of filtered_data to ensure it's a standalone DataFrame
+    filtered_data = filtered_data.copy()
+    filtered_data['date'] = pd.to_datetime(filtered_data['date'])
+
 
     # Initialize selected frameworks and sections
     unique_frameworks = filtered_data['test_framework'].unique()
