@@ -145,6 +145,7 @@ def error_analyzer(filtered_data):
             with st.expander("See Analysis"):
                 st.write(st.session_state.assistant_response)
 
+@st.cache_data(ttl="3h")
 def fetch_nicknames_and_ids(emails):
     response = requests.post('https://wernicke-backend.onrender.com/get_nicknames_and_ids', json={'emails': emails})
     if response.status_code == 200:
