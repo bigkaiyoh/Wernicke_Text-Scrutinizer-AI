@@ -370,7 +370,6 @@ def main():
 
     # Establish Google Sheets connection
     conn = establish_gsheets_connection()
-    existing_data = fetch_latest_data(conn)
 
     # --- NAVIGATION MENU ---
     selected = option_menu(
@@ -440,6 +439,7 @@ def main():
 
                             # Add new data and update Google Sheets
                             new_data = add_new_data(st.session_state.email, option, grade, style, user_input, evaluation)
+                            existing_data = fetch_latest_data(conn)
                             update_google_sheets(conn, existing_data, new_data)
                         else:
                             no_input_error(JP)
