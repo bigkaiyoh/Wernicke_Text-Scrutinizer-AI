@@ -222,7 +222,7 @@ def establish_gsheets_connection():
 
 def fetch_latest_data(conn):
     # Use the cached connection to fetch the latest data
-    latest_data = conn.read(worksheet="YourWorksheetName", usecols=list(range(7)))
+    latest_data = conn.read(worksheet="シート1", usecols=list(range(7)))
     latest_data = latest_data.dropna(how="all")
     return latest_data
 
