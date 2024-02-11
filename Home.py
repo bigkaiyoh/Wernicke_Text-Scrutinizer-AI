@@ -207,7 +207,8 @@ def run_assistant(assistant_id, txt, return_content=False, display_chat=True):
                 time.sleep(1)
     if return_content:
         return content
-
+    
+@st.cache_resource(ttl="1d")
 def establish_gsheets_connection():
     # Establishing a Google Sheets connection
     conn = st.connection("gsheets", type=GSheetsConnection)
