@@ -214,10 +214,17 @@ def establish_gsheets_connection():
     conn = st.connection("gsheets", type=GSheetsConnection)
 
     # Fetch existing Wernicke data
-    existing_data = conn.read(worksheet="シート1", usecols=list(range(7)), ttl=5)
-    existing_data = existing_data.dropna(how="all")
+    # existing_data = conn.read(worksheet="シート1", usecols=list(range(7)), ttl=5)
+    # existing_data = existing_data.dropna(how="all")
 
-    return conn, existing_data
+    # return conn, existing_data
+    return conn
+
+def fetch_latest_data(conn):
+    # Use the cached connection to fetch the latest data
+    latest_data = conn.read(worksheet="YourWorksheetName", usecols=list(range(7)))
+    latest_data = latest_data.dropna(how="all")
+    return latest_data
 
 def add_new_data(email, option, grade, style, user_input, evaluation):
     # Concatenate option and grade if Eiken/英検 is selected
@@ -362,7 +369,8 @@ def main():
     st.sidebar.write(st.session_state.email)
 
     # Establish Google Sheets connection
-    conn, existing_data = establish_gsheets_connection()
+    conn = establish_gsheets_connection()
+    existing_data = fetch_latest_data(conn)
 
     # --- NAVIGATION MENU ---
     selected = option_menu(

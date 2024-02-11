@@ -1,7 +1,7 @@
 import streamlit as st
 import hmac
 import pandas as pd
-from Home import establish_gsheets_connection, display_progression_graph, add_bottom, translate, run_assistant
+from Home import establish_gsheets_connection, fetch_latest_data, display_progression_graph, add_bottom, translate, run_assistant
 from datetime import datetime, timedelta
 import numpy as np
 import json
@@ -192,7 +192,8 @@ def main():
 
     with tab1:
         # Use the imported function
-        conn, main_data = establish_gsheets_connection()
+        conn = establish_gsheets_connection()
+        main_data = fetch_latest_data(conn)
 
         # Get the list of student emails for this school
         student_emails = get_emails_for_school(conn, st.session_state.school_sheet_name)
