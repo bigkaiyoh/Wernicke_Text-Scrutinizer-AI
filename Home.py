@@ -476,6 +476,7 @@ def main():
 
 
     if selected == translate("マイページ", "My History", JP):
+        existing_data = fetch_latest_data(conn)
         user_data = existing_data[existing_data['user_email'] == st.session_state.email]  # Filter by email
         # Do not display user_email and add a date row
         display_data = user_data.drop(columns=['user_email']).copy()
