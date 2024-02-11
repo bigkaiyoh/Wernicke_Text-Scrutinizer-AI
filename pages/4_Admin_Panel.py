@@ -66,7 +66,7 @@ def logout():
             del st.session_state[key]
     st.rerun()
 
-@st.cache_data(ttl="3h") 
+
 def get_emails_for_school(conn, school_sheet_name):
     """Retrieves a list of student emails from the school's specific sheet."""
     emails_df = conn.read(worksheet=school_sheet_name, usecols=[0], ttl=60)
