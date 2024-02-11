@@ -76,6 +76,7 @@ def get_emails_for_school(conn, school_sheet_name):
     return emails_list
 
 def display_data_and_metrics(filtered_data):
+    filtered_data = filtered_data.copy()
     filtered_data.loc[:, 'date'] = pd.to_datetime(filtered_data['timestamp']).dt.date
 
     # Today's total submissions
