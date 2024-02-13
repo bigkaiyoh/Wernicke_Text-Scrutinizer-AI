@@ -17,6 +17,7 @@ ielts_writing = st.secrets.ielts_writing
 ielts_speaking = st.secrets.ielts_speaking
 toefl_writing = st.secrets.toefl_writing
 toefl_speaking = st.secrets.toefl_speaking
+general_writing = st.secrets.general_writing
 deepl_api = st.secrets.deepl
 
 #Initialize OpenAI client and set default assistant_id
@@ -94,7 +95,7 @@ def translate(text_japanese, text_english, is_japanese):
 def set_test_configuration(JP, key_suffix=""):
     option = st.selectbox(
         translate("テストを選択してください", "Choose Test Framework", JP),
-        translate(("IELTS", "TOEFL", "TOEIC", "英検"), ("IELTS", "TOEFL", "TOEIC", "Eiken"), JP),
+        translate(("IELTS", "TOEFL", "TOEIC", "英検", "自由練習"), ("IELTS", "TOEFL", "TOEIC", "Eiken", "General"), JP),
         index=None,
         placeholder="Select the test",
         key=f"test_framework_selectbox_{key_suffix}"  # Dynamic key
@@ -142,6 +143,12 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
 
     elif option == "TOEFL":
         assistant_id = toefl_writing if style == "Writing" else toefl_speaking
+
+    elif option == "自由練習" or "General":
+        if style == "Writing":
+            assistant_id = general_writing
+        else:
+            st.markdown("Under Preparation")
 
     elif option in ["TOEIC", "Eiken", "英検"]:
         st.markdown("Under Preparation")
