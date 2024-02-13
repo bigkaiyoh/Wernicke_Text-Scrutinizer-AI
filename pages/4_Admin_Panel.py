@@ -7,7 +7,7 @@ import numpy as np
 import json
 import re
 import requests
-from modules.modules import todays_total_submissions, plot_recent_submissions, filters, fetch_table_content, make_request
+from modules.modules import todays_total_submissions, plot_recent_submissions, filters, fetch_table_content #, make_request
 
 
 st.set_page_config(
