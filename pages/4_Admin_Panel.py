@@ -9,8 +9,6 @@ import re
 import requests
 from modules.modules import todays_total_submissions, plot_recent_submissions, filters, fetch_table_content, make_request
 
-#Secret Keys
-error_assistant = st.secrets.error_assistant
 
 st.set_page_config(
     page_title = "Admin_Panel",
@@ -25,6 +23,10 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
+
+#Secret Keys
+error_assistant = st.secrets.error_assistant
 
 # Initialize 'username' in session state if it's not already set
 if 'username' not in st.session_state:
