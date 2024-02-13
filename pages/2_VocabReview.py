@@ -209,7 +209,7 @@ def main():
 
     #setup the page
     if "user" in st.query_params:
-        st.write("User authenticated!")
+        st.write("User authenticated!") #might faster the app
         nickname = check_nickname(st.query_params.user)
         if nickname is not None:
             table_content = fetch_table_content(st.query_params.user, JP)

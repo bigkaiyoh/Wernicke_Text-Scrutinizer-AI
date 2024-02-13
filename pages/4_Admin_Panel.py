@@ -192,7 +192,7 @@ def main():
     if not check_password():
         st.stop()
 
-    st.write("Logged in successfully!")
+    st.write("Logged in successfully!") #somehow fasters the app
     
     tab1, tab2 = st.tabs(["📜 Tests Submission Report", "📕 New Vocabulary"])
 
