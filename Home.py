@@ -144,7 +144,7 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
     elif option == "TOEFL":
         assistant_id = toefl_writing if style == "Writing" else toefl_speaking
 
-    elif option == "自由練習" or "General":
+    elif option == "自由練習" or option == "General":
         if style == "Writing":
             assistant_id = general_writing
         else:
