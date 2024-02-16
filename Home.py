@@ -151,7 +151,7 @@ def get_GPT_response(option, grade, style, txt, return_content=False):
             st.markdown("Under Preparation")
 
     elif option in ["TOEIC", "Eiken", "英検"]:
-        st.markdown("Under Preparation")
+        st.warning("TOEIC and Eiken options are currently under preparation. Please select a different test framework.")
     else:
         st.markdown("Please Provide Your Answer First")
 
