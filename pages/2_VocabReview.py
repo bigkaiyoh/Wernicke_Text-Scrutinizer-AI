@@ -32,7 +32,7 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
-@st.cache_data(ttl="5d")
+@st.cache_data(ttl="1m")
 def get_or_create_user_id(email):
     try:
         response = requests.post('https://wernicke-backend.onrender.com/get_or_create_user', json={'email': email})
@@ -160,7 +160,7 @@ def delete_word_form():
         st.success("Word deleted successfully!")
         st.session_state['deleted_success'] = False
 
-@st.cache_data(ttl="5d")
+@st.cache_data(ttl="1m")
 def check_nickname(user_id):
     response = requests.post('https://wernicke-backend.onrender.com/check_nickname', json={'user_id': user_id})
     if response.status_code == 200:
