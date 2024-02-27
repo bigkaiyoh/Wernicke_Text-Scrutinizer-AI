@@ -214,7 +214,7 @@ def main():
         if nickname is not None:
             table_content = fetch_table_content(st.query_params.user, JP)
             if table_content:
-                tab1, tab2 = st.tabs(["🏆 Words", "📕 Dictionary"])
+                tab1, tab2= st.tabs(["🏆 Words", "📕 Dictionary"])
 
                 with tab1:
                     words = [word['word'] for word in table_content]
