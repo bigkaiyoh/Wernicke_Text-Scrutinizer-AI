@@ -526,7 +526,7 @@ def main():
         # Review zone
         if 'text_area_content' not in st.session_state:
             st.session_state.text_area_content = ""
-            
+
         st.header("Review Feedback")
         st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:")
         left, right, empty = st.columns([1, 1, 3])
@@ -541,6 +541,7 @@ def main():
                 st.write(st.session_state.answer_to_display)
         if clear: 
             st.session_state.answer_to_display = ""
+            st.rerun()
 
 
         # Progression graph
