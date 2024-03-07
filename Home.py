@@ -523,6 +523,13 @@ def main():
         filtered_data['date'] = filtered_data['date'].dt.strftime('%Y-%m-%d')
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
+        # Review zone
+        answer_to_display = st.text_input("Paste the feedback you want to review here:")
+
+        if answer_to_display:
+            with st.chat_message("assistant"):
+                st.write(answer_to_display)
+
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
         display_progression_graph(filtered_data, JP, score_column=5)
