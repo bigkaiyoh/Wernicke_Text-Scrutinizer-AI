@@ -524,11 +524,20 @@ def main():
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
         # Review zone
-        answer_to_display = st.text_area("Paste the feedback you want to review here:")
+        st.header("Review Feedback")
+        st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:")
+        left, right, empty = st.columns([1, 1, 3])
+        with left:
+            show = st.button("show")
+        with right:
+            clear = st.button("clear")
 
-        if answer_to_display:
+        if show and st.session_state.answer_to_display:
             with st.chat_message("assistant"):
-                st.write(answer_to_display)
+                st.write(st.session_state.answer_to_display)
+        if clear: 
+            st.session_state.answer_to_display = ""
+
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
