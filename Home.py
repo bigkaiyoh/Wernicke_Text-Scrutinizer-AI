@@ -523,25 +523,27 @@ def main():
         filtered_data['date'] = filtered_data['date'].dt.strftime('%Y-%m-%d')
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
-        # Review zone
+        # REVIEW ZONE
+        st.header("Review Specific Feedback")
+
+        # Initialize the session state variable for text area content if it doesn't exist
         if 'answer_to_display' not in st.session_state:
             st.session_state.answer_to_display = ""
 
-        st.header("Review Feedback")
-        st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:")
+        st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:", value=st.session_state.answer_to_display, key="feedback_review")
+
         left, right, empty = st.columns([1, 1, 3])
         with left:
-            show = st.button("show")
+            show = st.button("Show")
         with right:
-            clear = st.button("clear")
+            clear = st.button("Clear")
 
-
+        # Display the text in a chat message when the "Show" button is pressed
         if show and st.session_state.answer_to_display:
             with st.chat_message("assistant"):
                 st.write(st.session_state.answer_to_display)
-        if clear: 
-            st.session_state.answer_to_display = ""
-
+        if clear:
+            st.session_state.answer_to_display = ""  
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
