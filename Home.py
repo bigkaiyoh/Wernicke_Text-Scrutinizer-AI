@@ -527,24 +527,18 @@ def main():
         st.header("Review Specific Feedback")
 
         # Initialize the session state variable for text area content if it doesn't exist
-        if 'answer_to_display' not in st.session_state:
-            st.session_state.answer_to_display = ""
-
-        st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:", value=st.session_state.answer_to_display, key="feedback_review")
-
-        left, right, empty = st.columns([1, 1, 3])
-        with left:
-            show = st.button("Show")
-        with right:
-            clear = st.button("Clear")
-
+        with st.form(key='feedback_form', clear_on_submit=True):
+            st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here!")
+            show = st.form_submit_button("Show")
+            
         # Display the text in a chat message when the "Show" button is pressed
         if show and st.session_state.answer_to_display:
+            clear = st.button("Clear")
             with st.container(border=True):
                 with st.chat_message("assistant"):
                     st.write(st.session_state.answer_to_display)
-        if clear:
-            st.session_state.answer_to_display = ""  
+            if clear:
+                st.session_state.answer_to_display = ""  
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
