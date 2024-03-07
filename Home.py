@@ -527,7 +527,7 @@ def main():
         st.header("Review Specific Feedback")
 
         # Initialize the session state variable for text area content if it doesn't exist
-        with st.form(key='feedback_form', clear_on_submit=True):
+        with st.form(key='feedback_form', clear_on_submit=True, border=False):
             st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here!")
             show = st.form_submit_button("Show")
             
