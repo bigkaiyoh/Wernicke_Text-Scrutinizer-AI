@@ -540,8 +540,9 @@ def main():
 
         # Display the text in a chat message when the "Show" button is pressed
         if show and st.session_state.answer_to_display:
-            with st.chat_message("assistant"):
-                st.write(st.session_state.answer_to_display)
+            with st.container(border=True):
+                with st.chat_message("assistant"):
+                    st.write(st.session_state.answer_to_display)
         if clear:
             st.session_state.answer_to_display = ""  
             st.rerun()
