@@ -524,6 +524,9 @@ def main():
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
         # Review zone
+        if 'text_area_content' not in st.session_state:
+            st.session_state.text_area_content = ""
+            
         st.header("Review Feedback")
         st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:")
         left, right, empty = st.columns([1, 1, 3])
@@ -531,6 +534,7 @@ def main():
             show = st.button("show")
         with right:
             clear = st.button("clear")
+
 
         if show and st.session_state.answer_to_display:
             with st.chat_message("assistant"):
