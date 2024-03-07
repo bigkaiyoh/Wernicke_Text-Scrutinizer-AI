@@ -524,8 +524,8 @@ def main():
         st.dataframe(filtered_data[['date', 'user_input', 'Wernicke_output']])
 
         # Review zone
-        if 'text_area_content' not in st.session_state:
-            st.session_state.text_area_content = ""
+        if 'answer_to_display' not in st.session_state:
+            st.session_state.answer_to_display = ""
 
         st.header("Review Feedback")
         st.session_state.answer_to_display = st.text_area("Paste the feedback you want to review here:")
@@ -541,7 +541,6 @@ def main():
                 st.write(st.session_state.answer_to_display)
         if clear: 
             st.session_state.answer_to_display = ""
-            st.rerun()
 
 
         # Progression graph
