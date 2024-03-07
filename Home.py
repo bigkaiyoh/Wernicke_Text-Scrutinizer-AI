@@ -545,7 +545,6 @@ def main():
                     st.write(st.session_state.answer_to_display)
         if clear:
             st.session_state.answer_to_display = ""  
-            st.rerun()
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
