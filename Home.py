@@ -466,6 +466,10 @@ def main():
                     temporary.empty()
                     user_message = st.chat_message("user")
                     user_message.write(user_input)
+                    # Display the original English evaluation first
+                    original_message = st.chat_message("assistant")
+                    original_message.write(st.session_state.evaluation)
+                    # Display evaluation
                     translated_message = st.chat_message("assistant")
                     translated_message.write(st.session_state.translated_evaluation)
 
