@@ -527,8 +527,7 @@ def main():
         answer_to_display = st.text_input("Paste the feedback you want to review here:")
 
         if answer_to_display:
-            with st.chat_message("assistant"):
-                st.write(answer_to_display)
+            st.markdown(answer_to_display, unsafe_allow_html=True)
 
         # Progression graph
         st.header(translate("スコア推移", "Progression Graph", JP))
