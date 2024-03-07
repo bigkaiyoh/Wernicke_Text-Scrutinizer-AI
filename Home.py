@@ -350,6 +350,30 @@ def display_progression_graph(filtered_data, JP, score_column):
     else:
         st.error("No data available for plotting.")
 
+
+def handle_translation_button(user_input, JP, temporary):
+    translation_button_placeholder = st.empty()
+    tr = translation_button_placeholder.container()
+    if st.session_state.submit_clicked and not st.session_state.translation_completed:
+        if 'evaluation' in st.session_state:
+            if tr.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
+                # Translate the evaluation
+                translated_text = deepl_translation(st.session_state.evaluation, "JA")
+                st.session_state.translated_evaluation = translated_text
+                st.session_state.translation_completed = True
+                translation_button_placeholder.empty()
+        if st.session_state.translation_completed:
+            temporary.empty()
+            # Display user input as a user message
+            user_message = st.chat_message("user")
+            user_message.write(user_input)
+            # Display the original English evaluation first
+            original_message = st.chat_message("assistant")
+            original_message.write(st.session_state.evaluation)
+            # Display evaluation
+            translated_message = st.chat_message("assistant")
+            translated_message.write(st.session_state.translated_evaluation)
+
 def main():
     # Add logo to the sidebar
     logo_url = "https://nuginy.com/wp-content/uploads/2024/01/d0bdfb798eddb88d67ac8a8a5fd735cb.png"
@@ -452,26 +476,8 @@ def main():
                             no_input_error(JP)
 
             # Handling the translation and new vocab form
-            translation_button_placeholder = st.empty()
-            tr = translation_button_placeholder.container()
-            if st.session_state.submit_clicked and not st.session_state.translation_completed:
-                if 'evaluation' in st.session_state:
-                    if tr.button(translate("日本語に翻訳", "Translate Feedback to Japanese", JP), key="deepl"):
-                        # Translate the evaluation
-                        translated_text = deepl_translation(st.session_state.evaluation, "JA")
-                        st.session_state.translated_evaluation = translated_text
-                        st.session_state.translation_completed = True
-                        translation_button_placeholder.empty()
-                if st.session_state.translation_completed:
-                    temporary.empty()
-                    user_message = st.chat_message("user")
-                    user_message.write(user_input)
-                    # Display the original English evaluation first
-                    original_message = st.chat_message("assistant")
-                    original_message.write(st.session_state.evaluation)
-                    # Display evaluation
-                    translated_message = st.chat_message("assistant")
-                    translated_message.write(st.session_state.translated_evaluation)
+            handle_translation_button(user_input, JP, temporary)
+            
 
         #Question Chat Box
         # question = st.chat_input(translate(
