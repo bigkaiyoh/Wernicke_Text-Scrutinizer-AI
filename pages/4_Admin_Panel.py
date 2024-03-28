@@ -141,6 +141,9 @@ def error_analyzer(filtered_data):
         # st.write(json_data) #debugging purpose
 
     if json_data:
+        # Reset the client if it exists, ensuring a fresh start for API interactions in Admin_Panel.py
+        if 'client' in st.session_state:
+            del st.session_state.client
         st.session_state.assistant_response = run_assistant(error_assistant, json_data, return_content=True, display_chat=False)
         if 'assistant_response' in st.session_state:
             st.header("Common Errors Analysis")
