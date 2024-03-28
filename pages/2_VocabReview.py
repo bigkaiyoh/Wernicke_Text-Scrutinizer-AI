@@ -1,8 +1,9 @@
 import streamlit as st
+from openai import OpenAI
 import requests
 import pandas as pd
 import time
-from Home import add_bottom, translate, run_assistant
+from Home import add_bottom, translate
 
 st.set_page_config(
     page_title = "Vocabulary Review",
@@ -10,9 +11,11 @@ st.set_page_config(
 )
 
 #Secret Keys
+api = st.secrets.api_key
 vocab_assistant = st.secrets.vocabulary_assistant
 
 # Initialize chat history in session state if not present
+vocab_client = OpenAI(api_key=api)
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 if 'chatbot_active' not in st.session_state:
@@ -30,6 +33,46 @@ hide_st_style = """
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
+
+def handle_vocab_assistant(input_text):
+    if 'vocab_client' not in st.session_state:
+        st.session_state.vocab_client = OpenAI(api_key=api)
+        st.session_state.vocab_assistant = st.session_state.vocab_client.beta.assistants.retrieve(vocab_assistant)
+        st.session_state.vocab_thread = st.session_state.vocab_client.beta.threads.create()
+
+    if input_text:
+        message = st.session_state.vocab_client.beta.threads.messages.create(
+            thread_id=st.session_state.vocab_thread.id,
+            role="user",
+            content=input_text
+        )
+
+        run = st.session_state.vocab_client.beta.threads.runs.create(
+            thread_id=st.session_state.vocab_thread.id,
+            assistant_id=st.session_state.vocab_assistant.id
+        )
+
+        with st.spinner('Neurons weaving through the layers ...'):
+            while True:
+                run_status = st.session_state.vocab_client.beta.threads.runs.retrieve(
+                    thread_id=st.session_state.vocab_thread.id,
+                    run_id=run.id
+                )
+
+                if run_status.status == 'completed':
+                    messages = st.session_state.vocab_client.beta.threads.messages.list(
+                        thread_id=st.session_state.vocab_thread.id
+                    )
+
+                    # Initialize assistant_response within the loop where it's guaranteed to be assigned
+                    for msg in reversed(messages.data):
+                        role = msg.role
+                        content = msg.content[0].text.value
+                    break
+                time.sleep(1)
+
+        # Return the last response from the assistant
+        return content
 
 
 @st.cache_data(ttl="1m")
@@ -108,7 +151,8 @@ def handle_chat_input(JP):
         key="user_input")
 
     if user_input:
-        response = run_assistant(vocab_assistant, user_input, return_content=True, display_chat=False)
+        # response = run_assistant(vocab_assistant, user_input, return_content=True, display_chat=False)
+        response = handle_vocab_assistant(user_input)
         st.session_state.chat_history.extend([("user", user_input), ("assistant", response)])
         display_chat_history()
 
@@ -242,7 +286,8 @@ def main():
                         initial_prompt = "These are the words I have learned: {}".format(", ".join(words))
                     else:
                         initial_prompt = "I don't have specific words. Help me create the quiz with the right level for me"
-                    top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
+                    # top_message = run_assistant(vocab_assistant, initial_prompt, return_content=True, display_chat=False)
+                    top_message = handle_vocab_assistant(initial_prompt)
                     st.session_state.chat_history.append(("assistant", top_message))
                         
                     display_chat_history()
